@@ -37,6 +37,8 @@ export type PlanZeile = {
 type Ziel = { mitarbeiterId: string | null; datum: string };
 const zielKey = (z: Ziel) => `${z.mitarbeiterId ?? "offen"}|${z.datum}`;
 const BEWEGLICH = new Set(["geplant", "zugewiesen"]);
+/** "2:40 h" → "2:40" */
+const kurz = (minuten: number) => zuDauer(minuten).replace(" h", "");
 
 export function Wochenplan({
   tage,
@@ -185,13 +187,13 @@ function Zeile({
               <span className={cn(voll && "font-medium text-red-600 dark:text-red-400")}>
                 {info.abwesend
                   ? info.abwesend
-                  : info.verfuegbar === null
-                    ? liste.length
-                      ? zuDauer(info.bedarf)
-                      : ""
-                    : info.verfuegbar === 0 && !liste.length
+                  : !liste.length
+                    ? info.verfuegbar === 0
                       ? "frei"
-                      : `${zuDauer(info.bedarf)} / ${zuDauer(info.verfuegbar)}`}
+                      : ""
+                    : info.verfuegbar === null
+                      ? zuDauer(info.bedarf)
+                      : `${kurz(info.bedarf)}/${zuDauer(info.verfuegbar)}`}
               </span>
               {info.rueckkehr && liste.length > 0 && <span>↩ {info.rueckkehr}</span>}
             </Link>

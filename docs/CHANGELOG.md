@@ -90,3 +90,23 @@ Alle nennenswerten Änderungen je Meilenstein. Format angelehnt an „Keep a Cha
 ### Behoben
 
 - Schrift: Geist-Variablen hängen jetzt am `<html>`-Element (vorher Serifen-Fallback)
+
+## [M5] Planung und Touren – 2026-11-20
+
+### Hinzugefügt
+
+- Entscheidung Kartendienst: Mapbox (ADR 0002)
+- Migration `planung`: `mitarbeiter_verfuegbarkeit` (Arbeitszeit je Wochentag), `abwesenheit` (Urlaub, krank, sonstiges), `fahrzeug`, `tour` (eine je Mitarbeiter und Tag); Betrieb mit Koordinaten und üblicher Abfahrt; Einsatz mit Reihenfolge, Fahrzeit und geplantem Beginn
+- Status folgt der Zuweisung (geplant ↔ zugewiesen), solange ein Einsatz nicht begonnen hat
+- Fachlogik `src/domain/planung.ts`: Tagestour mit Ankunft, Wartezeit und Warnung bei verletztem Reinigungsfenster; Reihenfolge-Vorschlag (nächster Nachbar + 2-opt, Fenster vor Fahrzeit); Konflikte (Abwesenheit, kein Arbeitstag, außerhalb der Arbeitszeit, Überlastung inkl. Fahrzeit, Überschneidung, Fenster kürzer als Sollzeit); Luftlinien-Schätzung als Rückfall
+- Mapbox-Anbindung `src/lib/karten/`: Geocoding (dauerhaft speicherbar) für Objekte und Firmensitz, Fahrzeit-Matrix, Kartenbild der Tour; ohne Token läuft alles mit Schätzung
+- Büro: Wochenplan je Mitarbeiter mit Drag-and-drop (Tour wird danach neu berechnet), Auslastung, Konfliktliste; Tagestour mit Reihenfolge, Fahrzeiten, Ankunftszeiten, Karte, Abfahrt und Fahrzeug; Liste offener Einsätze mit Zuweisung; Arbeitszeiten und Abwesenheiten; Fahrzeuge, übliche Abfahrt, „Fehlende Koordinaten ergänzen“
+- Tests: 20 Szenarien Planung, 6 Mapbox (mit Fetch-Attrappe), DB-Tests und pgTAP `005_planung` (Betrieb B sieht nichts von A, Mitarbeiter sieht nur eigene Tour/Abwesenheit)
+
+### Geändert
+
+- Serien-Einsätze tragen ein `serien_datum`. Von Hand verschobene Einsätze werden beim täglichen Abgleich weiter ihrem Serientermin zugeordnet und nicht doppelt angelegt; der Eindeutigkeitsindex nutzt jetzt das Seriendatum
+
+### Hinweise
+
+- Neue Variablen: `MAPBOX_TOKEN` (Server), `NEXT_PUBLIC_MAPBOX_TOKEN` (Kartenbilder, in Mapbox auf die Domain beschränken), optional `MAPBOX_GEOCODING_PERMANENT`

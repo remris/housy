@@ -16,7 +16,7 @@ export function PlanungTabs() {
   const aktiv = (href: string) =>
     href === "/planung" ? pfad === href || pfad.startsWith("/planung/tour") : pfad.startsWith(href);
   return (
-    <div className="mb-6 flex gap-1 overflow-x-auto border-b">
+    <div className="mb-6 flex gap-1 overflow-x-auto overflow-y-hidden border-b">
       {TABS.map((t) => (
         <Link
           key={t.href}

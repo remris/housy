@@ -116,11 +116,11 @@ Ab hier wird die Software im Alltag nutzbar: Einsätze verteilen, vor Ort abarbe
 
 ### M5 Planung und Touren
 
-- [ ] `mitarbeiter_verfuegbarkeit` (Arbeitszeiten, Urlaub, Krankheit), `fahrzeug`
-- [ ] Wochenplan je Mitarbeiter, Einsätze per Drag-and-drop zuweisen und verschieben
-- [ ] Tagestour: Reihenfolge, Fahrzeiten über Routing-API, Ankunftszeiten, Warnung bei verletztem Reinigungsfenster
-- [ ] Fachlogik `domain/planung`: Konflikte (Überschneidung, Abwesenheit, Zeitfenster) mit Unit-Tests
-- [ ] Offene Einsätze ohne Mitarbeiter als Liste
+- [x] `mitarbeiter_verfuegbarkeit` (Arbeitszeiten, Urlaub, Krankheit), `fahrzeug` (Abwesenheiten als eigene Tabelle `abwesenheit`)
+- [x] Wochenplan je Mitarbeiter, Einsätze per Drag-and-drop zuweisen und verschieben
+- [x] Tagestour: Reihenfolge, Fahrzeiten über Routing-API, Ankunftszeiten, Warnung bei verletztem Reinigungsfenster
+- [x] Fachlogik `domain/planung`: Konflikte (Überschneidung, Abwesenheit, Zeitfenster) mit Unit-Tests
+- [x] Offene Einsätze ohne Mitarbeiter als Liste
 
 Fertig, wenn: eine Woche für 3 Mitarbeiter ohne Konflikte geplant ist und die Touren Ankunftszeiten zeigen.
 
