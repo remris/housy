@@ -16,7 +16,7 @@ select is(
 
 -- Als Benutzer A
 set local role authenticated;
-select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000000a","role":"authenticated"}', true);
+set local request.jwt.claims = '{"sub":"00000000-0000-0000-0000-00000000000a","role":"authenticated"}';
 
 select results_eq(
   'select name from public.betrieb',
@@ -44,7 +44,7 @@ select is(
 
 -- anon
 set local role anon;
-select set_config('request.jwt.claims', '', true);
+set local request.jwt.claims = '';
 select is_empty('select 1 from public.betrieb', 'anon sieht keine Betriebe');
 
 select * from finish();

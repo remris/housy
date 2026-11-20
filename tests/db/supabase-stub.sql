@@ -8,12 +8,15 @@ create role service_role nologin bypassrls;
 create schema auth;
 create schema storage;
 create schema extensions;
-grant usage on schema public, auth, storage to anon, authenticated, service_role;
+
+grant usage on schema public, auth, storage, extensions to anon, authenticated, service_role;
 
 create table auth.users (
   id uuid primary key default gen_random_uuid(),
   email text unique,
   raw_user_meta_data jsonb default '{}'::jsonb,
+  aud text,
+  role text,
   created_at timestamptz default now()
 );
 
