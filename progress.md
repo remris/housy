@@ -1,6 +1,6 @@
 # Housy – Fortschritt
 
-Stand: 2026-11-20 · aktueller Branch: `m9-rechnung`
+Stand: 2026-11-20 · aktueller Branch: `m10-angebot`
 
 ## Wo wir stehen
 
@@ -16,23 +16,24 @@ Stand: 2026-11-20 · aktueller Branch: `m9-rechnung`
 | M7 Leistungsnachweis und Zeiten  | `m7-leistungsnachweis` | fertig (echter Mail-Versand ungetestet, Resend-Konto fehlt) |
 | M8 Inventar und Prognose         | `m8-inventar`          | fertig (Szenarien grün; echte Daten ungetestet)             |
 | M9 Rechnung und E-Rechnung       | `m9-rechnung`          | fertig bis auf KoSIT-Lauf (Validator noch nicht gestartet)  |
-| M10 Anfrage, Angebot, Buchung    | –                      | als Nächstes                                                |
+| M10 Anfrage, Angebot, Buchung    | `m10-angebot`          | fertig (Ablauf nur in Tests, nicht mit echter DB geklickt)  |
+| M11 Abo, Onboarding, Rechtliches | –                      | als Nächstes; vorher Entscheidung Domain                    |
 
 Die Branches bauen aufeinander auf (m1 von m0, m2 von m1 …). Es reicht, den neuesten Branch nach
 `main` zu mergen (enthält alles), oder der Reihe nach.
 
 ## Nächster Schritt
 
-Erst die E-Rechnungs-Fixtures mit dem KoSIT-Validator prüfen (`npm run erechnung:pruefen`, lädt
-Validator und XRechnung-Konfiguration von GitHub; in der CI automatisch). Danach M10: Anfrage,
-Angebot, Online-Buchung. Keine offene Entscheidung.
+M11: Abo und Zahlung, Onboarding, Rechtliches. **Vorher offene Entscheidung: Produktname und
+Domain.** Außerdem noch offen aus M9: KoSIT-Validator laufen lassen (`npm run erechnung:pruefen`,
+braucht einen Download von GitHub).
 
 ## Was du tun musst
 
 1. **WSL installieren, damit Docker läuft** (Docker Desktop startet, aber der Daemon nicht,
    weil WSL fehlt). In einer Admin-PowerShell: `wsl --install`, neu starten, Docker Desktop öffnen.
    Danach: `npm run db:start` und `npm run db:test`.
-2. **Migrationen ins gehostete Supabase-Projekt** (einmalig, dann nach jedem Meilenstein):
+2. **Migrationen ins gehostete Supabase-Projekt** (bis M9 erledigt; seit M10 neu: `…190000_anfrage_angebot`) (einmalig, dann nach jedem Meilenstein):
    `npx supabase login`, `npx supabase link --project-ref xqnnnerqpixtjkipzqlt`, `npx supabase db push`.
    Ohne das funktionieren Login/Registrierung gegen die `.env.local`-Werte noch nicht.
 3. **Supabase Auth-Einstellungen** (Dashboard → Authentication → URL Configuration):
@@ -72,7 +73,13 @@ Angebot, Online-Buchung. Keine offene Entscheidung.
     DATEV-Berater-/Mandantennummer; bei Kunden die Rechnungs-E-Mail (Pflicht in der XRechnung) und bei
     Behörden die Leitweg-ID. **Vor dem Echtbetrieb vom Steuerberater prüfen lassen**: Rechnungsbild,
     Erlöskonten im DATEV-Export (Testimport), Kleinunternehmer-Hinweis.
-13. **Übersetzungen gegenlesen lassen** (Türkisch, Polnisch, Rumänisch in `src/lib/i18n/`), am
+13. **Website & Buchung** (neu in M10): unter Einstellungen → „Website & Buchung“ Links zu Datenschutz
+    und Impressum eintragen, Anfrageformular und Buchungsseite per Link oder iFrame in die Website
+    einbauen. Für die Online-Buchung eine Vorlage (z. B. „Fensterreinigung privat“) wählen, Preise
+    prüfen und aktivieren; freie Termine entstehen aus den Arbeitszeiten unter Planung → Arbeitszeiten.
+    Datenschutzerklärung um Anfrage/Buchung ergänzen (Anwalt). Als Unterauftragsverarbeiter: Supabase,
+    Vercel, Resend, Mapbox.
+14. **Übersetzungen gegenlesen lassen** (Türkisch, Polnisch, Rumänisch in `src/lib/i18n/`), am
     besten von Mitarbeitern im Pilot. Die Texte sind von Claude übersetzt.
 
 ## Wie getestet wird
@@ -86,16 +93,18 @@ Angebot, Online-Buchung. Keine offene Entscheidung.
   Validierung, Manifest/Service Worker).
 - CI (`.github/workflows/ci.yml`): Lint, Format, Typecheck, Unit/DB, Build, E2E + DB-Job mit Supabase CLI.
 
-Letzter lokaler Lauf (M9): Lint, Format, Typecheck grün · 277 Unit-/DB-Tests grün (darunter der
-Monatslauf für drei Testkunden) · Build grün · 74 E2E grün · Rechnungs-PDFs (Pauschale anteilig, Behörde,
-Kleinunternehmer, Storno) erzeugt und angesehen, ZUGFeRD-XML eingebettet.
+Letzter lokaler Lauf (M10): Lint, Format, Typecheck grün · 297 Unit-/DB-Tests grün (darunter Anfrage →
+Angebot → Annahme → Vertragsentwurf und Online-Buchung bis zum Einsatz in der Datenbank) · 84 E2E grün ·
+Preisrechner und Anfrageformular in Handy-Breite angesehen. Produktions-Build zuletzt in M9 (lokal lief
+der Dev-Server; der Build läuft in der CI).
 
 **Nicht geprüft:**
 
 - Abläufe mit echter Supabase (Registrierung, Login, Speichern, Uploads, Vertrag aktivieren →
   Einsätze, Wochenplan/Tour mit echten Daten, App gegen echte Daten, Büro-Seiten „Rückmeldungen“,
   „Zeiten“, „Arbeitszeitliste“, „Nachweise“, Mängel auf der Objekt-Seite, alle Inventar-Seiten,
-  Abbuchung nach dem Auschecken, Rechnungen: Monatslauf, Festschreiben, Ablage, Versand, DATEV).
+  Abbuchung nach dem Auschecken, Rechnungen: Monatslauf, Festschreiben, Ablage, Versand, DATEV,
+  Anfragen/Angebote im Büro, öffentliche Seiten mit echten Daten, Bestätigungs-Mails).
 - E-Rechnungen mit dem KoSIT-Validator (Fixtures liegen in `tests/erechnung/fixtures`), PDF/A-3 mit
   veraPDF, DATEV-Testimport beim Steuerberater. Dafür fehlen Docker bzw. die
   Migrationen im gehosteten Projekt. Diese Seiten sind nur über Typecheck, Build und Tests der
@@ -124,7 +133,8 @@ Kleinunternehmer, Storno) erzeugt und angesehen, ZUGFeRD-XML eingebettet.
 - Migrationen (alle noch nicht im gehosteten Projekt):
   `20261120100000_mandanten`, `…100100_storage_logos`, `…110000_kunden_objekte`,
   `…120000_vorlagen_artikel_preise`, `…130000_vertraege_einsaetze`, `…140000_planung`,
-  `…150000_mitarbeiter_app`, `…160000_nachweise`, `…170000_inventar`, `…180000_rechnungen`.
+  `…150000_mitarbeiter_app`, `…160000_nachweise`, `…170000_inventar`, `…180000_rechnungen` (bis hier im
+  gehosteten Projekt), `…190000_anfrage_angebot`.
 - Typen: `npm run db:types` (mit Docker, maßgeblich) oder `npm run db:types:pglite` (ohne Docker).
 - Muster: jede Fachtabelle `betrieb_id` + RLS über `ist_mitglied()`/`ist_buero()`/`ist_inhaber()`;
   Kind-Tabellen mit zusammengesetztem FK `(parent_id, betrieb_id)`.
@@ -157,5 +167,8 @@ Kleinunternehmer, Storno) erzeugt und angesehen, ZUGFeRD-XML eingebettet.
   und mit `npm run erechnung:pruefen` prüfen. Siehe ADR 0003.
 - Formular-Schemas laufen zweimal (Browser, dann Server Action): Transformationen müssen ihr eigenes
   Ergebnis wieder akzeptieren (Test `src/lib/schemas/helfer.test.ts`).
+- Öffentliche Seiten (`src/app/(public)`) greifen nur über SECURITY-DEFINER-Funktionen zu (Token bzw.
+  öffentliche Kennung), nie direkt auf Tabellen. Preis der Online-Buchung steht doppelt (TS und
+  `buchung_preis`), ein DB-Test hält beides gleich.
 - Mail nur über `src/lib/mail/resend.ts` (ohne Key kein Versand), Texte in `src/lib/mail/texte.ts`.
 - Vorschau im Browser: `.claude/launch.json` startet `npm run start` auf Port 3100 (vorher `npm run build`).

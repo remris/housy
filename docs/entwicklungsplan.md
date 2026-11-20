@@ -174,9 +174,9 @@ Fertig, wenn: der Monatslauf für drei Testkunden korrekte Rechnungen erzeugt un
 
 ### M10 Anfrage, Angebot, Online-Buchung
 
-- [ ] Anfrageformular (einbettbar auf der Website des Betriebs), Anfrage-Liste im Büro
-- [ ] Angebot aus Vorlagen und Preisliste, PDF, Annahme per Link; bei Annahme werden Kunde, Objekt und Vertragsentwurf angelegt
-- [ ] Fensterreinigung Privat: Preisrechner (Fensteranzahl und -typ), freie Termine aus der Planung, Buchung und Bestätigung
+- [x] Anfrageformular (einbettbar auf der Website des Betriebs), Anfrage-Liste im Büro
+- [x] Angebot aus Vorlagen und Preisliste, PDF, Annahme per Link; bei Annahme werden Kunde, Objekt und Vertragsentwurf angelegt
+- [x] Fensterreinigung Privat: Preisrechner (Fensteranzahl und -typ), freie Termine aus der Planung, Buchung und Bestätigung
 
 Fertig, wenn: eine Anfrage ohne Abtippen bis zum aktiven Vertrag durchläuft.
 

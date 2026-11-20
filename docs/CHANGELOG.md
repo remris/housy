@@ -187,3 +187,18 @@ Alle nennenswerten Änderungen je Meilenstein. Format angelehnt an „Keep a Cha
 
 - KoSIT-Validator noch nicht gelaufen (lokal braucht er einen Download von GitHub, in der CI läuft er beim ersten Push)
 - PDF/A-3-Konformität nicht mit veraPDF geprüft; § 13b UStG, Skonto, Mahnwesen, Abschlagsrechnungen nicht umgesetzt
+
+## [M10] Anfrage, Angebot, Online-Buchung – 2026-11-20
+
+### Hinzugefügt
+
+- Migration `anfrage_angebot`: öffentliche Kennung je Betrieb, Schalter für das Anfrageformular, Einstellungen der Online-Buchung, Links zu Datenschutz und Impressum; `anfrage` (Website, Telefon, Online-Buchung; Status bis gewonnen/verloren), `angebot` mit `angebotsleistung` (Nummernkreis, Annahme-Link, gesperrt nach Antwort); öffentliche Funktionen `betrieb_oeffentlich`, `anfrage_stellen` (mit Begrenzung gegen Massenanfragen), `angebot_info`, `angebot_annehmen` (legt Kunde, Ansprechpartner, Objekt und einen unterschriebenen Vertragsentwurf mit Version und Leistungen an), `angebot_ablehnen`, `buchung_kalender` (Belegung ohne Namen), `buchung_preis`, `buchung_anlegen` (Kunde, Objekt mit Fensteraufmaß, Einzelauftrag als Vertrag, Einsatz am gewählten Halbtag)
+- Fachlogik `src/domain/preisrechner.ts` (Endpreis mit Rahmen-Aufschlag, Anfahrt, Mindestauftrag, USt bzw. § 19, Dauer), `src/domain/termine.ts` (freie Halbtage aus Arbeitszeiten, Abwesenheiten, Feiertagen und Planung), `src/domain/angebot.ts` (Monatsschätzung aus Rhythmus, Einmaliges, Gültigkeit)
+- Öffentliche Seiten (auch als iFrame einbettbar): `/anfrage/<kennung>` (mit Honigtopf gegen Bots), `/buchen/<kennung>` (Preisrechner → freier Termin → Daten → Bestätigung per Mail), `/angebot/<token>` mit PDF und Annahme (Name, optionale Unterschrift) oder Ablehnung; Benachrichtigung des Betriebs per Mail
+- Büro: „Anfragen“ (offen/alle, telefonische Anfrage erfassen, „Angebot erstellen“ mit Übernahme der Angaben), „Angebote“ (Leistungen mit Vorlage, Rhythmus und Preis aus der Preisliste, Monatsschätzung, Senden mit Link und PDF, nach Annahme „Vertrag aktivieren“), Einstellungen → „Website & Buchung“ (Links und Einbettungscode, Preisrechner mit Fensterarten, Aufschlägen und Vorlage)
+- Tests: Preisrechner, Termine, Angebotssummen; DB-Tests (Anfrage ohne Login, Annahme bis Vertragsentwurf, Buchung, Preis der Datenbank = Preisrechner) und pgTAP `010_anfrage_angebot`; E2E für neue Seiten und ungültige Links
+
+### Hinweise
+
+- Die Migration muss ins gehostete Projekt (`npx supabase db push`)
+- Freie Termine brauchen Arbeitszeiten der Mitarbeiter (Planung → Arbeitszeiten)
