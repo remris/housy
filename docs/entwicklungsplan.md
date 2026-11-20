@@ -68,7 +68,7 @@ Die Reihenfolge folgt den Abhängigkeiten: Ohne Mandanten keine Daten, ohne Vorl
 - [x] Git initialisieren, `.gitignore`, `.env.example`, README mit Startanleitung
 - [ ] Supabase CLI einrichten, lokale Datenbank läuft *(CLI eingerichtet; lokaler Start wartet auf laufenden Docker-Daemon)*
 - [x] Vitest, Playwright, GitHub Actions (Lint, Typecheck, Tests bei jedem Push)
-- [ ] Erstes Deployment auf Vercel *(durch Inhaber: Vercel-Projekt verbinden, `vercel.json` setzt fra1)*
+- [ ] Erstes Deployment auf Vercel *(durch Inhaber: Vercel-Projekt verbinden, `vercel.json` setzt fra1 und den täglichen Cron-Job)*
 
 Fertig, wenn: `npm run dev` startet, CI ist grün, die Startseite ist online.
 
