@@ -447,6 +447,8 @@ export type Database = {
           reihenfolge: number | null;
           fahrzeit_minuten: number | null;
           geplanter_beginn: string | null;
+          notiz_mitarbeiter: string | null;
+          notiz_mitarbeiter_am: string | null;
         };
         Insert: {
           id?: string;
@@ -470,6 +472,8 @@ export type Database = {
           reihenfolge?: number | null;
           fahrzeit_minuten?: number | null;
           geplanter_beginn?: string | null;
+          notiz_mitarbeiter?: string | null;
+          notiz_mitarbeiter_am?: string | null;
         };
         Update: {
           id?: string;
@@ -493,6 +497,8 @@ export type Database = {
           reihenfolge?: number | null;
           fahrzeit_minuten?: number | null;
           geplanter_beginn?: string | null;
+          notiz_mitarbeiter?: string | null;
+          notiz_mitarbeiter_am?: string | null;
         };
         Relationships: [
             {
@@ -535,6 +541,275 @@ export type Database = {
               columns: ["vorlage_id", "betrieb_id"];
               isOneToOne: false;
               referencedRelation: "auftragsvorlage";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+          ];
+      };
+      einsatz_aufgabe: {
+        Row: {
+          id: string;
+          betrieb_id: string;
+          einsatz_id: string;
+          taetigkeit_id: string;
+          erledigt: boolean;
+          geaendert_am: string;
+          geaendert_von: string | null;
+        };
+        Insert: {
+          id?: string;
+          betrieb_id: string;
+          einsatz_id: string;
+          taetigkeit_id: string;
+          erledigt?: boolean;
+          geaendert_am: string;
+          geaendert_von?: string | null;
+        };
+        Update: {
+          id?: string;
+          betrieb_id?: string;
+          einsatz_id?: string;
+          taetigkeit_id?: string;
+          erledigt?: boolean;
+          geaendert_am?: string;
+          geaendert_von?: string | null;
+        };
+        Relationships: [
+            {
+              foreignKeyName: "einsatz_aufgabe_betrieb_id_fkey";
+              columns: ["betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "betrieb";
+              referencedColumns: ["id"];
+            },
+            {
+              foreignKeyName: "einsatz_aufgabe_einsatz_id_betrieb_id_fkey";
+              columns: ["einsatz_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "einsatz";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+            {
+              foreignKeyName: "einsatz_aufgabe_taetigkeit_id_fkey";
+              columns: ["taetigkeit_id"];
+              isOneToOne: false;
+              referencedRelation: "vorlage_taetigkeit";
+              referencedColumns: ["id"];
+            },
+          ];
+      };
+      einsatz_foto: {
+        Row: {
+          id: string;
+          betrieb_id: string;
+          einsatz_id: string;
+          meldung_id: string | null;
+          pfad: string;
+          erstellt_von: string | null;
+          erstellt_am: string;
+        };
+        Insert: {
+          id?: string;
+          betrieb_id: string;
+          einsatz_id: string;
+          meldung_id?: string | null;
+          pfad: string;
+          erstellt_von?: string | null;
+          erstellt_am?: string;
+        };
+        Update: {
+          id?: string;
+          betrieb_id?: string;
+          einsatz_id?: string;
+          meldung_id?: string | null;
+          pfad?: string;
+          erstellt_von?: string | null;
+          erstellt_am?: string;
+        };
+        Relationships: [
+            {
+              foreignKeyName: "einsatz_foto_betrieb_id_fkey";
+              columns: ["betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "betrieb";
+              referencedColumns: ["id"];
+            },
+            {
+              foreignKeyName: "einsatz_foto_einsatz_id_betrieb_id_fkey";
+              columns: ["einsatz_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "einsatz";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+            {
+              foreignKeyName: "einsatz_foto_meldung_id_betrieb_id_fkey";
+              columns: ["meldung_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "einsatz_meldung";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+          ];
+      };
+      einsatz_meldung: {
+        Row: {
+          id: string;
+          betrieb_id: string;
+          einsatz_id: string;
+          objekt_id: string;
+          art: Database["public"]["Enums"]["meldungsart"];
+          text: string | null;
+          artikel_id: string | null;
+          erstellt_von: string | null;
+          erstellt_am: string;
+          erledigt_am: string | null;
+          erledigt_von: string | null;
+        };
+        Insert: {
+          id?: string;
+          betrieb_id: string;
+          einsatz_id: string;
+          objekt_id: string;
+          art: Database["public"]["Enums"]["meldungsart"];
+          text?: string | null;
+          artikel_id?: string | null;
+          erstellt_von?: string | null;
+          erstellt_am?: string;
+          erledigt_am?: string | null;
+          erledigt_von?: string | null;
+        };
+        Update: {
+          id?: string;
+          betrieb_id?: string;
+          einsatz_id?: string;
+          objekt_id?: string;
+          art?: Database["public"]["Enums"]["meldungsart"];
+          text?: string | null;
+          artikel_id?: string | null;
+          erstellt_von?: string | null;
+          erstellt_am?: string;
+          erledigt_am?: string | null;
+          erledigt_von?: string | null;
+        };
+        Relationships: [
+            {
+              foreignKeyName: "einsatz_meldung_artikel_id_betrieb_id_fkey";
+              columns: ["artikel_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "artikel";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+            {
+              foreignKeyName: "einsatz_meldung_betrieb_id_fkey";
+              columns: ["betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "betrieb";
+              referencedColumns: ["id"];
+            },
+            {
+              foreignKeyName: "einsatz_meldung_einsatz_id_betrieb_id_fkey";
+              columns: ["einsatz_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "einsatz";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+            {
+              foreignKeyName: "einsatz_meldung_objekt_id_betrieb_id_fkey";
+              columns: ["objekt_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "objekt";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+          ];
+      };
+      einsatz_position: {
+        Row: {
+          id: string;
+          betrieb_id: string;
+          einsatz_id: string;
+          preis_id: string | null;
+          bezeichnung: string;
+          menge: number;
+          einheit: Database["public"]["Enums"]["preiseinheit"] | null;
+          preis_cent: number | null;
+          ust_satz: number | null;
+          dauer: string;
+          status: Database["public"]["Enums"]["positionsstatus"];
+          zustimmung: string;
+          unterschrift_name: string | null;
+          unterschrift_bild: string | null;
+          bestaetigung_gesendet_am: string | null;
+          erstellt_von: string | null;
+          erstellt_am: string;
+          geprueft_von: string | null;
+          geprueft_am: string | null;
+          vertrag_uebernommen_am: string | null;
+          notiz_buero: string | null;
+        };
+        Insert: {
+          id?: string;
+          betrieb_id: string;
+          einsatz_id: string;
+          preis_id?: string | null;
+          bezeichnung: string;
+          menge?: number;
+          einheit?: Database["public"]["Enums"]["preiseinheit"] | null;
+          preis_cent?: number | null;
+          ust_satz?: number | null;
+          dauer?: string;
+          status?: Database["public"]["Enums"]["positionsstatus"];
+          zustimmung?: string;
+          unterschrift_name?: string | null;
+          unterschrift_bild?: string | null;
+          bestaetigung_gesendet_am?: string | null;
+          erstellt_von?: string | null;
+          erstellt_am?: string;
+          geprueft_von?: string | null;
+          geprueft_am?: string | null;
+          vertrag_uebernommen_am?: string | null;
+          notiz_buero?: string | null;
+        };
+        Update: {
+          id?: string;
+          betrieb_id?: string;
+          einsatz_id?: string;
+          preis_id?: string | null;
+          bezeichnung?: string;
+          menge?: number;
+          einheit?: Database["public"]["Enums"]["preiseinheit"] | null;
+          preis_cent?: number | null;
+          ust_satz?: number | null;
+          dauer?: string;
+          status?: Database["public"]["Enums"]["positionsstatus"];
+          zustimmung?: string;
+          unterschrift_name?: string | null;
+          unterschrift_bild?: string | null;
+          bestaetigung_gesendet_am?: string | null;
+          erstellt_von?: string | null;
+          erstellt_am?: string;
+          geprueft_von?: string | null;
+          geprueft_am?: string | null;
+          vertrag_uebernommen_am?: string | null;
+          notiz_buero?: string | null;
+        };
+        Relationships: [
+            {
+              foreignKeyName: "einsatz_position_betrieb_id_fkey";
+              columns: ["betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "betrieb";
+              referencedColumns: ["id"];
+            },
+            {
+              foreignKeyName: "einsatz_position_einsatz_id_betrieb_id_fkey";
+              columns: ["einsatz_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "einsatz";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+            {
+              foreignKeyName: "einsatz_position_preis_id_betrieb_id_fkey";
+              columns: ["preis_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "preisliste";
               referencedColumns: ["id", "betrieb_id"];
             },
           ];
@@ -1006,6 +1281,64 @@ export type Database = {
             },
           ];
       };
+      stammdaten_verlauf: {
+        Row: {
+          id: string;
+          betrieb_id: string;
+          objekt_id: string;
+          einsatz_id: string | null;
+          feld: string;
+          alt: string | null;
+          neu: string | null;
+          geaendert_von: string | null;
+          geaendert_am: string;
+        };
+        Insert: {
+          id?: string;
+          betrieb_id: string;
+          objekt_id: string;
+          einsatz_id?: string | null;
+          feld: string;
+          alt?: string | null;
+          neu?: string | null;
+          geaendert_von?: string | null;
+          geaendert_am?: string;
+        };
+        Update: {
+          id?: string;
+          betrieb_id?: string;
+          objekt_id?: string;
+          einsatz_id?: string | null;
+          feld?: string;
+          alt?: string | null;
+          neu?: string | null;
+          geaendert_von?: string | null;
+          geaendert_am?: string;
+        };
+        Relationships: [
+            {
+              foreignKeyName: "stammdaten_verlauf_betrieb_id_fkey";
+              columns: ["betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "betrieb";
+              referencedColumns: ["id"];
+            },
+            {
+              foreignKeyName: "stammdaten_verlauf_einsatz_id_betrieb_id_fkey";
+              columns: ["einsatz_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "einsatz";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+            {
+              foreignKeyName: "stammdaten_verlauf_objekt_id_betrieb_id_fkey";
+              columns: ["objekt_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "objekt";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+          ];
+      };
       tour: {
         Row: {
           id: string;
@@ -1410,11 +1743,205 @@ export type Database = {
             },
           ];
       };
+      zeitbuchung: {
+        Row: {
+          id: string;
+          betrieb_id: string;
+          mitglied_id: string;
+          einsatz_id: string | null;
+          art: Database["public"]["Enums"]["zeitbuchungsart"];
+          zeitpunkt: string;
+          quelle: string;
+          storniert_am: string | null;
+          erstellt_am: string;
+        };
+        Insert: {
+          id?: string;
+          betrieb_id: string;
+          mitglied_id: string;
+          einsatz_id?: string | null;
+          art: Database["public"]["Enums"]["zeitbuchungsart"];
+          zeitpunkt: string;
+          quelle?: string;
+          storniert_am?: string | null;
+          erstellt_am?: string;
+        };
+        Update: {
+          id?: string;
+          betrieb_id?: string;
+          mitglied_id?: string;
+          einsatz_id?: string | null;
+          art?: Database["public"]["Enums"]["zeitbuchungsart"];
+          zeitpunkt?: string;
+          quelle?: string;
+          storniert_am?: string | null;
+          erstellt_am?: string;
+        };
+        Relationships: [
+            {
+              foreignKeyName: "zeitbuchung_betrieb_id_fkey";
+              columns: ["betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "betrieb";
+              referencedColumns: ["id"];
+            },
+            {
+              foreignKeyName: "zeitbuchung_einsatz_id_betrieb_id_fkey";
+              columns: ["einsatz_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "einsatz";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+            {
+              foreignKeyName: "zeitbuchung_mitglied_id_betrieb_id_fkey";
+              columns: ["mitglied_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "mitglied";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+          ];
+      };
+      zeitbuchung_protokoll: {
+        Row: {
+          id: string;
+          betrieb_id: string;
+          zeitbuchung_id: string;
+          aktion: string;
+          alt: string | null;
+          neu: string | null;
+          grund: string;
+          geaendert_von: string;
+          geaendert_am: string;
+        };
+        Insert: {
+          id?: string;
+          betrieb_id: string;
+          zeitbuchung_id: string;
+          aktion: string;
+          alt?: string | null;
+          neu?: string | null;
+          grund: string;
+          geaendert_von?: string;
+          geaendert_am?: string;
+        };
+        Update: {
+          id?: string;
+          betrieb_id?: string;
+          zeitbuchung_id?: string;
+          aktion?: string;
+          alt?: string | null;
+          neu?: string | null;
+          grund?: string;
+          geaendert_von?: string;
+          geaendert_am?: string;
+        };
+        Relationships: [
+            {
+              foreignKeyName: "zeitbuchung_protokoll_betrieb_id_fkey";
+              columns: ["betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "betrieb";
+              referencedColumns: ["id"];
+            },
+            {
+              foreignKeyName: "zeitbuchung_protokoll_zeitbuchung_id_fkey";
+              columns: ["zeitbuchung_id"];
+              isOneToOne: false;
+              referencedRelation: "zeitbuchung";
+              referencedColumns: ["id"];
+            },
+          ];
+      };
     };
     Views: {
       [_ in never]: never;
     };
     Functions: {
+      app_aufgabe_setzen:
+        | {
+          Args: {
+            p_einsatz_id: string;
+            p_taetigkeit_id: string;
+            p_erledigt: boolean;
+            p_zeit: string;
+          };
+          Returns: undefined;
+        };
+      app_foto:
+        | {
+          Args: {
+            p_id: string;
+            p_einsatz_id: string;
+            p_pfad: string;
+            p_meldung_id?: string;
+          };
+          Returns: undefined;
+        };
+      app_mein_einsatz:
+        | {
+          Args: {
+            p_einsatz_id: string;
+          };
+          Returns: string;
+        };
+      app_meldung:
+        | {
+          Args: {
+            p_id: string;
+            p_einsatz_id: string;
+            p_art: Database["public"]["Enums"]["meldungsart"];
+            p_text?: string;
+            p_artikel_id?: string;
+          };
+          Returns: undefined;
+        };
+      app_notiz_setzen:
+        | {
+          Args: {
+            p_einsatz_id: string;
+            p_text: string;
+            p_zeit: string;
+          };
+          Returns: undefined;
+        };
+      app_objekt_korrigieren:
+        | {
+          Args: {
+            p_id: string;
+            p_einsatz_id: string;
+            p_feld: string;
+            p_wert: string;
+            p_fenster_id?: string;
+          };
+          Returns: undefined;
+        };
+      app_position:
+        | {
+          Args: {
+            p_id: string;
+            p_einsatz_id: string;
+            p_preis_id: string;
+            p_bezeichnung: string;
+            p_menge: number;
+            p_dauer: string;
+            p_zustimmung: string;
+            p_unterschrift_name?: string;
+            p_unterschrift_bild?: string;
+          };
+          Returns: undefined;
+        };
+      app_zeit_buchen:
+        | {
+          Args: {
+            p_id: string;
+            p_art: Database["public"]["Enums"]["zeitbuchungsart"];
+            p_zeitpunkt: string;
+            p_einsatz_id?: string;
+            p_betrieb_id?: string;
+            p_quelle?: string;
+          };
+          Returns: undefined;
+        };
       betrieb_anlegen:
         | {
           Args: {
@@ -1423,6 +1950,14 @@ export type Database = {
             p_anzeigename?: string;
           };
           Returns: string;
+        };
+      darf_einsatzfoto:
+        | {
+          Args: {
+            p_name: string;
+            p_schreiben: boolean;
+          };
+          Returns: boolean;
         };
       einladung_annehmen:
         | {
@@ -1488,6 +2023,14 @@ export type Database = {
           };
           Returns: Json;
         };
+      sieht_einsatz:
+        | {
+          Args: {
+            p_einsatz_id: string;
+            p_betrieb_id: string;
+          };
+          Returns: boolean;
+        };
       vertrag_dokument:
         | {
           Args: {
@@ -1532,6 +2075,34 @@ export type Database = {
           };
           Returns: string;
         };
+      zeitbuchung_korrigieren:
+        | {
+          Args: {
+            p_id: string;
+            p_zeitpunkt: string;
+            p_grund: string;
+          };
+          Returns: undefined;
+        };
+      zeitbuchung_nachtragen:
+        | {
+          Args: {
+            p_mitglied_id: string;
+            p_art: Database["public"]["Enums"]["zeitbuchungsart"];
+            p_zeitpunkt: string;
+            p_grund: string;
+            p_einsatz_id?: string;
+          };
+          Returns: string;
+        };
+      zeitbuchung_stornieren:
+        | {
+          Args: {
+            p_id: string;
+            p_grund: string;
+          };
+          Returns: undefined;
+        };
     };
     Enums: {
       abrechnungsart: "pauschale" | "aufwand" | "einzelauftrag";
@@ -1542,9 +2113,12 @@ export type Database = {
       feiertagregel: "auslassen" | "naechster_werktag" | "ignorieren";
       frequenz: "taeglich" | "woechentlich" | "monatlich" | "einmalig";
       kundentyp: "firma" | "verwaltung" | "privat" | "oeffentlich";
+      meldungsart: "mangel" | "material_leer";
+      positionsstatus: "vorgeschlagen" | "bestaetigt" | "abgelehnt";
       preiseinheit: "pauschal" | "stunde" | "m2" | "fenster" | "stueck" | "einsatz";
       rolle: "inhaber" | "disponent" | "mitarbeiter";
       vertragsstatus: "entwurf" | "aktiv" | "gekuendigt" | "beendet";
+      zeitbuchungsart: "checkin" | "checkout" | "pause_beginn" | "pause_ende";
     };
     CompositeTypes: {
       [_ in never]: never;
