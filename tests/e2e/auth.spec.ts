@@ -18,3 +18,10 @@ test("ungültige Einladung zeigt Hinweis", async ({ page }) => {
   await page.goto("/einladung/kein-token");
   await expect(page.getByText(/ungültig, abgelaufen/)).toBeVisible();
 });
+
+for (const pfad of ["/kunden", "/objekte/neu", "/kunden/import", "/einstellungen/team"]) {
+  test(`${pfad} ist geschützt`, async ({ page }) => {
+    await page.goto(pfad);
+    await expect(page).toHaveURL(/\/login/);
+  });
+}

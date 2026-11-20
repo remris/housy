@@ -4,6 +4,111 @@ export type Json = string | number | boolean | null | { [key: string]: Json | un
 export type Database = {
   public: {
     Tables: {
+      ansprechpartner: {
+        Row: {
+          id: string;
+          betrieb_id: string;
+          kunde_id: string;
+          name: string;
+          funktion: string | null;
+          email: string | null;
+          telefon: string | null;
+          ist_hauptkontakt: boolean;
+          erstellt_am: string;
+        };
+        Insert: {
+          id?: string;
+          betrieb_id: string;
+          kunde_id: string;
+          name: string;
+          funktion?: string | null;
+          email?: string | null;
+          telefon?: string | null;
+          ist_hauptkontakt?: boolean;
+          erstellt_am?: string;
+        };
+        Update: {
+          id?: string;
+          betrieb_id?: string;
+          kunde_id?: string;
+          name?: string;
+          funktion?: string | null;
+          email?: string | null;
+          telefon?: string | null;
+          ist_hauptkontakt?: boolean;
+          erstellt_am?: string;
+        };
+        Relationships: [
+            {
+              foreignKeyName: "ansprechpartner_betrieb_id_fkey";
+              columns: ["betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "betrieb";
+              referencedColumns: ["id"];
+            },
+            {
+              foreignKeyName: "ansprechpartner_kunde_id_betrieb_id_fkey";
+              columns: ["kunde_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "kunde";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+          ];
+      };
+      bereich: {
+        Row: {
+          id: string;
+          betrieb_id: string;
+          objekt_id: string;
+          name: string;
+          flaeche_m2: number | null;
+          bodenart: string | null;
+          etage: string | null;
+          reihenfolge: number;
+          notiz: string | null;
+          erstellt_am: string;
+        };
+        Insert: {
+          id?: string;
+          betrieb_id: string;
+          objekt_id: string;
+          name: string;
+          flaeche_m2?: number | null;
+          bodenart?: string | null;
+          etage?: string | null;
+          reihenfolge?: number;
+          notiz?: string | null;
+          erstellt_am?: string;
+        };
+        Update: {
+          id?: string;
+          betrieb_id?: string;
+          objekt_id?: string;
+          name?: string;
+          flaeche_m2?: number | null;
+          bodenart?: string | null;
+          etage?: string | null;
+          reihenfolge?: number;
+          notiz?: string | null;
+          erstellt_am?: string;
+        };
+        Relationships: [
+            {
+              foreignKeyName: "bereich_betrieb_id_fkey";
+              columns: ["betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "betrieb";
+              referencedColumns: ["id"];
+            },
+            {
+              foreignKeyName: "bereich_objekt_id_betrieb_id_fkey";
+              columns: ["objekt_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "objekt";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+          ];
+      };
       betrieb: {
         Row: {
           id: string;
@@ -129,6 +234,140 @@ export type Database = {
             },
           ];
       };
+      fensteraufmass: {
+        Row: {
+          id: string;
+          betrieb_id: string;
+          objekt_id: string;
+          bezeichnung: string | null;
+          typ: string;
+          anzahl: number;
+          etage: string | null;
+          mit_rahmen: boolean;
+          hilfsmittel: string[];
+          notiz: string | null;
+          erstellt_am: string;
+        };
+        Insert: {
+          id?: string;
+          betrieb_id: string;
+          objekt_id: string;
+          bezeichnung?: string | null;
+          typ?: string;
+          anzahl?: number;
+          etage?: string | null;
+          mit_rahmen?: boolean;
+          hilfsmittel?: string[];
+          notiz?: string | null;
+          erstellt_am?: string;
+        };
+        Update: {
+          id?: string;
+          betrieb_id?: string;
+          objekt_id?: string;
+          bezeichnung?: string | null;
+          typ?: string;
+          anzahl?: number;
+          etage?: string | null;
+          mit_rahmen?: boolean;
+          hilfsmittel?: string[];
+          notiz?: string | null;
+          erstellt_am?: string;
+        };
+        Relationships: [
+            {
+              foreignKeyName: "fensteraufmass_betrieb_id_fkey";
+              columns: ["betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "betrieb";
+              referencedColumns: ["id"];
+            },
+            {
+              foreignKeyName: "fensteraufmass_objekt_id_betrieb_id_fkey";
+              columns: ["objekt_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "objekt";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+          ];
+      };
+      kunde: {
+        Row: {
+          id: string;
+          betrieb_id: string;
+          kundennummer: number;
+          typ: Database["public"]["Enums"]["kundentyp"];
+          name: string;
+          zusatz: string | null;
+          strasse: string | null;
+          plz: string | null;
+          ort: string | null;
+          land: string;
+          email: string | null;
+          telefon: string | null;
+          rechnungs_email: string | null;
+          leitweg_id: string | null;
+          ust_id: string | null;
+          zahlungsziel_tage: number;
+          notiz: string | null;
+          aktiv: boolean;
+          erstellt_am: string;
+          aktualisiert_am: string;
+        };
+        Insert: {
+          id?: string;
+          betrieb_id: string;
+          kundennummer?: number;
+          typ?: Database["public"]["Enums"]["kundentyp"];
+          name: string;
+          zusatz?: string | null;
+          strasse?: string | null;
+          plz?: string | null;
+          ort?: string | null;
+          land?: string;
+          email?: string | null;
+          telefon?: string | null;
+          rechnungs_email?: string | null;
+          leitweg_id?: string | null;
+          ust_id?: string | null;
+          zahlungsziel_tage?: number;
+          notiz?: string | null;
+          aktiv?: boolean;
+          erstellt_am?: string;
+          aktualisiert_am?: string;
+        };
+        Update: {
+          id?: string;
+          betrieb_id?: string;
+          kundennummer?: number;
+          typ?: Database["public"]["Enums"]["kundentyp"];
+          name?: string;
+          zusatz?: string | null;
+          strasse?: string | null;
+          plz?: string | null;
+          ort?: string | null;
+          land?: string;
+          email?: string | null;
+          telefon?: string | null;
+          rechnungs_email?: string | null;
+          leitweg_id?: string | null;
+          ust_id?: string | null;
+          zahlungsziel_tage?: number;
+          notiz?: string | null;
+          aktiv?: boolean;
+          erstellt_am?: string;
+          aktualisiert_am?: string;
+        };
+        Relationships: [
+            {
+              foreignKeyName: "kunde_betrieb_id_fkey";
+              columns: ["betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "betrieb";
+              referencedColumns: ["id"];
+            },
+          ];
+      };
       mitglied: {
         Row: {
           id: string;
@@ -170,6 +409,152 @@ export type Database = {
               isOneToOne: false;
               referencedRelation: "betrieb";
               referencedColumns: ["id"];
+            },
+          ];
+      };
+      nummernkreis: {
+        Row: {
+          betrieb_id: string;
+          art: string;
+          naechste: number;
+        };
+        Insert: {
+          betrieb_id: string;
+          art: string;
+          naechste?: number;
+        };
+        Update: {
+          betrieb_id?: string;
+          art?: string;
+          naechste?: number;
+        };
+        Relationships: [
+            {
+              foreignKeyName: "nummernkreis_betrieb_id_fkey";
+              columns: ["betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "betrieb";
+              referencedColumns: ["id"];
+            },
+          ];
+      };
+      objekt: {
+        Row: {
+          id: string;
+          betrieb_id: string;
+          kunde_id: string;
+          name: string;
+          strasse: string | null;
+          plz: string | null;
+          ort: string | null;
+          land: string;
+          breitengrad: number | null;
+          laengengrad: number | null;
+          zugangshinweise: string | null;
+          schluessel: string | null;
+          notiz: string | null;
+          qr_kennung: string;
+          aktiv: boolean;
+          erstellt_am: string;
+          aktualisiert_am: string;
+        };
+        Insert: {
+          id?: string;
+          betrieb_id: string;
+          kunde_id: string;
+          name: string;
+          strasse?: string | null;
+          plz?: string | null;
+          ort?: string | null;
+          land?: string;
+          breitengrad?: number | null;
+          laengengrad?: number | null;
+          zugangshinweise?: string | null;
+          schluessel?: string | null;
+          notiz?: string | null;
+          qr_kennung?: string;
+          aktiv?: boolean;
+          erstellt_am?: string;
+          aktualisiert_am?: string;
+        };
+        Update: {
+          id?: string;
+          betrieb_id?: string;
+          kunde_id?: string;
+          name?: string;
+          strasse?: string | null;
+          plz?: string | null;
+          ort?: string | null;
+          land?: string;
+          breitengrad?: number | null;
+          laengengrad?: number | null;
+          zugangshinweise?: string | null;
+          schluessel?: string | null;
+          notiz?: string | null;
+          qr_kennung?: string;
+          aktiv?: boolean;
+          erstellt_am?: string;
+          aktualisiert_am?: string;
+        };
+        Relationships: [
+            {
+              foreignKeyName: "objekt_betrieb_id_fkey";
+              columns: ["betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "betrieb";
+              referencedColumns: ["id"];
+            },
+            {
+              foreignKeyName: "objekt_kunde_id_betrieb_id_fkey";
+              columns: ["kunde_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "kunde";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+          ];
+      };
+      objekt_foto: {
+        Row: {
+          id: string;
+          betrieb_id: string;
+          objekt_id: string;
+          pfad: string;
+          beschreibung: string | null;
+          erstellt_von: string | null;
+          erstellt_am: string;
+        };
+        Insert: {
+          id?: string;
+          betrieb_id: string;
+          objekt_id: string;
+          pfad: string;
+          beschreibung?: string | null;
+          erstellt_von?: string | null;
+          erstellt_am?: string;
+        };
+        Update: {
+          id?: string;
+          betrieb_id?: string;
+          objekt_id?: string;
+          pfad?: string;
+          beschreibung?: string | null;
+          erstellt_von?: string | null;
+          erstellt_am?: string;
+        };
+        Relationships: [
+            {
+              foreignKeyName: "objekt_foto_betrieb_id_fkey";
+              columns: ["betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "betrieb";
+              referencedColumns: ["id"];
+            },
+            {
+              foreignKeyName: "objekt_foto_objekt_id_betrieb_id_fkey";
+              columns: ["objekt_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "objekt";
+              referencedColumns: ["id", "betrieb_id"];
             },
           ];
       };
@@ -238,6 +623,7 @@ export type Database = {
         };
     };
     Enums: {
+      kundentyp: "firma" | "verwaltung" | "privat" | "oeffentlich";
       rolle: "inhaber" | "disponent" | "mitarbeiter";
     };
     CompositeTypes: {
