@@ -284,6 +284,109 @@ export type Database = {
             },
           ];
       };
+      bestand: {
+        Row: {
+          betrieb_id: string;
+          lagerort_id: string;
+          artikel_id: string;
+          menge: number;
+          aktualisiert_am: string;
+        };
+        Insert: {
+          betrieb_id: string;
+          lagerort_id: string;
+          artikel_id: string;
+          menge?: number;
+          aktualisiert_am?: string;
+        };
+        Update: {
+          betrieb_id?: string;
+          lagerort_id?: string;
+          artikel_id?: string;
+          menge?: number;
+          aktualisiert_am?: string;
+        };
+        Relationships: [
+            {
+              foreignKeyName: "bestand_artikel_id_betrieb_id_fkey";
+              columns: ["artikel_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "artikel";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+            {
+              foreignKeyName: "bestand_betrieb_id_fkey";
+              columns: ["betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "betrieb";
+              referencedColumns: ["id"];
+            },
+            {
+              foreignKeyName: "bestand_lagerort_id_betrieb_id_fkey";
+              columns: ["lagerort_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "lagerort";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+          ];
+      };
+      bestellung: {
+        Row: {
+          id: string;
+          betrieb_id: string;
+          artikel_id: string;
+          menge: number;
+          lieferant: string | null;
+          status: string;
+          bestellt_am: string;
+          geliefert_am: string | null;
+          notiz: string | null;
+          erstellt_von: string | null;
+          erstellt_am: string;
+        };
+        Insert: {
+          id?: string;
+          betrieb_id: string;
+          artikel_id: string;
+          menge: number;
+          lieferant?: string | null;
+          status?: string;
+          bestellt_am?: string;
+          geliefert_am?: string | null;
+          notiz?: string | null;
+          erstellt_von?: string | null;
+          erstellt_am?: string;
+        };
+        Update: {
+          id?: string;
+          betrieb_id?: string;
+          artikel_id?: string;
+          menge?: number;
+          lieferant?: string | null;
+          status?: string;
+          bestellt_am?: string;
+          geliefert_am?: string | null;
+          notiz?: string | null;
+          erstellt_von?: string | null;
+          erstellt_am?: string;
+        };
+        Relationships: [
+            {
+              foreignKeyName: "bestellung_artikel_id_betrieb_id_fkey";
+              columns: ["artikel_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "artikel";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+            {
+              foreignKeyName: "bestellung_betrieb_id_fkey";
+              columns: ["betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "betrieb";
+              referencedColumns: ["id"];
+            },
+          ];
+      };
       betrieb: {
         Row: {
           id: string;
@@ -458,6 +561,7 @@ export type Database = {
           abnahme_name: string | null;
           abnahme_bild: string | null;
           abnahme_am: string | null;
+          material_gebucht_am: string | null;
         };
         Insert: {
           id?: string;
@@ -486,6 +590,7 @@ export type Database = {
           abnahme_name?: string | null;
           abnahme_bild?: string | null;
           abnahme_am?: string | null;
+          material_gebucht_am?: string | null;
         };
         Update: {
           id?: string;
@@ -514,6 +619,7 @@ export type Database = {
           abnahme_name?: string | null;
           abnahme_bild?: string | null;
           abnahme_am?: string | null;
+          material_gebucht_am?: string | null;
         };
         Relationships: [
             {
@@ -848,6 +954,7 @@ export type Database = {
           notiz: string | null;
           erstellt_am: string;
           aktualisiert_am: string;
+          mitglied_id: string | null;
         };
         Insert: {
           id?: string;
@@ -858,6 +965,7 @@ export type Database = {
           notiz?: string | null;
           erstellt_am?: string;
           aktualisiert_am?: string;
+          mitglied_id?: string | null;
         };
         Update: {
           id?: string;
@@ -868,6 +976,7 @@ export type Database = {
           notiz?: string | null;
           erstellt_am?: string;
           aktualisiert_am?: string;
+          mitglied_id?: string | null;
         };
         Relationships: [
             {
@@ -876,6 +985,13 @@ export type Database = {
               isOneToOne: false;
               referencedRelation: "betrieb";
               referencedColumns: ["id"];
+            },
+            {
+              foreignKeyName: "fahrzeug_mitglied_fk";
+              columns: ["mitglied_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "mitglied";
+              referencedColumns: ["id", "betrieb_id"];
             },
           ];
       };
@@ -1016,6 +1132,152 @@ export type Database = {
               isOneToOne: false;
               referencedRelation: "betrieb";
               referencedColumns: ["id"];
+            },
+          ];
+      };
+      lagerbewegung: {
+        Row: {
+          id: string;
+          betrieb_id: string;
+          artikel_id: string;
+          art: Database["public"]["Enums"]["bewegungsart"];
+          menge: number;
+          von_lagerort_id: string | null;
+          nach_lagerort_id: string | null;
+          einsatz_id: string | null;
+          bestellung_id: string | null;
+          notiz: string | null;
+          erstellt_von: string | null;
+          erstellt_am: string;
+        };
+        Insert: {
+          id?: string;
+          betrieb_id: string;
+          artikel_id: string;
+          art: Database["public"]["Enums"]["bewegungsart"];
+          menge: number;
+          von_lagerort_id?: string | null;
+          nach_lagerort_id?: string | null;
+          einsatz_id?: string | null;
+          bestellung_id?: string | null;
+          notiz?: string | null;
+          erstellt_von?: string | null;
+          erstellt_am?: string;
+        };
+        Update: {
+          id?: string;
+          betrieb_id?: string;
+          artikel_id?: string;
+          art?: Database["public"]["Enums"]["bewegungsart"];
+          menge?: number;
+          von_lagerort_id?: string | null;
+          nach_lagerort_id?: string | null;
+          einsatz_id?: string | null;
+          bestellung_id?: string | null;
+          notiz?: string | null;
+          erstellt_von?: string | null;
+          erstellt_am?: string;
+        };
+        Relationships: [
+            {
+              foreignKeyName: "lagerbewegung_artikel_id_betrieb_id_fkey";
+              columns: ["artikel_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "artikel";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+            {
+              foreignKeyName: "lagerbewegung_bestellung_id_betrieb_id_fkey";
+              columns: ["bestellung_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "bestellung";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+            {
+              foreignKeyName: "lagerbewegung_betrieb_id_fkey";
+              columns: ["betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "betrieb";
+              referencedColumns: ["id"];
+            },
+            {
+              foreignKeyName: "lagerbewegung_einsatz_id_betrieb_id_fkey";
+              columns: ["einsatz_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "einsatz";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+            {
+              foreignKeyName: "lagerbewegung_nach_lagerort_id_betrieb_id_fkey";
+              columns: ["nach_lagerort_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "lagerort";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+            {
+              foreignKeyName: "lagerbewegung_von_lagerort_id_betrieb_id_fkey";
+              columns: ["von_lagerort_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "lagerort";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+          ];
+      };
+      lagerort: {
+        Row: {
+          id: string;
+          betrieb_id: string;
+          art: Database["public"]["Enums"]["lagerortart"];
+          name: string;
+          fahrzeug_id: string | null;
+          objekt_id: string | null;
+          standard: boolean;
+          aktiv: boolean;
+          erstellt_am: string;
+        };
+        Insert: {
+          id?: string;
+          betrieb_id: string;
+          art?: Database["public"]["Enums"]["lagerortart"];
+          name: string;
+          fahrzeug_id?: string | null;
+          objekt_id?: string | null;
+          standard?: boolean;
+          aktiv?: boolean;
+          erstellt_am?: string;
+        };
+        Update: {
+          id?: string;
+          betrieb_id?: string;
+          art?: Database["public"]["Enums"]["lagerortart"];
+          name?: string;
+          fahrzeug_id?: string | null;
+          objekt_id?: string | null;
+          standard?: boolean;
+          aktiv?: boolean;
+          erstellt_am?: string;
+        };
+        Relationships: [
+            {
+              foreignKeyName: "lagerort_betrieb_id_fkey";
+              columns: ["betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "betrieb";
+              referencedColumns: ["id"];
+            },
+            {
+              foreignKeyName: "lagerort_fahrzeug_id_betrieb_id_fkey";
+              columns: ["fahrzeug_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "fahrzeug";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+            {
+              foreignKeyName: "lagerort_objekt_id_betrieb_id_fkey";
+              columns: ["objekt_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "objekt";
+              referencedColumns: ["id", "betrieb_id"];
             },
           ];
       };
@@ -1335,6 +1597,61 @@ export type Database = {
               columns: ["kunde_id", "betrieb_id"];
               isOneToOne: false;
               referencedRelation: "kunde";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+          ];
+      };
+      objekt_bedarf: {
+        Row: {
+          id: string;
+          betrieb_id: string;
+          objekt_id: string;
+          artikel_id: string;
+          menge: number;
+          bezug: Database["public"]["Enums"]["bedarfsbezug"];
+          notiz: string | null;
+          erstellt_am: string;
+        };
+        Insert: {
+          id?: string;
+          betrieb_id: string;
+          objekt_id: string;
+          artikel_id: string;
+          menge: number;
+          bezug?: Database["public"]["Enums"]["bedarfsbezug"];
+          notiz?: string | null;
+          erstellt_am?: string;
+        };
+        Update: {
+          id?: string;
+          betrieb_id?: string;
+          objekt_id?: string;
+          artikel_id?: string;
+          menge?: number;
+          bezug?: Database["public"]["Enums"]["bedarfsbezug"];
+          notiz?: string | null;
+          erstellt_am?: string;
+        };
+        Relationships: [
+            {
+              foreignKeyName: "objekt_bedarf_artikel_id_betrieb_id_fkey";
+              columns: ["artikel_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "artikel";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+            {
+              foreignKeyName: "objekt_bedarf_betrieb_id_fkey";
+              columns: ["betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "betrieb";
+              referencedColumns: ["id"];
+            },
+            {
+              foreignKeyName: "objekt_bedarf_objekt_id_betrieb_id_fkey";
+              columns: ["objekt_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "objekt";
               referencedColumns: ["id", "betrieb_id"];
             },
           ];
@@ -1906,6 +2223,173 @@ export type Database = {
             },
           ];
       };
+      werkzeug: {
+        Row: {
+          id: string;
+          betrieb_id: string;
+          artikel_id: string;
+          bezeichnung: string;
+          mitglied_id: string | null;
+          fahrzeug_id: string | null;
+          startstand: number;
+          letzter_wechsel_am: string | null;
+          naechste_pruefung: string | null;
+          aktiv: boolean;
+          erstellt_am: string;
+        };
+        Insert: {
+          id?: string;
+          betrieb_id: string;
+          artikel_id: string;
+          bezeichnung: string;
+          mitglied_id?: string | null;
+          fahrzeug_id?: string | null;
+          startstand?: number;
+          letzter_wechsel_am?: string | null;
+          naechste_pruefung?: string | null;
+          aktiv?: boolean;
+          erstellt_am?: string;
+        };
+        Update: {
+          id?: string;
+          betrieb_id?: string;
+          artikel_id?: string;
+          bezeichnung?: string;
+          mitglied_id?: string | null;
+          fahrzeug_id?: string | null;
+          startstand?: number;
+          letzter_wechsel_am?: string | null;
+          naechste_pruefung?: string | null;
+          aktiv?: boolean;
+          erstellt_am?: string;
+        };
+        Relationships: [
+            {
+              foreignKeyName: "werkzeug_artikel_id_betrieb_id_fkey";
+              columns: ["artikel_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "artikel";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+            {
+              foreignKeyName: "werkzeug_betrieb_id_fkey";
+              columns: ["betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "betrieb";
+              referencedColumns: ["id"];
+            },
+            {
+              foreignKeyName: "werkzeug_fahrzeug_id_betrieb_id_fkey";
+              columns: ["fahrzeug_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "fahrzeug";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+            {
+              foreignKeyName: "werkzeug_mitglied_id_betrieb_id_fkey";
+              columns: ["mitglied_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "mitglied";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+          ];
+      };
+      werkzeug_pruefung: {
+        Row: {
+          id: string;
+          betrieb_id: string;
+          werkzeug_id: string;
+          am: string;
+          bestanden: boolean;
+          notiz: string | null;
+          erstellt_von: string | null;
+          erstellt_am: string;
+        };
+        Insert: {
+          id?: string;
+          betrieb_id: string;
+          werkzeug_id: string;
+          am: string;
+          bestanden?: boolean;
+          notiz?: string | null;
+          erstellt_von?: string | null;
+          erstellt_am?: string;
+        };
+        Update: {
+          id?: string;
+          betrieb_id?: string;
+          werkzeug_id?: string;
+          am?: string;
+          bestanden?: boolean;
+          notiz?: string | null;
+          erstellt_von?: string | null;
+          erstellt_am?: string;
+        };
+        Relationships: [
+            {
+              foreignKeyName: "werkzeug_pruefung_betrieb_id_fkey";
+              columns: ["betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "betrieb";
+              referencedColumns: ["id"];
+            },
+            {
+              foreignKeyName: "werkzeug_pruefung_werkzeug_id_betrieb_id_fkey";
+              columns: ["werkzeug_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "werkzeug";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+          ];
+      };
+      werkzeug_wechsel: {
+        Row: {
+          id: string;
+          betrieb_id: string;
+          werkzeug_id: string;
+          am: string;
+          stand: number;
+          grund: string;
+          erstellt_von: string | null;
+          erstellt_am: string;
+        };
+        Insert: {
+          id?: string;
+          betrieb_id: string;
+          werkzeug_id: string;
+          am: string;
+          stand?: number;
+          grund?: string;
+          erstellt_von?: string | null;
+          erstellt_am?: string;
+        };
+        Update: {
+          id?: string;
+          betrieb_id?: string;
+          werkzeug_id?: string;
+          am?: string;
+          stand?: number;
+          grund?: string;
+          erstellt_von?: string | null;
+          erstellt_am?: string;
+        };
+        Relationships: [
+            {
+              foreignKeyName: "werkzeug_wechsel_betrieb_id_fkey";
+              columns: ["betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "betrieb";
+              referencedColumns: ["id"];
+            },
+            {
+              foreignKeyName: "werkzeug_wechsel_werkzeug_id_betrieb_id_fkey";
+              columns: ["werkzeug_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "werkzeug";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+          ];
+      };
       zeitbuchung: {
         Row: {
           id: string;
@@ -2050,10 +2534,27 @@ export type Database = {
           };
           Returns: undefined;
         };
+      app_geladen:
+        | {
+          Args: {
+            p_id: string;
+            p_artikel_id: string;
+            p_menge: number;
+            p_nach_lagerort_id: string;
+          };
+          Returns: undefined;
+        };
       app_mein_einsatz:
         | {
           Args: {
             p_einsatz_id: string;
+          };
+          Returns: string;
+        };
+      app_mein_fahrzeug_ort:
+        | {
+          Args: {
+            p_lagerort_id: string;
           };
           Returns: string;
         };
@@ -2100,6 +2601,18 @@ export type Database = {
             p_zustimmung: string;
             p_unterschrift_name?: string;
             p_unterschrift_bild?: string;
+          };
+          Returns: undefined;
+        };
+      app_werkzeug_gewechselt:
+        | {
+          Args: {
+            p_id: string;
+            p_werkzeug_id: string;
+            p_am: string;
+            p_stand: number;
+            p_grund?: string;
+            p_lagerort_id?: string;
           };
           Returns: undefined;
         };
@@ -2282,10 +2795,12 @@ export type Database = {
       abwesenheitsart: "urlaub" | "krank" | "sonstiges";
       artikelart: "verbrauch" | "verschleiss" | "geraet";
       bedarfsbezug: "einsatz" | "m2" | "fenster" | "stunde";
+      bewegungsart: "zugang" | "abgang_einsatz" | "umbuchung" | "korrektur" | "wechsel";
       einsatzstatus: "geplant" | "zugewiesen" | "unterwegs" | "begonnen" | "erledigt" | "abgesagt";
       feiertagregel: "auslassen" | "naechster_werktag" | "ignorieren";
       frequenz: "taeglich" | "woechentlich" | "monatlich" | "einmalig";
       kundentyp: "firma" | "verwaltung" | "privat" | "oeffentlich";
+      lagerortart: "lager" | "fahrzeug" | "objekt";
       mangelstatus: "offen" | "in_bearbeitung" | "erledigt";
       meldungsart: "mangel" | "material_leer";
       nachweisstatus: "in_arbeit" | "gesendet" | "ohne_versand" | "fehler";
