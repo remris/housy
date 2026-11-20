@@ -1,29 +1,30 @@
 # Housy – Fortschritt
 
-Stand: 2026-11-20 · aktueller Branch: `m6-mitarbeiter-app`
+Stand: 2026-11-20 · aktueller Branch: `m7-leistungsnachweis`
 
 ## Wo wir stehen
 
-| Meilenstein                      | Branch               | Status                                                       |
-| -------------------------------- | -------------------- | ------------------------------------------------------------ |
-| M0 Projekt-Setup                 | `m0-setup`           | fertig (bis auf lokale DB und Vercel, siehe unten)           |
-| M1 Betriebe, Benutzer, Rollen    | `m1-betriebe`        | fertig                                                       |
-| M2 Kunden und Objekte            | `m2-kunden-objekte`  | fertig                                                       |
-| M3 Vorlagen, Artikel, Preisliste | `m3-vorlagen`        | fertig                                                       |
-| M4 Verträge und Serien           | `m4-vertraege`       | fertig                                                       |
-| M5 Planung und Touren            | `m5-planung`         | fertig (Abnahme mit echter Supabase steht noch aus)          |
-| M6 Mitarbeiter-App (PWA)         | `m6-mitarbeiter-app` | fertig bis auf Bestätigungs-Mail (kommt mit M7), Abnahme aus |
-| M7 Leistungsnachweis und Zeiten  | –                    | als Nächstes                                                 |
+| Meilenstein                      | Branch                 | Status                                                      |
+| -------------------------------- | ---------------------- | ----------------------------------------------------------- |
+| M0 Projekt-Setup                 | `m0-setup`             | fertig (bis auf lokale DB und Vercel, siehe unten)          |
+| M1 Betriebe, Benutzer, Rollen    | `m1-betriebe`          | fertig                                                      |
+| M2 Kunden und Objekte            | `m2-kunden-objekte`    | fertig                                                      |
+| M3 Vorlagen, Artikel, Preisliste | `m3-vorlagen`          | fertig                                                      |
+| M4 Verträge und Serien           | `m4-vertraege`         | fertig                                                      |
+| M5 Planung und Touren            | `m5-planung`           | fertig (Abnahme mit echter Supabase steht noch aus)         |
+| M6 Mitarbeiter-App (PWA)         | `m6-mitarbeiter-app`   | fertig (Abnahme auf echtem Handy steht noch aus)            |
+| M7 Leistungsnachweis und Zeiten  | `m7-leistungsnachweis` | fertig (echter Mail-Versand ungetestet, Resend-Konto fehlt) |
+| M8 Inventar und Prognose         | –                      | als Nächstes                                                |
 
 Die Branches bauen aufeinander auf (m1 von m0, m2 von m1 …). Es reicht, den neuesten Branch nach
 `main` zu mergen (enthält alles), oder der Reihe nach.
 
 ## Nächster Schritt
 
-M7: Nachweis-PDF je Einsatz/Monat mit Versand per Resend, Sichtung von Nachträgen,
-Arbeitszeitliste je Mitarbeiter und Monat (PDF/CSV), Mängel-Liste je Objekt. Dazu die in M6 offene
-Bestätigungs-Mail bei mündlich vereinbarten Leistungen. Für den echten Versand braucht es einen
-Resend-Key (siehe unten); ohne Key wird nichts verschickt, aber alles erzeugt.
+M8: Lagerorte, Bestände und Lagerbewegungen, Abbuchung beim Abschluss eines Einsatzes, Packliste je
+Tour aus Bedarf minus Fahrzeugbestand, Prognose (Reichweite, Mindestbestand, Bestellvorschlag),
+Verschleiß mit echtem Austausch, Prüftermine, Einkaufsliste und Inventur. Die Szenarien aus dem
+Konzept werden als Tests umgesetzt. Keine offene Entscheidung.
 
 ## Was du tun musst
 
@@ -52,8 +53,17 @@ Resend-Key (siehe unten); ohne Key wird nichts verschickt, aber alles erzeugt.
 7. **Node 22 LTS** installieren (lokal läuft 20.11; funktioniert, aber `magic-string` ist
    per `overrides` gepinnt und supabase-js warnt).
 8. Pushen und Mergen der Branches. Danach in GitHub prüfen, ob die CI grün ist (lief noch nie).
-9. **Übersetzungen gegenlesen lassen** (Türkisch, Polnisch, Rumänisch in `src/lib/i18n/`), am
-   besten von Mitarbeitern im Pilot. Die Texte sind von Claude übersetzt.
+9. **Resend-Konto für den Mail-Versand** (neu in M7): auf resend.com anlegen, die Absender-Domain
+   bestätigen (DNS-Einträge), dann `RESEND_API_KEY` und `MAIL_ABSENDER` (z. B.
+   `Housy <nachweis@deine-domain.de>`) in `.env.local` und Vercel eintragen. Ohne Key werden
+   Nachweise erstellt und unter „Nachweise“ abgelegt, aber nicht verschickt. Die Domain ist noch eine
+   offene Entscheidung (vor M11); zum Testen reicht die Resend-Testadresse an die eigene E-Mail.
+   Nachweise brauchen außerdem `SUPABASE_SECRET_KEY` auf dem Server.
+10. **Je Kunde den Nachweis-Versand prüfen** (Kunde → „Leistungsnachweis per E-Mail“; Standard:
+    nach jedem Einsatz) und unter Einstellungen → Firmendaten die Firmen-E-Mail eintragen (Kopie und
+    Antwortadresse).
+11. **Übersetzungen gegenlesen lassen** (Türkisch, Polnisch, Rumänisch in `src/lib/i18n/`), am
+    besten von Mitarbeitern im Pilot. Die Texte sind von Claude übersetzt.
 
 ## Wie getestet wird
 
@@ -66,16 +76,20 @@ Resend-Key (siehe unten); ohne Key wird nichts verschickt, aber alles erzeugt.
   Validierung, Manifest/Service Worker).
 - CI (`.github/workflows/ci.yml`): Lint, Format, Typecheck, Unit/DB, Build, E2E + DB-Job mit Supabase CLI.
 
-Letzter lokaler Lauf (M6): Lint, Format, Typecheck grün · 180 Unit-/DB-Tests grün · Build grün ·
-54 E2E grün · Mitarbeiter-App mit Beispieldaten in Handy-Breite (375 px) im Browser geprüft:
-Tagesansicht, Einsatz, Checkliste (Haken bleibt nach Neuladen über die Warteschlange erhalten),
-Auschecken-Hinweis, Leistungsformular, Polnisch mit Sonderzeichen.
+Letzter lokaler Lauf (M7): Lint, Format, Typecheck grün · 211 Unit-/DB-Tests grün · Build grün ·
+64 E2E grün · Nachweis-PDF (Einsatz und Monat) und Arbeitszeit-PDF erzeugt und angesehen (Sonderzeichen
+wie „ş“, „Ł“ korrekt) · Abnahme-Unterschrift in der App mit Beispieldaten in Handy-Breite geprüft
+(bleibt nach Neuladen über die Warteschlange erhalten).
 
 **Nicht geprüft:**
 
 - Abläufe mit echter Supabase (Registrierung, Login, Speichern, Uploads, Vertrag aktivieren →
-  Einsätze, Wochenplan/Tour mit echten Daten, App gegen echte Daten, Büro-Seiten „Rückmeldungen“
-  und „Zeiten“). Dafür fehlen Docker bzw. die Migrationen im gehosteten Projekt.
+  Einsätze, Wochenplan/Tour mit echten Daten, App gegen echte Daten, Büro-Seiten „Rückmeldungen“,
+  „Zeiten“, „Arbeitszeitliste“, „Nachweise“, Mängel auf der Objekt-Seite). Dafür fehlen Docker bzw. die
+  Migrationen im gehosteten Projekt. Diese Seiten sind nur über Typecheck, Build und Tests der
+  Bausteine abgesichert, nicht im Browser mit Daten angesehen.
+- Nachweis-Erzeugung end-to-end (Laden aus der DB, Ablage im Bucket, Versand). Getestet sind PDF,
+  Mail-Aufruf, Empfängerlogik und RLS einzeln; der Gesamtablauf braucht echte Supabase und Resend.
 - Abnahme M6 („ganzer Tag im Flugmodus, danach korrekt synchronisiert“): Die Bausteine sind getestet
   (Warteschlange, Wiederholung, letzte Änderung gewinnt, idempotente Server-Funktionen), der echte
   Durchlauf auf einem Handy steht aus.
@@ -98,7 +112,7 @@ Auschecken-Hinweis, Leistungsformular, Polnisch mit Sonderzeichen.
 - Migrationen (alle noch nicht im gehosteten Projekt):
   `20261120100000_mandanten`, `…100100_storage_logos`, `…110000_kunden_objekte`,
   `…120000_vorlagen_artikel_preise`, `…130000_vertraege_einsaetze`, `…140000_planung`,
-  `…150000_mitarbeiter_app`.
+  `…150000_mitarbeiter_app`, `…160000_nachweise`.
 - Typen: `npm run db:types` (mit Docker, maßgeblich) oder `npm run db:types:pglite` (ohne Docker).
 - Muster: jede Fachtabelle `betrieb_id` + RLS über `ist_mitglied()`/`ist_buero()`/`ist_inhaber()`;
   Kind-Tabellen mit zusammengesetztem FK `(parent_id, betrieb_id)`.
@@ -117,4 +131,9 @@ Auschecken-Hinweis, Leistungsformular, Polnisch mit Sonderzeichen.
   Service Worker `public/sw.js` nur im Produktionsbuild; Versionsname bei Änderungen hochzählen.
 - Zeitkorrekturen nur über `zeitbuchung_korrigieren/_stornieren/_nachtragen` (Grund Pflicht,
   Protokoll in `zeitbuchung_protokoll`).
+- Nachweise: `src/lib/nachweise/` (Daten laden, `nachweisErstellen` mit Sperre und Wiederholung,
+  täglicher `nachweisLauf`, Bestätigungs-Mails). Erzeugt wird mit dem Admin-Client, das Büro und die
+  App prüfen vorher den Zugriff mit dem eigenen Client. PDFs in `src/lib/pdf/` mit Noto Sans
+  (`schrift.ts`, Dateien werden über `outputFileTracingIncludes` mit ausgeliefert).
+- Mail nur über `src/lib/mail/resend.ts` (ohne Key kein Versand), Texte in `src/lib/mail/texte.ts`.
 - Vorschau im Browser: `.claude/launch.json` startet `npm run start` auf Port 3100 (vorher `npm run build`).

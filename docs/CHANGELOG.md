@@ -130,3 +130,26 @@ Alle nennenswerten Änderungen je Meilenstein. Format angelehnt an „Keep a Cha
 
 - Bestätigungs-Mail an den Kunden bei mündlich vereinbarter Leistung (kommt mit dem Mail-Versand in M7)
 - „Dauerhaft“ vereinbarte Leistungen legt das Büro selbst als neue Vertragsversion an (Liste unter Rückmeldungen)
+
+## [M7] Leistungsnachweis und Zeiten – 2026-11-20
+
+### Hinzugefügt
+
+- Migration `nachweise`: Nachweis-Versand je Kunde (nach jedem Einsatz, monatlich, nicht automatisch) und abweichende Nachweis-Adresse; Betriebs-Einstellungen Kopie an die Firmen-E-Mail und Fotos im Nachweis; Tabelle `nachweis` (genau einer je Einsatz bzw. je Objekt und Monat, Status, Empfänger, Sperre gegen doppelte Bearbeitung) mit privatem Bucket `nachweise`; `mail_protokoll`; Abnahme-Unterschrift am Einsatz (`app_abnahme`); Mängelstatus offen/in Bearbeitung/erledigt mit Büro-Notiz
+- Fachlogik `src/domain/nachweis.ts` (Monate, Fälligkeit, Empfänger, Zeiten je Einsatz, Dateiname) und `src/domain/arbeitszeitliste.ts` (Tage nach Ortszeit, Summe, Hinweise, korrigierte Tage, CSV), CSV-Schreiber mit Schutz vor Excel-Formeln
+- Nachweis-PDF je Einsatz (Zeiten, Checkliste, Zusatzleistungen, Mängel, bis zu 6 Fotos, Abnahme-Unterschrift) und je Monat (Übersicht plus Einzelnachweise); Arbeitszeitnachweis je Mitarbeiter als PDF mit Unterschriftszeilen
+- Versand per Resend (REST, Idempotenz-Schlüssel, Antwort an den Betrieb, BCC-Kopie); ohne `RESEND_API_KEY` wird erzeugt und abgelegt, aber nicht verschickt
+- Automatik: Die App meldet nach dem Übertragen eines Check-outs `/api/app/abgeschlossen`, der Server verschickt Nachweis und Bestätigungen im Hintergrund; täglicher Job `/api/jobs/nachweise` (Vercel Cron 19:00 UTC) holt Verpasstes nach, erstellt am Monatsanfang die Monatsnachweise, wiederholt Fehler (bis 5 Versuche)
+- Bestätigungs-Mail an den Kunden bei mündlich vereinbarten Leistungen, sobald der Preis feststeht (Preisliste sofort, freie Leistung nach Prüfung im Büro)
+- Mitarbeiter-App: optionale Abnahme durch den Kunden mit Unterschrift vor dem Auschecken (alle 5 Sprachen)
+- Büro: „Nachweise“ (je Monat, Status, PDF, neu erstellen, erneut senden, erledigte Einsätze ohne Nachweis, Monatsnachweis von Hand), „Arbeitszeitliste“ unter Zeiten (je Mitarbeiter und Monat, CSV/PDF einzeln oder für alle), Mängel-Liste mit Status auf der Objekt-Seite und unter Rückmeldungen, offene Bestätigungen unter Rückmeldungen, Einstellungen → Nachweise, Kunde → Nachweis-Versand
+- Tests: Nachweis-Fachlogik und Arbeitszeitliste, Mail-Texte und Resend-Aufruf (Fetch-Attrappe), PDFs, DB-Tests und pgTAP `007_nachweise`, E2E für die neuen geschützten Seiten und Endpunkte
+
+### Geändert
+
+- PDFs nutzen Noto Sans (SIL OFL, `src/lib/pdf/schriften`) statt Helvetica, damit Namen wie „Ayşe“ oder „Łukasz“ richtig erscheinen; gilt auch für das Vertrags-PDF
+
+### Hinweise
+
+- Neue Variablen: `RESEND_API_KEY`, `MAIL_ABSENDER` (Domain in Resend bestätigen)
+- Nachweise und Bestätigungen brauchen `SUPABASE_SECRET_KEY` auf dem Server (Erzeugung mit Admin-Client)

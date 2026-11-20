@@ -129,7 +129,7 @@ Fertig, wenn: eine Woche für 3 Mitarbeiter ohne Konflikte geplant ist und die T
 - [x] Installierbar, Login, Sprache je Mitarbeiter (Start: Deutsch, Englisch, Türkisch, Polnisch, Rumänisch; weitere über Übersetzungsdateien)
 - [x] Tagesansicht in Tourreihenfolge mit Karte, Zeitfenster, Zugang, Packliste, „Navigation starten“
 - [x] Einsatz: QR-Check-in/-out, Checkliste, Fotos, Mängel, „Material leer“, Notizen, Stammdaten-Korrekturen
-- [ ] Vor-Ort-Änderung: Leistung aus Preisliste, „nur heute“ oder „dauerhaft“, Unterschrift oder Bestätigungs-Mail — **teilweise:** Preisliste, freie Positionen (Büro prüft), nur heute/dauerhaft und Unterschrift fertig; Bestätigungs-Mail folgt mit dem Mail-Versand (M7), „dauerhaft“ trägt das Büro bisher selbst als neue Vertragsversion ein (Liste unter Rückmeldungen)
+- [x] Vor-Ort-Änderung: Leistung aus Preisliste, „nur heute“ oder „dauerhaft“, Unterschrift oder Bestätigungs-Mail (Bestätigungs-Mail seit M7; „dauerhaft“ übernimmt das Büro als neue Vertragsversion, Liste unter Rückmeldungen)
 - [x] Offline: Tagesdaten lokal (Dexie), Aktionen in Warteschlange, Sync bei Netz, Konfliktregel „letzte Änderung gewinnt“ je Feld
 - [x] Zeiterfassung aus Check-in/-out, Pausen, Korrektur nur durch das Büro mit Protokoll
 
@@ -137,10 +137,10 @@ Fertig, wenn: ein ganzer Tag im Flugmodus abgearbeitet und danach korrekt synchr
 
 ### M7 Leistungsnachweis und Zeiten
 
-- [ ] Nachweis-PDF je Einsatz oder Monat (Zeiten, Checkliste, Fotos, Unterschrift), automatischer Versand per Resend
-- [ ] Nachträge und Vertragsversionen aus der App landen im Büro zur Sichtung
-- [ ] Arbeitszeitliste je Mitarbeiter und Monat (Beginn, Ende, Dauer) als PDF/CSV für die Aufzeichnungspflicht
-- [ ] Mängel-Liste je Objekt mit Status
+- [x] Nachweis-PDF je Einsatz oder Monat (Zeiten, Checkliste, Fotos, Unterschrift), automatischer Versand per Resend
+- [x] Nachträge und Vertragsversionen aus der App landen im Büro zur Sichtung (Rückmeldungen: prüfen, in Vertrag übernehmen, Bestätigung an den Kunden)
+- [x] Arbeitszeitliste je Mitarbeiter und Monat (Beginn, Ende, Dauer) als PDF/CSV für die Aufzeichnungspflicht
+- [x] Mängel-Liste je Objekt mit Status
 
 Fertig, wenn: Kunde und Inhaber nach einem Einsatz automatisch den richtigen Nachweis haben.
 
