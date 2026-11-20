@@ -146,14 +146,14 @@ Fertig, wenn: Kunde und Inhaber nach einem Einsatz automatisch den richtigen Nac
 
 ### M8 Inventar und Prognose
 
-- [ ] `lagerort` (Lager, Fahrzeug, Objekt), `bestand`, `lagerbewegung` (Zugang, Abgang Einsatz, Umbuchung, Korrektur)
-- [ ] Abbuchung beim Abschluss eines Einsatzes nach `vorlage_bedarf`, Verbrauch je Objekt überschreibbar
-- [ ] Packliste je Tour aus geplantem Bedarf minus Fahrzeugbestand, „geladen“ bucht um
-- [ ] Fachlogik `domain/prognose`: Reichweite, Mindestbestand, Bestellvorschlag (Menge für etwa 4 Wochen), Ist-Korrektur aus „leer“-Meldungen
-- [ ] **Verschleiß mit echtem Austausch** (siehe Konzept): Zähler je Werkzeug ab dem tatsächlichen Wechsel, kein Übertrag, Wechsel nachträglich datierbar, Lerneffekt für die Lebensdauer, optional Auto-Wechsel für billige Teile
-- [ ] Prüftermine für Geräte mit Warnung in der App
-- [ ] Einkaufsliste, Wareneingang, Inventur-Korrektur
-- [ ] Unit-Tests mit den beiden Szenarien aus dem Konzept als Testfälle
+- [x] `lagerort` (Lager, Fahrzeug, Objekt), `bestand`, `lagerbewegung` (Zugang, Abgang Einsatz, Umbuchung, Korrektur)
+- [x] Abbuchung beim Abschluss eines Einsatzes nach `vorlage_bedarf`, Verbrauch je Objekt überschreibbar
+- [x] Packliste je Tour aus geplantem Bedarf minus Fahrzeugbestand, „geladen“ bucht um
+- [x] Fachlogik `domain/prognose`: Reichweite, Mindestbestand, Bestellvorschlag (Menge für etwa 4 Wochen), Ist-Korrektur aus „leer“-Meldungen
+- [x] **Verschleiß mit echtem Austausch** (siehe Konzept): Zähler je Werkzeug ab dem tatsächlichen Wechsel, kein Übertrag, Wechsel nachträglich datierbar, Lerneffekt für die Lebensdauer, optional Auto-Wechsel für billige Teile
+- [x] Prüftermine für Geräte mit Warnung in der App
+- [x] Einkaufsliste, Wareneingang, Inventur-Korrektur
+- [x] Unit-Tests mit den beiden Szenarien aus dem Konzept als Testfälle
 
 Fertig, wenn: die Szenarien aus dem Konzept als Tests grün sind und das Dashboard Reichweiten zeigt.
 

@@ -153,3 +153,15 @@ Alle nennenswerten Änderungen je Meilenstein. Format angelehnt an „Keep a Cha
 
 - Neue Variablen: `RESEND_API_KEY`, `MAIL_ABSENDER` (Domain in Resend bestätigen)
 - Nachweise und Bestätigungen brauchen `SUPABASE_SECRET_KEY` auf dem Server (Erzeugung mit Admin-Client)
+
+## [M8] Inventar und Prognose – 2026-11-20
+
+### Hinzugefügt
+
+- Migration `inventar`: `lagerort` (Zentrallager automatisch je Betrieb, Fahrzeuge automatisch, Putzkammer im Objekt), `bestand` (per Trigger aus den Bewegungen), `lagerbewegung` (Zugang, Abbuchung je Einsatz, Umbuchung, Korrektur, Wechsel; unveränderlich, je Einsatz und Artikel nur eine Abbuchung), `objekt_bedarf` (Verbrauch je Objekt überschreibt die Vorlage), `werkzeug` mit `werkzeug_wechsel` und `werkzeug_pruefung` (nächster Prüftermin aus dem Prüfintervall), `bestellung`; Standardfahrer am Fahrzeug; App-Funktionen `app_geladen` und `app_werkzeug_gewechselt`
+- Fachlogik `src/domain/prognose.ts` (Reichweite, Bestellvorschlag für etwa 4 Wochen, Ladeliste mit Puffer, Verschleißstufen, Zähler ab dem echten Wechsel ohne Übertrag, Fälligkeit nach Plan, erwartete Wechsel, Lebensdauer-Vorschlag, Prüfstatus, Ist-Korrektur) und `src/domain/lager.ts` (Buchungsregeln, Inventur-Differenz, Abbuchungsort)
+- Die beiden Szenarien aus dem Konzept als Tests (`src/domain/prognose.test.ts`)
+- Abbuchung des Sollverbrauchs beim Abschluss eines Einsatzes (nach dem Übertragen des Check-outs, beim Nachtragen im Büro und nächtlich als Nachlauf); Ort: Fahrzeug der Tour → Standardfahrzeug → Putzkammer → Zentrallager; Auto-Wechsel für Kleinteile im nächtlichen Lauf
+- Mitarbeiter-App: Packliste mit Fahrzeugbestand und Ladevorschlag in ganzen Gebinden („1 × Kanister einladen“ bucht vom Zentrallager ins Fahrzeug), Werkzeuge mit Zähler und „Gewechselt“, „Ersatz mitnehmen“ wenn der Wechsel heute fällig wird, Warnung bei überfälliger Geräteprüfung am Einsatz (alle 5 Sprachen)
+- Büro „Inventar“: Bestände je Lagerort mit Bedarf pro Woche und Reichweite, Einkaufsliste mit „Bestellt“, offene Bestellungen mit Wareneingang, „Mehr verbraucht als geplant“ aus Leer-Meldungen mit Übernahme für die Objekte, Buchen (Zugang, Umbuchung, Inventur); Werkzeuge mit Zähler, Stufen, Fälligkeit, Wechsel (auch nachträglich datiert), Prüfungen und „Lebensdauer lernt mit“; Lagerorte und Buchungsjournal; Verbrauch je Objekt auf der Objekt-Seite; Dashboard mit knappen Reichweiten und fälligen Werkzeugen/Prüfungen
+- Tests: Szenarien, Lager-, App- und Schema-Tests, DB-Tests und pgTAP `008_inventar`, E2E für die neuen geschützten Seiten

@@ -1,6 +1,6 @@
 # Housy – Fortschritt
 
-Stand: 2026-11-20 · aktueller Branch: `m7-leistungsnachweis`
+Stand: 2026-11-20 · aktueller Branch: `m8-inventar`
 
 ## Wo wir stehen
 
@@ -14,17 +14,17 @@ Stand: 2026-11-20 · aktueller Branch: `m7-leistungsnachweis`
 | M5 Planung und Touren            | `m5-planung`           | fertig (Abnahme mit echter Supabase steht noch aus)         |
 | M6 Mitarbeiter-App (PWA)         | `m6-mitarbeiter-app`   | fertig (Abnahme auf echtem Handy steht noch aus)            |
 | M7 Leistungsnachweis und Zeiten  | `m7-leistungsnachweis` | fertig (echter Mail-Versand ungetestet, Resend-Konto fehlt) |
-| M8 Inventar und Prognose         | –                      | als Nächstes                                                |
+| M8 Inventar und Prognose         | `m8-inventar`          | fertig (Szenarien grün; echte Daten ungetestet)             |
+| M9 Rechnung und E-Rechnung       | –                      | als Nächstes                                                |
 
 Die Branches bauen aufeinander auf (m1 von m0, m2 von m1 …). Es reicht, den neuesten Branch nach
 `main` zu mergen (enthält alles), oder der Reihe nach.
 
 ## Nächster Schritt
 
-M8: Lagerorte, Bestände und Lagerbewegungen, Abbuchung beim Abschluss eines Einsatzes, Packliste je
-Tour aus Bedarf minus Fahrzeugbestand, Prognose (Reichweite, Mindestbestand, Bestellvorschlag),
-Verschleiß mit echtem Austausch, Prüftermine, Einkaufsliste und Inventur. Die Szenarien aus dem
-Konzept werden als Tests umgesetzt. Keine offene Entscheidung.
+M9: Rechnungen mit fortlaufenden Nummernkreisen und Storno, Monatslauf aus Vertragsversionen (anteilig
+bei Wechsel im Monat), erledigten Einsätzen nach Aufwand und Nachträgen, Prüfansicht und Versand,
+E-Rechnung (XRechnung/ZUGFeRD). Keine offene Entscheidung.
 
 ## Was du tun musst
 
@@ -62,7 +62,11 @@ Konzept werden als Tests umgesetzt. Keine offene Entscheidung.
 10. **Je Kunde den Nachweis-Versand prüfen** (Kunde → „Leistungsnachweis per E-Mail“; Standard:
     nach jedem Einsatz) und unter Einstellungen → Firmendaten die Firmen-E-Mail eintragen (Kopie und
     Antwortadresse).
-11. **Übersetzungen gegenlesen lassen** (Türkisch, Polnisch, Rumänisch in `src/lib/i18n/`), am
+11. **Inventar einrichten** (neu in M8): unter Planung → Fahrzeuge je Fahrzeug den Standardfahrer
+    eintragen (sonst wird vom Zentrallager abgebucht), unter Inventar → Buchen die Anfangsbestände als
+    Zugang bzw. Inventur erfassen und je Abzieher, Mopp oder Leiter ein Werkzeug mit aktuellem
+    Zählerstand bzw. Prüftermin anlegen.
+12. **Übersetzungen gegenlesen lassen** (Türkisch, Polnisch, Rumänisch in `src/lib/i18n/`), am
     besten von Mitarbeitern im Pilot. Die Texte sind von Claude übersetzt.
 
 ## Wie getestet wird
@@ -76,16 +80,16 @@ Konzept werden als Tests umgesetzt. Keine offene Entscheidung.
   Validierung, Manifest/Service Worker).
 - CI (`.github/workflows/ci.yml`): Lint, Format, Typecheck, Unit/DB, Build, E2E + DB-Job mit Supabase CLI.
 
-Letzter lokaler Lauf (M7): Lint, Format, Typecheck grün · 211 Unit-/DB-Tests grün · Build grün ·
-64 E2E grün · Nachweis-PDF (Einsatz und Monat) und Arbeitszeit-PDF erzeugt und angesehen (Sonderzeichen
-wie „ş“, „Ł“ korrekt) · Abnahme-Unterschrift in der App mit Beispieldaten in Handy-Breite geprüft
-(bleibt nach Neuladen über die Warteschlange erhalten).
+Letzter lokaler Lauf (M8): Lint, Format, Typecheck grün · 244 Unit-/DB-Tests grün (darunter die beiden
+Konzept-Szenarien Inventar) · Build grün · 70 E2E grün · App-Packliste mit Ladevorschlag, „Einladen“,
+Werkzeugzähler mit „Gewechselt“ und Prüfwarnung mit Beispieldaten in Handy-Breite geprüft.
 
 **Nicht geprüft:**
 
 - Abläufe mit echter Supabase (Registrierung, Login, Speichern, Uploads, Vertrag aktivieren →
   Einsätze, Wochenplan/Tour mit echten Daten, App gegen echte Daten, Büro-Seiten „Rückmeldungen“,
-  „Zeiten“, „Arbeitszeitliste“, „Nachweise“, Mängel auf der Objekt-Seite). Dafür fehlen Docker bzw. die
+  „Zeiten“, „Arbeitszeitliste“, „Nachweise“, Mängel auf der Objekt-Seite, alle Inventar-Seiten,
+  Abbuchung nach dem Auschecken). Dafür fehlen Docker bzw. die
   Migrationen im gehosteten Projekt. Diese Seiten sind nur über Typecheck, Build und Tests der
   Bausteine abgesichert, nicht im Browser mit Daten angesehen.
 - Nachweis-Erzeugung end-to-end (Laden aus der DB, Ablage im Bucket, Versand). Getestet sind PDF,
@@ -112,7 +116,7 @@ wie „ş“, „Ł“ korrekt) · Abnahme-Unterschrift in der App mit Beispield
 - Migrationen (alle noch nicht im gehosteten Projekt):
   `20261120100000_mandanten`, `…100100_storage_logos`, `…110000_kunden_objekte`,
   `…120000_vorlagen_artikel_preise`, `…130000_vertraege_einsaetze`, `…140000_planung`,
-  `…150000_mitarbeiter_app`, `…160000_nachweise`.
+  `…150000_mitarbeiter_app`, `…160000_nachweise`, `…170000_inventar`.
 - Typen: `npm run db:types` (mit Docker, maßgeblich) oder `npm run db:types:pglite` (ohne Docker).
 - Muster: jede Fachtabelle `betrieb_id` + RLS über `ist_mitglied()`/`ist_buero()`/`ist_inhaber()`;
   Kind-Tabellen mit zusammengesetztem FK `(parent_id, betrieb_id)`.
@@ -135,5 +139,9 @@ wie „ş“, „Ł“ korrekt) · Abnahme-Unterschrift in der App mit Beispield
   täglicher `nachweisLauf`, Bestätigungs-Mails). Erzeugt wird mit dem Admin-Client, das Büro und die
   App prüfen vorher den Zugriff mit dem eigenen Client. PDFs in `src/lib/pdf/` mit Noto Sans
   (`schrift.ts`, Dateien werden über `outputFileTracingIncludes` mit ausgeliefert).
+- Inventar: Fachlogik in `src/domain/prognose.ts` und `lager.ts`, Laden/Abbuchen in `src/lib/inventar.ts`
+  (ohne Geheimnisse, auch im Browser genutzt). Bestand nie direkt schreiben, nur über `lagerbewegung`
+  (Trigger). Verschleiß zählt über Werkzeuge, nicht über Abbuchungen; nur Verbrauchsmaterial wird je
+  Einsatz abgebucht. Werkzeuge eines Fahrzeugs zählen die Einsätze seines Standardfahrers.
 - Mail nur über `src/lib/mail/resend.ts` (ohne Key kein Versand), Texte in `src/lib/mail/texte.ts`.
 - Vorschau im Browser: `.claude/launch.json` startet `npm run start` auf Port 3100 (vorher `npm run build`).
