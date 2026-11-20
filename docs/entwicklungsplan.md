@@ -102,11 +102,11 @@ Fertig, wenn: ein neuer Betrieb mit einem Klick Vorlagen, Artikel und Preise sei
 
 ### M4 Verträge und Serien
 
-- [ ] `vertrag` (Parteien, Objekt, Laufzeit, Kündigungsfrist, Status) und `vertragsversion` (gültig ab, Leistungen, Preis, Abrechnungsart)
-- [ ] `vertragsleistung`: Vorlage + Intervall (RRULE-ähnlich: täglich, Wochentage, alle n Wochen) + Reinigungsfenster
-- [ ] Fachlogik `domain/serien`: erzeugt Einsätze für die nächsten 8 Wochen, beachtet Feiertage (Baden-Württemberg zuerst), regeneriert ab Stichtag bei neuer Version
-- [ ] Vertrags-PDF, Unterschrift per Signaturfeld, Status-Workflow
-- [ ] Unit-Tests für Serien inkl. Versionswechsel und Feiertagen
+- [x] `vertrag` (Parteien, Objekt, Laufzeit, Kündigungsfrist, Status) und `vertragsversion` (gültig ab, Leistungen, Preis, Abrechnungsart)
+- [x] `vertragsleistung`: Vorlage + Intervall (RRULE-ähnlich: täglich, Wochentage, alle n Wochen) + Reinigungsfenster
+- [x] Fachlogik `domain/serien`: erzeugt Einsätze für die nächsten 8 Wochen, beachtet Feiertage (alle Bundesländer, BW Standard), regeneriert ab Stichtag bei neuer Version *(täglicher Vercel-Cron `/api/jobs/serien` rollt den Horizont weiter)*
+- [x] Vertrags-PDF, Unterschrift per Signaturfeld, Status-Workflow
+- [x] Unit-Tests für Serien inkl. Versionswechsel und Feiertagen
 
 Fertig, wenn: ein aktiver Vertrag automatisch korrekte Einsätze erzeugt und eine neue Version nur die Zukunft ändert.
 

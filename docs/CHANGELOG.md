@@ -52,6 +52,7 @@ Alle nennenswerten Änderungen je Meilenstein. Format angelehnt an „Keep a Cha
 ## [M3] Vorlagen, Artikel, Preisliste – 2026-11-20
 
 ### Hinzugefügt
+
 - Migration `vorlagen_artikel_preise`: `artikel` (Verbrauch/Verschleiß/Gerät, Gebinde, Preis in Cent,
   Mindestbestand, Lieferzeit, Lebensdauer mit Einheit, Auto-Wechsel, Prüfintervall), `auftragsvorlage`
   (Grundzeit + Minuten je 100 m² / je Fenster), `vorlage_taetigkeit` (Checkliste, Foto-Pflicht),
@@ -63,3 +64,27 @@ Alle nennenswerten Änderungen je Meilenstein. Format angelehnt an „Keep a Cha
 - Oberfläche: Artikel (Filter nach Art), Auftragsvorlagen (Checkliste sortierbar, Bedarf, Beispielrechnung,
   Kopieren), Preisliste, „Branchenpaket mit einem Klick übernehmen“
 - Tests: Paket-Konsistenz, Bedarf/Sollzeit-Szenarien, PGlite-DB-Tests, pgTAP `003_vorlagen`
+
+## [M4] Verträge und Serien – 2026-11-20
+
+### Hinzugefügt
+- Migration `vertraege_einsaetze`: `vertrag` (Laufzeit, Verlängerung, Kündigungsfrist, Status, Freigabe-Token,
+  Unterschrift), `vertragsversion` (gültig ab, Abrechnungsart, Monatspauschale), `vertragsleistung`
+  (Vorlage, täglich/wöchentlich an Wochentagen/monatlich/einmalig, alle n, Reinigungsfenster mit Uhrzeit und
+  erlaubten Wochentagen, Feiertagsregel, Umfang/Preis abweichend), `einsatz` (Grundlage für Planung M5)
+- Betrieb: `bundesland` (Feiertage) und `vertragsbedingungen` (erscheinen im PDF)
+- RPCs: `vertragsversion_anlegen` (übernimmt Leistungen), `vertrag_dokument`, `vertrag_freigabe_info`,
+  `vertrag_unterschreiben` (Kunde per Link ohne Login)
+- Fachlogik: `src/domain/datum.ts`, `feiertage.ts` (alle 16 Bundesländer, Osterformel), `serien.ts`
+  (Termine, Feiertagsregeln, Versionen, Abgleich ab Stichtag mit Erhalt von Zuweisungen), `vertrag.ts`
+  (Periodenende, Kündigungstermin, Status-Workflow)
+- Serienplanung (`src/lib/serienplanung.ts`): plant 8 Wochen, nur Zukunft, idempotent; täglicher Cron-Job
+  `/api/jobs/serien` (Vercel Cron, `CRON_SECRET`) beendet abgelaufene Verträge und rollt den Horizont weiter
+- Vertrags-PDF mit `@react-pdf/renderer` (Büro und öffentlicher Link), Unterschriftsfeld (Canvas) im Büro und
+  für den Kunden per Link
+- Oberfläche: Vertragsliste mit Statusfilter, Anlage, Detail mit Versionen, Leistungen, Vorschau der Einsätze,
+  Aktivieren/Kündigen (mit berechnetem Endtermin)/Beenden/Neu planen, Einstellungen „Verträge“
+- Tests: 28 Szenario-Tests für Serien, Feiertage, Versionswechsel und Kündigung; DB-Tests; pgTAP `004_vertraege`
+
+### Behoben
+- Schrift: Geist-Variablen hängen jetzt am `<html>`-Element (vorher Serifen-Fallback)
