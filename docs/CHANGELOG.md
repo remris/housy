@@ -68,6 +68,7 @@ Alle nennenswerten Änderungen je Meilenstein. Format angelehnt an „Keep a Cha
 ## [M4] Verträge und Serien – 2026-11-20
 
 ### Hinzugefügt
+
 - Migration `vertraege_einsaetze`: `vertrag` (Laufzeit, Verlängerung, Kündigungsfrist, Status, Freigabe-Token,
   Unterschrift), `vertragsversion` (gültig ab, Abrechnungsart, Monatspauschale), `vertragsleistung`
   (Vorlage, täglich/wöchentlich an Wochentagen/monatlich/einmalig, alle n, Reinigungsfenster mit Uhrzeit und
@@ -87,4 +88,5 @@ Alle nennenswerten Änderungen je Meilenstein. Format angelehnt an „Keep a Cha
 - Tests: 28 Szenario-Tests für Serien, Feiertage, Versionswechsel und Kündigung; DB-Tests; pgTAP `004_vertraege`
 
 ### Behoben
+
 - Schrift: Geist-Variablen hängen jetzt am `<html>`-Element (vorher Serifen-Fallback)
