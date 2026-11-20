@@ -49,3 +49,45 @@ describe("Inventar-Schemas", () => {
     expect(bewegungSchema.safeParse({ ...basis, art: "zugang", menge: "0" }).success).toBe(false);
   });
 });
+
+describe("Anfrage- und Website-Schemas", () => {
+  it("überstehen die zweite Prüfung", async () => {
+    const { websiteSchema, angebotSchema } = await import("./anfrage");
+    expect(
+      zweimal(websiteSchema, {
+        anfrage_aktiv: true,
+        datenschutz_url: "",
+        impressum_url: "https://x.de/impressum",
+      }),
+    ).toEqual({
+      anfrage_aktiv: true,
+      datenschutz_url: null,
+      impressum_url: "https://x.de/impressum",
+    });
+    const angebot = zweimal(angebotSchema, {
+      kunde_id: "",
+      objekt_id: null,
+      kundentyp: "firma",
+      empfaenger_name: "Erika",
+      empfaenger_firma: "",
+      empfaenger_email: "",
+      empfaenger_telefon: "",
+      strasse: "",
+      plz: "",
+      ort: "",
+      objekt_name: "",
+      objekt_strasse: "",
+      objekt_plz: "",
+      objekt_ort: "",
+      titel: "Treppenhaus",
+      einleitung: "",
+      beginn: "2026-12-01",
+      gueltig_bis: "",
+      abrechnungsart: "pauschale",
+      pauschale_cent: "420,00",
+      laufzeit_monate: 12,
+      kuendigungsfrist_monate: 3,
+    });
+    expect(angebot).toMatchObject({ pauschale_cent: 42000, gueltig_bis: null, kunde_id: null });
+  });
+});

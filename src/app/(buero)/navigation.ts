@@ -7,6 +7,8 @@ import {
   FileSignatureIcon,
   FileCheckIcon,
   ReceiptIcon,
+  MailQuestionIcon,
+  FileTextIcon,
   CalendarRangeIcon,
   LayoutDashboardIcon,
   PackageIcon,
@@ -21,6 +23,8 @@ export type NavEintrag = { href: string; text: string; icon: LucideIcon; nurInha
 /** Hauptnavigation des Büros. Neue Bereiche je Meilenstein hier ergänzen. */
 export const NAVIGATION: NavEintrag[] = [
   { href: "/dashboard", text: "Übersicht", icon: LayoutDashboardIcon },
+  { href: "/anfragen", text: "Anfragen", icon: MailQuestionIcon },
+  { href: "/angebote", text: "Angebote", icon: FileTextIcon },
   { href: "/kunden", text: "Kunden", icon: UsersIcon },
   { href: "/objekte", text: "Objekte", icon: BuildingIcon },
   { href: "/planung", text: "Planung", icon: CalendarRangeIcon },
