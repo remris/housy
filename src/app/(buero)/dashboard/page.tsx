@@ -8,7 +8,7 @@ export const metadata: Metadata = { title: "Übersicht" };
 
 export default async function DashboardSeite() {
   const k = await bueroKontext();
-  const [{ count: mitglieder }, { data: betrieb }] = await Promise.all([
+  const [{ count: mitglieder }, { data: betrieb }, { count: vorlagen }] = await Promise.all([
     k.supabase
       .from("mitglied")
       .select("id", { count: "exact", head: true })
@@ -18,11 +18,16 @@ export default async function DashboardSeite() {
       .select("name, tarif, test_endet_am, iban, steuernummer")
       .eq("id", k.betriebId)
       .single(),
+    k.supabase
+      .from("auftragsvorlage")
+      .select("id", { count: "exact", head: true })
+      .eq("betrieb_id", k.betriebId),
   ]);
 
   const offeneEinrichtung = [
     !betrieb?.steuernummer && "Steuernummer hinterlegen",
     !betrieb?.iban && "Bankverbindung für Rechnungen hinterlegen",
+    (vorlagen ?? 0) === 0 && "Branchenpaket übernehmen (Vorlagen, Artikel, Preise)",
     (mitglieder ?? 0) < 2 && "Ersten Mitarbeiter einladen",
   ].filter(Boolean) as string[];
 

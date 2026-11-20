@@ -19,7 +19,15 @@ test("ungültige Einladung zeigt Hinweis", async ({ page }) => {
   await expect(page.getByText(/ungültig, abgelaufen/)).toBeVisible();
 });
 
-for (const pfad of ["/kunden", "/objekte/neu", "/kunden/import", "/einstellungen/team"]) {
+for (const pfad of [
+  "/kunden",
+  "/objekte/neu",
+  "/kunden/import",
+  "/einstellungen/team",
+  "/vorlagen",
+  "/artikel",
+  "/preisliste",
+]) {
   test(`${pfad} ist geschützt`, async ({ page }) => {
     await page.goto(pfad);
     await expect(page).toHaveURL(/\/login/);

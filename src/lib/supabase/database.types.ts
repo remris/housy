@@ -55,6 +55,133 @@ export type Database = {
             },
           ];
       };
+      artikel: {
+        Row: {
+          id: string;
+          betrieb_id: string;
+          name: string;
+          art: Database["public"]["Enums"]["artikelart"];
+          einheit: string;
+          gebinde_name: string | null;
+          gebinde_menge: number;
+          preis_cent: number | null;
+          lieferant: string | null;
+          bestellnummer: string | null;
+          mindestbestand: number;
+          lieferzeit_tage: number;
+          lebensdauer: number | null;
+          lebensdauer_einheit: string | null;
+          auto_wechsel: boolean;
+          pruefintervall_monate: number | null;
+          notiz: string | null;
+          aktiv: boolean;
+          erstellt_am: string;
+          aktualisiert_am: string;
+        };
+        Insert: {
+          id?: string;
+          betrieb_id: string;
+          name: string;
+          art?: Database["public"]["Enums"]["artikelart"];
+          einheit?: string;
+          gebinde_name?: string | null;
+          gebinde_menge?: number;
+          preis_cent?: number | null;
+          lieferant?: string | null;
+          bestellnummer?: string | null;
+          mindestbestand?: number;
+          lieferzeit_tage?: number;
+          lebensdauer?: number | null;
+          lebensdauer_einheit?: string | null;
+          auto_wechsel?: boolean;
+          pruefintervall_monate?: number | null;
+          notiz?: string | null;
+          aktiv?: boolean;
+          erstellt_am?: string;
+          aktualisiert_am?: string;
+        };
+        Update: {
+          id?: string;
+          betrieb_id?: string;
+          name?: string;
+          art?: Database["public"]["Enums"]["artikelart"];
+          einheit?: string;
+          gebinde_name?: string | null;
+          gebinde_menge?: number;
+          preis_cent?: number | null;
+          lieferant?: string | null;
+          bestellnummer?: string | null;
+          mindestbestand?: number;
+          lieferzeit_tage?: number;
+          lebensdauer?: number | null;
+          lebensdauer_einheit?: string | null;
+          auto_wechsel?: boolean;
+          pruefintervall_monate?: number | null;
+          notiz?: string | null;
+          aktiv?: boolean;
+          erstellt_am?: string;
+          aktualisiert_am?: string;
+        };
+        Relationships: [
+            {
+              foreignKeyName: "artikel_betrieb_id_fkey";
+              columns: ["betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "betrieb";
+              referencedColumns: ["id"];
+            },
+          ];
+      };
+      auftragsvorlage: {
+        Row: {
+          id: string;
+          betrieb_id: string;
+          name: string;
+          branche: string | null;
+          beschreibung: string | null;
+          sollzeit_minuten: number;
+          minuten_pro_100m2: number | null;
+          minuten_pro_fenster: number | null;
+          aktiv: boolean;
+          erstellt_am: string;
+          aktualisiert_am: string;
+        };
+        Insert: {
+          id?: string;
+          betrieb_id: string;
+          name: string;
+          branche?: string | null;
+          beschreibung?: string | null;
+          sollzeit_minuten?: number;
+          minuten_pro_100m2?: number | null;
+          minuten_pro_fenster?: number | null;
+          aktiv?: boolean;
+          erstellt_am?: string;
+          aktualisiert_am?: string;
+        };
+        Update: {
+          id?: string;
+          betrieb_id?: string;
+          name?: string;
+          branche?: string | null;
+          beschreibung?: string | null;
+          sollzeit_minuten?: number;
+          minuten_pro_100m2?: number | null;
+          minuten_pro_fenster?: number | null;
+          aktiv?: boolean;
+          erstellt_am?: string;
+          aktualisiert_am?: string;
+        };
+        Relationships: [
+            {
+              foreignKeyName: "auftragsvorlage_betrieb_id_fkey";
+              columns: ["betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "betrieb";
+              referencedColumns: ["id"];
+            },
+          ];
+      };
       bereich: {
         Row: {
           id: string;
@@ -558,6 +685,157 @@ export type Database = {
             },
           ];
       };
+      preisliste: {
+        Row: {
+          id: string;
+          betrieb_id: string;
+          name: string;
+          beschreibung: string | null;
+          einheit: Database["public"]["Enums"]["preiseinheit"];
+          preis_cent: number;
+          ust_satz: number;
+          sonderleistung: boolean;
+          vorlage_id: string | null;
+          aktiv: boolean;
+          erstellt_am: string;
+          aktualisiert_am: string;
+        };
+        Insert: {
+          id?: string;
+          betrieb_id: string;
+          name: string;
+          beschreibung?: string | null;
+          einheit?: Database["public"]["Enums"]["preiseinheit"];
+          preis_cent: number;
+          ust_satz?: number;
+          sonderleistung?: boolean;
+          vorlage_id?: string | null;
+          aktiv?: boolean;
+          erstellt_am?: string;
+          aktualisiert_am?: string;
+        };
+        Update: {
+          id?: string;
+          betrieb_id?: string;
+          name?: string;
+          beschreibung?: string | null;
+          einheit?: Database["public"]["Enums"]["preiseinheit"];
+          preis_cent?: number;
+          ust_satz?: number;
+          sonderleistung?: boolean;
+          vorlage_id?: string | null;
+          aktiv?: boolean;
+          erstellt_am?: string;
+          aktualisiert_am?: string;
+        };
+        Relationships: [
+            {
+              foreignKeyName: "preisliste_betrieb_id_fkey";
+              columns: ["betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "betrieb";
+              referencedColumns: ["id"];
+            },
+            {
+              foreignKeyName: "preisliste_vorlage_id_betrieb_id_fkey";
+              columns: ["vorlage_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "auftragsvorlage";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+          ];
+      };
+      vorlage_bedarf: {
+        Row: {
+          id: string;
+          betrieb_id: string;
+          vorlage_id: string;
+          artikel_id: string;
+          menge: number;
+          bezug: Database["public"]["Enums"]["bedarfsbezug"];
+        };
+        Insert: {
+          id?: string;
+          betrieb_id: string;
+          vorlage_id: string;
+          artikel_id: string;
+          menge: number;
+          bezug?: Database["public"]["Enums"]["bedarfsbezug"];
+        };
+        Update: {
+          id?: string;
+          betrieb_id?: string;
+          vorlage_id?: string;
+          artikel_id?: string;
+          menge?: number;
+          bezug?: Database["public"]["Enums"]["bedarfsbezug"];
+        };
+        Relationships: [
+            {
+              foreignKeyName: "vorlage_bedarf_artikel_id_betrieb_id_fkey";
+              columns: ["artikel_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "artikel";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+            {
+              foreignKeyName: "vorlage_bedarf_betrieb_id_fkey";
+              columns: ["betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "betrieb";
+              referencedColumns: ["id"];
+            },
+            {
+              foreignKeyName: "vorlage_bedarf_vorlage_id_betrieb_id_fkey";
+              columns: ["vorlage_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "auftragsvorlage";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+          ];
+      };
+      vorlage_taetigkeit: {
+        Row: {
+          id: string;
+          betrieb_id: string;
+          vorlage_id: string;
+          text: string;
+          reihenfolge: number;
+          foto_pflicht: boolean;
+        };
+        Insert: {
+          id?: string;
+          betrieb_id: string;
+          vorlage_id: string;
+          text: string;
+          reihenfolge?: number;
+          foto_pflicht?: boolean;
+        };
+        Update: {
+          id?: string;
+          betrieb_id?: string;
+          vorlage_id?: string;
+          text?: string;
+          reihenfolge?: number;
+          foto_pflicht?: boolean;
+        };
+        Relationships: [
+            {
+              foreignKeyName: "vorlage_taetigkeit_betrieb_id_fkey";
+              columns: ["betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "betrieb";
+              referencedColumns: ["id"];
+            },
+            {
+              foreignKeyName: "vorlage_taetigkeit_vorlage_id_betrieb_id_fkey";
+              columns: ["vorlage_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "auftragsvorlage";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+          ];
+      };
     };
     Views: {
       [_ in never]: never;
@@ -621,9 +899,20 @@ export type Database = {
           };
           Returns: boolean;
         };
+      paket_installieren:
+        | {
+          Args: {
+            p_betrieb_id: string;
+            p_paket: Json;
+          };
+          Returns: Json;
+        };
     };
     Enums: {
+      artikelart: "verbrauch" | "verschleiss" | "geraet";
+      bedarfsbezug: "einsatz" | "m2" | "fenster" | "stunde";
       kundentyp: "firma" | "verwaltung" | "privat" | "oeffentlich";
+      preiseinheit: "pauschal" | "stunde" | "m2" | "fenster" | "stueck" | "einsatz";
       rolle: "inhaber" | "disponent" | "mitarbeiter";
     };
     CompositeTypes: {

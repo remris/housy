@@ -1,6 +1,9 @@
 import {
   BuildingIcon,
+  ClipboardListIcon,
+  EuroIcon,
   LayoutDashboardIcon,
+  PackageIcon,
   SettingsIcon,
   UsersIcon,
   type LucideIcon,
@@ -13,5 +16,8 @@ export const NAVIGATION: NavEintrag[] = [
   { href: "/dashboard", text: "Übersicht", icon: LayoutDashboardIcon },
   { href: "/kunden", text: "Kunden", icon: UsersIcon },
   { href: "/objekte", text: "Objekte", icon: BuildingIcon },
+  { href: "/vorlagen", text: "Vorlagen", icon: ClipboardListIcon },
+  { href: "/artikel", text: "Artikel", icon: PackageIcon },
+  { href: "/preisliste", text: "Preisliste", icon: EuroIcon },
   { href: "/einstellungen", text: "Einstellungen", icon: SettingsIcon },
 ];
