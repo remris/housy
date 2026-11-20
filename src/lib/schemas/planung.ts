@@ -17,6 +17,12 @@ export const fahrzeugSchema = z.object({
   kennzeichen: optText(20),
   notiz: optText(1000),
   aktiv: z.boolean(),
+  // Standardfahrer: sein Fahrzeug ist Lagerort für Abbuchung und Packliste
+  mitglied_id: z
+    .string()
+    .nullable()
+    .transform((v) => (v ? v : null))
+    .pipe(z.string().uuid().nullable()),
 });
 
 export const arbeitszeitenSchema = z.object({

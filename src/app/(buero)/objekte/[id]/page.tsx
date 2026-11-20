@@ -9,6 +9,7 @@ import { bueroKontext } from "@/lib/auth";
 import { ObjektFormular } from "../objekt-formular";
 import { Fotos } from "./fotos";
 import { Maengel } from "./maengel";
+import { Verbrauch } from "./verbrauch";
 import { Bereiche, Fensteraufmass } from "./raumbuch";
 
 export const metadata: Metadata = { title: "Objekt" };
@@ -109,6 +110,8 @@ export default async function ObjektSeite({ params }: { params: Promise<{ id: st
       />
 
       <Maengel k={k} objektId={o.id} />
+
+      <Verbrauch k={k} objektId={o.id} />
 
       <section className="flex flex-col gap-3">
         <h2 className="font-medium">Stammdaten</h2>

@@ -4,6 +4,7 @@ import { LoeschenKnopf } from "@/components/aktion-knoepfe";
 import { Badge } from "@/components/ui/badge";
 import { fahrzeugLoeschen } from "@/lib/aktionen/planung";
 import { bueroKontext } from "@/lib/auth";
+import { mitgliedName } from "@/lib/touren";
 import { FahrzeugDialog, KoordinatenErgaenzen, TourStartFormular } from "./fahrzeug-teile";
 
 export const metadata: Metadata = { title: "Fahrzeuge und Tourstart" };
@@ -13,7 +14,7 @@ export default async function FahrzeugeSeite() {
   const [{ data: fahrzeuge }, { data: betrieb }, { count: ohneKoordinaten }] = await Promise.all([
     k.supabase
       .from("fahrzeug")
-      .select("id, name, kennzeichen, aktiv, notiz")
+      .select("id, name, kennzeichen, aktiv, notiz, mitglied_id, mitglied(anzeigename)")
       .eq("betrieb_id", k.betriebId)
       .order("aktiv", { ascending: false })
       .order("name"),
@@ -28,6 +29,13 @@ export default async function FahrzeugeSeite() {
       .eq("betrieb_id", k.betriebId)
       .or("breitengrad.is.null,laengengrad.is.null"),
   ]);
+  const { data: mitglieder } = await k.supabase
+    .from("mitglied")
+    .select("id, anzeigename")
+    .eq("betrieb_id", k.betriebId)
+    .eq("aktiv", true)
+    .order("anzeigename");
+  const mitarbeiter = (mitglieder ?? []).map((m) => ({ wert: m.id, text: mitgliedName(m) }));
   const kartendienst = !!process.env.MAPBOX_TOKEN;
   const sitzVerortet = betrieb?.breitengrad != null && betrieb?.laengengrad != null;
   const adresse =
@@ -84,7 +92,7 @@ export default async function FahrzeugeSeite() {
       <section className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <h2 className="font-medium">Fahrzeuge</h2>
-          <FahrzeugDialog />
+          <FahrzeugDialog mitarbeiter={mitarbeiter} />
         </div>
         {fahrzeuge && fahrzeuge.length > 0 ? (
           <ul className="divide-y rounded-lg border">
@@ -93,8 +101,9 @@ export default async function FahrzeugeSeite() {
                 <span className="font-medium">{f.name}</span>
                 {f.kennzeichen && <span className="text-muted-foreground">{f.kennzeichen}</span>}
                 {!f.aktiv && <Badge variant="outline">inaktiv</Badge>}
+                {f.mitglied && <Badge variant="secondary">{mitgliedName(f.mitglied)}</Badge>}
                 <span className="text-muted-foreground flex-1 truncate">{f.notiz}</span>
-                <FahrzeugDialog fahrzeug={f} />
+                <FahrzeugDialog fahrzeug={f} mitarbeiter={mitarbeiter} />
                 <LoeschenKnopf
                   aktion={fahrzeugLoeschen.bind(null, f.id)}
                   frage="Fahrzeug löschen?"

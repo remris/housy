@@ -39,6 +39,9 @@ for (const pfad of [
   "/zeiten/monat",
   "/nachweise",
   "/einstellungen/nachweise",
+  "/inventar",
+  "/inventar/werkzeuge",
+  "/inventar/lagerorte",
   "/app",
 ]) {
   test(`${pfad} ist geschützt`, async ({ page }) => {

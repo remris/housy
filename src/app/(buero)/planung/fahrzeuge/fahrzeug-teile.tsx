@@ -4,6 +4,7 @@ import { useTransition } from "react";
 import { toast } from "sonner";
 import { FormularDialog } from "@/components/aktion-knoepfe";
 import {
+  AuswahlFeld,
   Formfehler,
   KontrollkaestchenFeld,
   TextFeld,
@@ -20,9 +21,17 @@ type Fahrzeug = {
   kennzeichen: string | null;
   aktiv: boolean;
   notiz: string | null;
+  mitglied_id: string | null;
 };
+type Option = { wert: string; text: string };
 
-export function FahrzeugDialog({ fahrzeug }: { fahrzeug?: Fahrzeug }) {
+export function FahrzeugDialog({
+  fahrzeug,
+  mitarbeiter,
+}: {
+  fahrzeug?: Fahrzeug;
+  mitarbeiter: Option[];
+}) {
   return (
     <FormularDialog
       titel={fahrzeug ? "Fahrzeug bearbeiten" : "Neues Fahrzeug"}
@@ -32,18 +41,29 @@ export function FahrzeugDialog({ fahrzeug }: { fahrzeug?: Fahrzeug }) {
         </Button>
       }
     >
-      {(schliessen) => <FahrzeugFormular fahrzeug={fahrzeug} fertig={schliessen} />}
+      {(schliessen) => (
+        <FahrzeugFormular fahrzeug={fahrzeug} mitarbeiter={mitarbeiter} fertig={schliessen} />
+      )}
     </FormularDialog>
   );
 }
 
-function FahrzeugFormular({ fahrzeug, fertig }: { fahrzeug?: Fahrzeug; fertig: () => void }) {
+function FahrzeugFormular({
+  fahrzeug,
+  mitarbeiter,
+  fertig,
+}: {
+  fahrzeug?: Fahrzeug;
+  mitarbeiter: Option[];
+  fertig: () => void;
+}) {
   const { form, absenden, serverFehler, laeuft } = useAktionsFormular(fahrzeugSchema, {
     standard: {
       name: fahrzeug?.name ?? "",
       kennzeichen: fahrzeug?.kennzeichen ?? "",
       notiz: fahrzeug?.notiz ?? "",
       aktiv: fahrzeug?.aktiv ?? true,
+      mitglied_id: fahrzeug?.mitglied_id ?? null,
     },
     aktion: (d) => fahrzeugSpeichern(fahrzeug?.id ?? null, d),
     erfolg: fertig,
@@ -53,6 +73,14 @@ function FahrzeugFormular({ fahrzeug, fertig }: { fahrzeug?: Fahrzeug; fertig: (
       <Formfehler text={serverFehler} />
       <TextFeld form={form} name="name" label="Bezeichnung" placeholder="Caddy weiß" />
       <TextFeld form={form} name="kennzeichen" label="Kennzeichen" placeholder="S-HY 123" />
+      <AuswahlFeld
+        form={form}
+        name="mitglied_id"
+        label="Standardfahrer"
+        leer="– keiner –"
+        optionen={mitarbeiter}
+        hinweis="Material wird bei seinen Einsätzen aus diesem Fahrzeug abgebucht, wenn die Tour kein anderes nennt."
+      />
       <TextFeld form={form} name="notiz" label="Notiz" />
       <KontrollkaestchenFeld form={form} name="aktiv" label="aktiv (in Touren wählbar)" />
       <Button type="submit" disabled={laeuft}>
