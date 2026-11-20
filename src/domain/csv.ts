@@ -86,3 +86,20 @@ export function normalisiereSpalte(name: string): string {
     .replace(/ß/g, "ss")
     .replace(/[^a-z0-9]/g, "");
 }
+
+/**
+ * Schreibt eine CSV für Excel: Semikolon, CRLF, UTF-8 mit BOM. Felder mit Trennzeichen,
+ * Anführungszeichen oder Zeilenumbruch werden in Anführungszeichen gesetzt. Felder, die mit
+ * =, +, - oder @ beginnen, bekommen ein Hochkomma vorangestellt (keine Formeln in Excel).
+ */
+export function schreibeCsv(
+  zeilen: readonly (readonly (string | number)[])[],
+  trenn = ";",
+): string {
+  const feld = (wert: string | number) => {
+    let s = String(wert);
+    if (typeof wert === "string" && /^[=+\-@\t\r]/.test(s)) s = `'${s}`;
+    return /["\r\n]/.test(s) || s.includes(trenn) ? `"${s.replace(/"/g, '""')}"` : s;
+  };
+  return `﻿${zeilen.map((z) => z.map(feld).join(trenn)).join("\r\n")}\r\n`;
+}
