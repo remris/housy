@@ -93,3 +93,34 @@ export function bestaetigungMail(p: {
     signatur(p.betrieb),
   ]);
 }
+
+export function rechnungMail(p: {
+  art: "rechnung" | "storno";
+  nummer: string;
+  bruttoCent: number;
+  faelligAm: string;
+  objekt: string | null;
+  betrieb: Betrieb;
+  xrechnung: boolean;
+}): MailInhalt {
+  const fuer = p.objekt ? ` für ${p.objekt}` : "";
+  if (p.art === "storno") {
+    return baue(`Stornorechnung ${p.nummer}${fuer}`, [
+      ["Guten Tag,"],
+      [`anbei erhalten Sie die Stornorechnung ${p.nummer}${fuer}.`],
+      ["Bei Fragen antworten Sie einfach auf diese E-Mail."],
+      signatur(p.betrieb),
+    ]);
+  }
+  return baue(`Rechnung ${p.nummer}${fuer}`, [
+    ["Guten Tag,"],
+    [
+      `anbei erhalten Sie unsere Rechnung ${p.nummer}${fuer} über ${formatEuro(p.bruttoCent)}, zahlbar bis ${formatDatum(p.faelligAm)}.`,
+      p.xrechnung
+        ? "Die E-Rechnung liegt zusätzlich als XRechnung (XML) bei; das PDF enthält die Daten im ZUGFeRD-Format."
+        : "Das PDF ist eine E-Rechnung im ZUGFeRD-Format.",
+    ],
+    ["Bei Fragen antworten Sie einfach auf diese E-Mail."],
+    signatur(p.betrieb),
+  ]);
+}
