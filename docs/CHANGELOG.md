@@ -37,6 +37,7 @@ Alle nennenswerten Änderungen je Meilenstein. Format angelehnt an „Keep a Cha
 ## [M2] Kunden und Objekte – 2026-11-20
 
 ### Hinzugefügt
+
 - Migration `kunden_objekte`: `kunde` (Typ Firma/Verwaltung/Privat/Öffentlich, Leitweg-ID mit Formatprüfung),
   `ansprechpartner`, `objekt` (Adresse, Koordinaten, Zugang, Schlüssel, QR-Kennung), `bereich` (Raumbuch),
   `fensteraufmass` (Typ, Anzahl, Etage, Rahmen, Hilfsmittel), `objekt_foto` + privater Bucket `objektfotos`
@@ -47,3 +48,18 @@ Alle nennenswerten Änderungen je Meilenstein. Format angelehnt an „Keep a Cha
 - CSV-Import (Excel) für Kunden und Objekte: Trennzeichen-/Encoding-Erkennung (UTF-8/Windows-1252),
   Spalten-Synonyme, Vorschau mit Fehlern je Zeile, Vorlage zum Herunterladen (`src/domain/csv.ts`, `src/domain/import.ts`)
 - Tests: pgTAP `002_kunden_objekte`, PGlite-DB-Tests, pgTAP-Dateien laufen zusätzlich lokal über einen pgTAP-Nachbau
+
+## [M3] Vorlagen, Artikel, Preisliste – 2026-11-20
+
+### Hinzugefügt
+- Migration `vorlagen_artikel_preise`: `artikel` (Verbrauch/Verschleiß/Gerät, Gebinde, Preis in Cent,
+  Mindestbestand, Lieferzeit, Lebensdauer mit Einheit, Auto-Wechsel, Prüfintervall), `auftragsvorlage`
+  (Grundzeit + Minuten je 100 m² / je Fenster), `vorlage_taetigkeit` (Checkliste, Foto-Pflicht),
+  `vorlage_bedarf` (Menge je Einsatz/m²/Fenster/Stunde), `preisliste` (Einheit, USt., Sonderleistung, Vorlage)
+- `paket_installieren(betrieb, jsonb)`: installiert Branchenpakete in einer Transaktion, idempotent über Namen
+- Branchenpakete Gebäudereinigung, Hausmeisterservice, Fensterreinigung mit Startwerten aus dem Konzept
+  (z. B. 0,5 l Allzweckreiniger je Büroreinigung, Abziehergummi 500 Fenster, Leiter jährlich prüfen)
+- Fachlogik `src/domain/vorlagen.ts`: Sollzeit und Bedarf je Einsatz (Grundlage für Planung und Prognose)
+- Oberfläche: Artikel (Filter nach Art), Auftragsvorlagen (Checkliste sortierbar, Bedarf, Beispielrechnung,
+  Kopieren), Preisliste, „Branchenpaket mit einem Klick übernehmen“
+- Tests: Paket-Konsistenz, Bedarf/Sollzeit-Szenarien, PGlite-DB-Tests, pgTAP `003_vorlagen`

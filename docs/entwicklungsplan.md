@@ -93,10 +93,10 @@ Fertig, wenn: ein Betrieb seine Kundenliste aus Excel importieren kann.
 
 ### M3 Vorlagen, Artikel, Preisliste
 
-- [ ] `artikel` (Art: Verbrauch, Verschleiß, Gerät; Einheit, Gebinde, Preis, Lieferant, Mindestbestand, Lebensdauer, Prüfintervall)
-- [ ] `auftragsvorlage` mit Tätigkeiten (Checkliste), Sollzeit und `vorlage_bedarf` (Artikel, Menge, Bezug: Einsatz, m², Fenster, Stunde)
-- [ ] `preisliste` für Leistungen und Sonderleistungen
-- [ ] Branchenpakete als Seed: Gebäudereinigung, Hausmeister, Fensterreinigung mit Startwerten
+- [x] `artikel` (Art: Verbrauch, Verschleiß, Gerät; Einheit, Gebinde, Preis, Lieferant, Mindestbestand, Lebensdauer, Prüfintervall)
+- [x] `auftragsvorlage` mit Tätigkeiten (Checkliste), Sollzeit und `vorlage_bedarf` (Artikel, Menge, Bezug: Einsatz, m², Fenster, Stunde)
+- [x] `preisliste` für Leistungen und Sonderleistungen
+- [x] Branchenpakete als Seed: Gebäudereinigung, Hausmeister, Fensterreinigung mit Startwerten *(Daten in `src/domain/branchenpakete.ts`, Installation per `paket_installieren`)*
 
 Fertig, wenn: ein neuer Betrieb mit einem Klick Vorlagen, Artikel und Preise seiner Branche bekommt.
 
