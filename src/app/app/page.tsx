@@ -1,28 +1,40 @@
 import type { Metadata } from "next";
-import { Button } from "@/components/ui/button";
-import { abmelden } from "@/lib/aktionen/konto";
-import { betriebKontext } from "@/lib/auth";
+import { heuteIso, plusTage } from "@/domain/datum";
+import type { Tagesdaten } from "@/domain/app";
+import { ladeTagesdaten } from "@/lib/app/laden";
+import { betriebKontext, istBueroRolle } from "@/lib/auth";
+import { MitarbeiterApp } from "./mitarbeiter-app";
 
 export const metadata: Metadata = { title: "Heute" };
 export const dynamic = "force-dynamic";
 
-/** Platzhalter für die Mitarbeiter-PWA (M6). */
+/** Mitarbeiter-App (PWA). Erste Daten vom Server, danach arbeitet die App offline-fähig im Browser. */
 export default async function AppStart() {
   const k = await betriebKontext();
+  const heute = heuteIso();
+  let initial: Tagesdaten | null = null;
+  try {
+    initial = await ladeTagesdaten(
+      k.supabase,
+      { betriebId: k.betriebId, mitgliedId: k.mitglied.id },
+      heute,
+    );
+  } catch {
+    initial = null; // App lädt dann im Browser
+  }
   return (
-    <main className="mx-auto flex min-h-dvh max-w-md flex-col gap-6 px-4 py-8">
-      <div>
-        <p className="text-muted-foreground text-sm">{k.mitglied.betrieb?.name}</p>
-        <h1 className="text-2xl font-semibold">Hallo {k.mitglied.anzeigename ?? ""}</h1>
-      </div>
-      <p className="text-muted-foreground">
-        Die Mitarbeiter-App mit Tagesansicht, Checkliste und Zeiterfassung folgt in Kürze.
-      </p>
-      <form action={abmelden}>
-        <Button variant="outline" type="submit" className="w-full">
-          Abmelden
-        </Button>
-      </form>
-    </main>
+    <MitarbeiterApp
+      start={{
+        betriebId: k.betriebId,
+        betriebName: k.mitglied.betrieb?.name ?? "",
+        mitgliedId: k.mitglied.id,
+        name: k.mitglied.anzeigename ?? "",
+        sprache: k.mitglied.sprache,
+        buero: istBueroRolle(k.rolle),
+        heute,
+        morgen: plusTage(heute, 1),
+        initial,
+      }}
+    />
   );
 }
