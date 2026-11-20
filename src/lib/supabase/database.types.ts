@@ -261,6 +261,8 @@ export type Database = {
           test_endet_am: string | null;
           erstellt_am: string;
           aktualisiert_am: string;
+          bundesland: string;
+          vertragsbedingungen: string | null;
         };
         Insert: {
           id?: string;
@@ -286,6 +288,8 @@ export type Database = {
           test_endet_am?: string | null;
           erstellt_am?: string;
           aktualisiert_am?: string;
+          bundesland?: string;
+          vertragsbedingungen?: string | null;
         };
         Update: {
           id?: string;
@@ -311,6 +315,8 @@ export type Database = {
           test_endet_am?: string | null;
           erstellt_am?: string;
           aktualisiert_am?: string;
+          bundesland?: string;
+          vertragsbedingungen?: string | null;
         };
         Relationships: [];
       };
@@ -358,6 +364,109 @@ export type Database = {
               isOneToOne: false;
               referencedRelation: "betrieb";
               referencedColumns: ["id"];
+            },
+          ];
+      };
+      einsatz: {
+        Row: {
+          id: string;
+          betrieb_id: string;
+          objekt_id: string;
+          vorlage_id: string;
+          vertrag_id: string | null;
+          vertragsleistung_id: string | null;
+          datum: string;
+          zeitfenster_von: string | null;
+          zeitfenster_bis: string | null;
+          sollzeit_minuten: number;
+          status: Database["public"]["Enums"]["einsatzstatus"];
+          mitarbeiter_id: string | null;
+          quelle: string;
+          verschoben_von: string | null;
+          notiz: string | null;
+          erstellt_am: string;
+          aktualisiert_am: string;
+        };
+        Insert: {
+          id?: string;
+          betrieb_id: string;
+          objekt_id: string;
+          vorlage_id: string;
+          vertrag_id?: string | null;
+          vertragsleistung_id?: string | null;
+          datum: string;
+          zeitfenster_von?: string | null;
+          zeitfenster_bis?: string | null;
+          sollzeit_minuten?: number;
+          status?: Database["public"]["Enums"]["einsatzstatus"];
+          mitarbeiter_id?: string | null;
+          quelle?: string;
+          verschoben_von?: string | null;
+          notiz?: string | null;
+          erstellt_am?: string;
+          aktualisiert_am?: string;
+        };
+        Update: {
+          id?: string;
+          betrieb_id?: string;
+          objekt_id?: string;
+          vorlage_id?: string;
+          vertrag_id?: string | null;
+          vertragsleistung_id?: string | null;
+          datum?: string;
+          zeitfenster_von?: string | null;
+          zeitfenster_bis?: string | null;
+          sollzeit_minuten?: number;
+          status?: Database["public"]["Enums"]["einsatzstatus"];
+          mitarbeiter_id?: string | null;
+          quelle?: string;
+          verschoben_von?: string | null;
+          notiz?: string | null;
+          erstellt_am?: string;
+          aktualisiert_am?: string;
+        };
+        Relationships: [
+            {
+              foreignKeyName: "einsatz_betrieb_id_fkey";
+              columns: ["betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "betrieb";
+              referencedColumns: ["id"];
+            },
+            {
+              foreignKeyName: "einsatz_mitarbeiter_id_fkey";
+              columns: ["mitarbeiter_id"];
+              isOneToOne: false;
+              referencedRelation: "mitglied";
+              referencedColumns: ["id"];
+            },
+            {
+              foreignKeyName: "einsatz_objekt_id_betrieb_id_fkey";
+              columns: ["objekt_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "objekt";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+            {
+              foreignKeyName: "einsatz_vertrag_id_betrieb_id_fkey";
+              columns: ["vertrag_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "vertrag";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+            {
+              foreignKeyName: "einsatz_vertragsleistung_id_betrieb_id_fkey";
+              columns: ["vertragsleistung_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "vertragsleistung";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+            {
+              foreignKeyName: "einsatz_vorlage_id_betrieb_id_fkey";
+              columns: ["vorlage_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "auftragsvorlage";
+              referencedColumns: ["id", "betrieb_id"];
             },
           ];
       };
@@ -745,6 +854,252 @@ export type Database = {
             },
           ];
       };
+      vertrag: {
+        Row: {
+          id: string;
+          betrieb_id: string;
+          vertragsnummer: number;
+          kunde_id: string;
+          objekt_id: string;
+          titel: string;
+          status: Database["public"]["Enums"]["vertragsstatus"];
+          beginn: string;
+          laufzeit_monate: number;
+          verlaengerung_monate: number;
+          kuendigungsfrist_monate: number;
+          frist_zum: string;
+          gekuendigt_am: string | null;
+          endet_am: string | null;
+          notiz: string | null;
+          freigabe_token: string;
+          unterschrieben_am: string | null;
+          unterschrift_name: string | null;
+          unterschrift_bild: string | null;
+          erstellt_am: string;
+          aktualisiert_am: string;
+        };
+        Insert: {
+          id?: string;
+          betrieb_id: string;
+          vertragsnummer?: number;
+          kunde_id: string;
+          objekt_id: string;
+          titel: string;
+          status?: Database["public"]["Enums"]["vertragsstatus"];
+          beginn: string;
+          laufzeit_monate?: number;
+          verlaengerung_monate?: number;
+          kuendigungsfrist_monate?: number;
+          frist_zum?: string;
+          gekuendigt_am?: string | null;
+          endet_am?: string | null;
+          notiz?: string | null;
+          freigabe_token?: string;
+          unterschrieben_am?: string | null;
+          unterschrift_name?: string | null;
+          unterschrift_bild?: string | null;
+          erstellt_am?: string;
+          aktualisiert_am?: string;
+        };
+        Update: {
+          id?: string;
+          betrieb_id?: string;
+          vertragsnummer?: number;
+          kunde_id?: string;
+          objekt_id?: string;
+          titel?: string;
+          status?: Database["public"]["Enums"]["vertragsstatus"];
+          beginn?: string;
+          laufzeit_monate?: number;
+          verlaengerung_monate?: number;
+          kuendigungsfrist_monate?: number;
+          frist_zum?: string;
+          gekuendigt_am?: string | null;
+          endet_am?: string | null;
+          notiz?: string | null;
+          freigabe_token?: string;
+          unterschrieben_am?: string | null;
+          unterschrift_name?: string | null;
+          unterschrift_bild?: string | null;
+          erstellt_am?: string;
+          aktualisiert_am?: string;
+        };
+        Relationships: [
+            {
+              foreignKeyName: "vertrag_betrieb_id_fkey";
+              columns: ["betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "betrieb";
+              referencedColumns: ["id"];
+            },
+            {
+              foreignKeyName: "vertrag_kunde_id_betrieb_id_fkey";
+              columns: ["kunde_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "kunde";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+            {
+              foreignKeyName: "vertrag_objekt_id_betrieb_id_fkey";
+              columns: ["objekt_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "objekt";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+          ];
+      };
+      vertragsleistung: {
+        Row: {
+          id: string;
+          betrieb_id: string;
+          version_id: string;
+          vorlage_id: string;
+          preis_id: string | null;
+          bezeichnung: string | null;
+          frequenz: Database["public"]["Enums"]["frequenz"];
+          intervall: number;
+          wochentage: number[];
+          monatstag: number | null;
+          startdatum: string | null;
+          zeitfenster_von: string | null;
+          zeitfenster_bis: string | null;
+          erlaubte_wochentage: number[];
+          feiertag_regel: Database["public"]["Enums"]["feiertagregel"];
+          menge_m2: number | null;
+          menge_fenster: number | null;
+          preis_cent: number | null;
+          reihenfolge: number;
+        };
+        Insert: {
+          id?: string;
+          betrieb_id: string;
+          version_id: string;
+          vorlage_id: string;
+          preis_id?: string | null;
+          bezeichnung?: string | null;
+          frequenz?: Database["public"]["Enums"]["frequenz"];
+          intervall?: number;
+          wochentage?: number[];
+          monatstag?: number | null;
+          startdatum?: string | null;
+          zeitfenster_von?: string | null;
+          zeitfenster_bis?: string | null;
+          erlaubte_wochentage?: number[];
+          feiertag_regel?: Database["public"]["Enums"]["feiertagregel"];
+          menge_m2?: number | null;
+          menge_fenster?: number | null;
+          preis_cent?: number | null;
+          reihenfolge?: number;
+        };
+        Update: {
+          id?: string;
+          betrieb_id?: string;
+          version_id?: string;
+          vorlage_id?: string;
+          preis_id?: string | null;
+          bezeichnung?: string | null;
+          frequenz?: Database["public"]["Enums"]["frequenz"];
+          intervall?: number;
+          wochentage?: number[];
+          monatstag?: number | null;
+          startdatum?: string | null;
+          zeitfenster_von?: string | null;
+          zeitfenster_bis?: string | null;
+          erlaubte_wochentage?: number[];
+          feiertag_regel?: Database["public"]["Enums"]["feiertagregel"];
+          menge_m2?: number | null;
+          menge_fenster?: number | null;
+          preis_cent?: number | null;
+          reihenfolge?: number;
+        };
+        Relationships: [
+            {
+              foreignKeyName: "vertragsleistung_betrieb_id_fkey";
+              columns: ["betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "betrieb";
+              referencedColumns: ["id"];
+            },
+            {
+              foreignKeyName: "vertragsleistung_preis_id_betrieb_id_fkey";
+              columns: ["preis_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "preisliste";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+            {
+              foreignKeyName: "vertragsleistung_version_id_betrieb_id_fkey";
+              columns: ["version_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "vertragsversion";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+            {
+              foreignKeyName: "vertragsleistung_vorlage_id_betrieb_id_fkey";
+              columns: ["vorlage_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "auftragsvorlage";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+          ];
+      };
+      vertragsversion: {
+        Row: {
+          id: string;
+          betrieb_id: string;
+          vertrag_id: string;
+          version: number;
+          gueltig_ab: string;
+          abrechnungsart: Database["public"]["Enums"]["abrechnungsart"];
+          pauschale_cent: number | null;
+          grund: string | null;
+          quelle: string;
+          erstellt_von: string | null;
+          erstellt_am: string;
+        };
+        Insert: {
+          id?: string;
+          betrieb_id: string;
+          vertrag_id: string;
+          version: number;
+          gueltig_ab: string;
+          abrechnungsart?: Database["public"]["Enums"]["abrechnungsart"];
+          pauschale_cent?: number | null;
+          grund?: string | null;
+          quelle?: string;
+          erstellt_von?: string | null;
+          erstellt_am?: string;
+        };
+        Update: {
+          id?: string;
+          betrieb_id?: string;
+          vertrag_id?: string;
+          version?: number;
+          gueltig_ab?: string;
+          abrechnungsart?: Database["public"]["Enums"]["abrechnungsart"];
+          pauschale_cent?: number | null;
+          grund?: string | null;
+          quelle?: string;
+          erstellt_von?: string | null;
+          erstellt_am?: string;
+        };
+        Relationships: [
+            {
+              foreignKeyName: "vertragsversion_betrieb_id_fkey";
+              columns: ["betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "betrieb";
+              referencedColumns: ["id"];
+            },
+            {
+              foreignKeyName: "vertragsversion_vertrag_id_betrieb_id_fkey";
+              columns: ["vertrag_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "vertrag";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+          ];
+      };
       vorlage_bedarf: {
         Row: {
           id: string;
@@ -899,6 +1254,13 @@ export type Database = {
           };
           Returns: boolean;
         };
+      mein_mitglied_id:
+        | {
+          Args: {
+            p_betrieb_id: string;
+          };
+          Returns: string;
+        };
       paket_installieren:
         | {
           Args: {
@@ -907,13 +1269,62 @@ export type Database = {
           };
           Returns: Json;
         };
+      vertrag_dokument:
+        | {
+          Args: {
+            p_token: string;
+          };
+          Returns: Json;
+        };
+      vertrag_freigabe_info:
+        | {
+          Args: {
+            p_token: string;
+          };
+          Returns: {
+            betrieb_name: string;
+            vertragsnummer: number;
+            titel: string;
+            kunde_name: string;
+            objekt_name: string;
+            beginn: string;
+            status: Database["public"]["Enums"]["vertragsstatus"];
+            unterschrieben_am: string;
+          }[];
+        };
+      vertrag_unterschreiben:
+        | {
+          Args: {
+            p_token: string;
+            p_name: string;
+            p_bild: string;
+          };
+          Returns: undefined;
+        };
+      vertragsversion_anlegen:
+        | {
+          Args: {
+            p_vertrag_id: string;
+            p_gueltig_ab: string;
+            p_abrechnungsart: Database["public"]["Enums"]["abrechnungsart"];
+            p_pauschale_cent: number;
+            p_grund: string;
+            p_quelle?: string;
+          };
+          Returns: string;
+        };
     };
     Enums: {
+      abrechnungsart: "pauschale" | "aufwand" | "einzelauftrag";
       artikelart: "verbrauch" | "verschleiss" | "geraet";
       bedarfsbezug: "einsatz" | "m2" | "fenster" | "stunde";
+      einsatzstatus: "geplant" | "zugewiesen" | "unterwegs" | "begonnen" | "erledigt" | "abgesagt";
+      feiertagregel: "auslassen" | "naechster_werktag" | "ignorieren";
+      frequenz: "taeglich" | "woechentlich" | "monatlich" | "einmalig";
       kundentyp: "firma" | "verwaltung" | "privat" | "oeffentlich";
       preiseinheit: "pauschal" | "stunde" | "m2" | "fenster" | "stueck" | "einsatz";
       rolle: "inhaber" | "disponent" | "mitarbeiter";
+      vertragsstatus: "entwurf" | "aktiv" | "gekuendigt" | "beendet";
     };
     CompositeTypes: {
       [_ in never]: never;
