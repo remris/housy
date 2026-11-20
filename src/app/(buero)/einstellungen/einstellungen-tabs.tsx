@@ -8,6 +8,7 @@ const TABS = [
   { href: "/einstellungen", text: "Firmendaten" },
   { href: "/einstellungen/team", text: "Team" },
   { href: "/einstellungen/vertraege", text: "Verträge" },
+  { href: "/einstellungen/nachweise", text: "Nachweise" },
 ];
 
 export function EinstellungenTabs() {

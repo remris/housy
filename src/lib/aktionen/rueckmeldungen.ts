@@ -5,6 +5,7 @@ import type { z } from "zod";
 import { berlinZuIso } from "@/domain/zeiterfassung";
 import { type AktionErgebnis, dbFehler, fehler, pruefe } from "@/lib/aktion";
 import { bueroKontext } from "@/lib/auth";
+import { bestaetigungenSenden } from "@/lib/nachweise/bestaetigung";
 import type { TablesUpdate } from "@/lib/supabase/database.types";
 import {
   positionPruefenSchema,
@@ -12,6 +13,7 @@ import {
   zeitNachtragSchema,
   zeitStornoSchema,
 } from "@/lib/schemas/rueckmeldung";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 // ---------------------------------------------------------------------------
 // Vor-Ort-Leistungen
@@ -58,10 +60,16 @@ export async function positionPruefen(
     .eq("id", d.id)
     .eq("status", "vorgeschlagen");
   if (error) return fehler(dbFehler(error));
+  // mündlich vereinbart: Kunde bekommt jetzt mit dem Preis die Bestätigung
+  const admin = d.entscheidung === "bestaetigen" ? createAdminClient() : null;
+  const mail = admin ? await bestaetigungenSenden(admin, { positionId: d.id }) : null;
   revalidatePath("/rueckmeldungen");
   return {
     ok: true,
-    meldung: d.entscheidung === "bestaetigen" ? "Leistung bestätigt." : "Leistung abgelehnt.",
+    meldung:
+      d.entscheidung === "bestaetigen"
+        ? `Leistung bestätigt.${mail?.gesendet ? " Bestätigung an den Kunden verschickt." : ""}`
+        : "Leistung abgelehnt.",
   };
 }
 

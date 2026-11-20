@@ -6,7 +6,13 @@ import { formatDatum, heuteIso, plusTage } from "@/domain/datum";
 import { formatEuro } from "@/domain/geld";
 import { bueroKontext } from "@/lib/auth";
 import { mitgliedName } from "@/lib/touren";
-import { ErledigtKnopf, PositionPruefen, UebernommenKnopf } from "./rueckmeldung-teile";
+import { MangelStatus } from "@/components/mangel-status";
+import {
+  BestaetigungKnopf,
+  ErledigtKnopf,
+  PositionPruefen,
+  UebernommenKnopf,
+} from "./rueckmeldung-teile";
 
 export const metadata: Metadata = { title: "Rückmeldungen" };
 
@@ -18,17 +24,19 @@ export default async function RueckmeldungenSeite() {
       .from("einsatz_position")
       .select(
         `id, bezeichnung, menge, preis_cent, status, dauer, zustimmung, unterschrift_name, erstellt_am,
-         erstellt_von, vertrag_uebernommen_am,
+         erstellt_von, vertrag_uebernommen_am, bestaetigung_gesendet_am,
          einsatz(id, datum, vertrag_id, objekt(id, name))`,
       )
       .eq("betrieb_id", k.betriebId)
       .or(
-        "status.eq.vorgeschlagen,and(dauer.eq.dauerhaft,status.eq.bestaetigt,vertrag_uebernommen_am.is.null)",
+        "status.eq.vorgeschlagen,and(dauer.eq.dauerhaft,status.eq.bestaetigt,vertrag_uebernommen_am.is.null),and(zustimmung.eq.muendlich,status.eq.bestaetigt,bestaetigung_gesendet_am.is.null)",
       )
       .order("erstellt_am"),
     k.supabase
       .from("einsatz_meldung")
-      .select("id, art, text, erstellt_am, artikel(name), objekt(id, name), einsatz_foto(pfad)")
+      .select(
+        "id, art, text, status, notiz_buero, erstellt_am, artikel(name), objekt(id, name), einsatz_foto(pfad)",
+      )
       .eq("betrieb_id", k.betriebId)
       .is("erledigt_am", null)
       .order("erstellt_am", { ascending: false }),
@@ -51,7 +59,12 @@ export default async function RueckmeldungenSeite() {
     mitgliedName(mitglieder.data?.find((m) => m.user_id === userId) ?? { anzeigename: null });
 
   const pruefen = (positionen.data ?? []).filter((p) => p.status === "vorgeschlagen");
-  const uebernehmen = (positionen.data ?? []).filter((p) => p.status === "bestaetigt");
+  const uebernehmen = (positionen.data ?? []).filter(
+    (p) => p.status === "bestaetigt" && p.dauer === "dauerhaft" && !p.vertrag_uebernommen_am,
+  );
+  const bestaetigen = (positionen.data ?? []).filter(
+    (p) => p.status === "bestaetigt" && p.zustimmung === "muendlich" && !p.bestaetigung_gesendet_am,
+  );
   const pfade = (meldungen.data ?? []).flatMap((m) => m.einsatz_foto.map((f) => f.pfad));
   const { data: signiert } = pfade.length
     ? await k.supabase.storage.from("einsatzfotos").createSignedUrls(pfade, 3600)
@@ -109,6 +122,33 @@ export default async function RueckmeldungenSeite() {
         )}
       </section>
 
+      {bestaetigen.length > 0 && (
+        <section className="flex flex-col gap-3">
+          <h2 className="font-medium">
+            Mündlich vereinbart – Bestätigung an den Kunden offen{" "}
+            <Badge variant="secondary">{bestaetigen.length}</Badge>
+          </h2>
+          <p className="text-muted-foreground text-sm">
+            Die Bestätigung geht automatisch raus, sobald der Preis feststeht. Steht sie hier noch,
+            fehlt beim Kunden die E-Mail-Adresse oder der Mail-Versand ist nicht eingerichtet.
+          </p>
+          <ul className="divide-y rounded-lg border">
+            {bestaetigen.map((p) => (
+              <li key={p.id} className="flex flex-wrap items-center gap-3 px-3 py-2 text-sm">
+                <span className="font-medium">
+                  {Number(p.menge).toLocaleString("de-DE")} × {p.bezeichnung}
+                </span>
+                <span className="text-muted-foreground flex-1">
+                  {p.einsatz?.objekt?.name} · {formatDatum(p.einsatz?.datum)}
+                  {p.preis_cent !== null && ` · ${formatEuro(p.preis_cent)}`}
+                </span>
+                <BestaetigungKnopf id={p.id} />
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
       {uebernehmen.length > 0 && (
         <section className="flex flex-col gap-3">
           <h2 className="font-medium">
@@ -165,9 +205,12 @@ export default async function RueckmeldungenSeite() {
                       timeStyle: "short",
                     })}
                   </span>
-                  <ErledigtKnopf id={m.id} />
+                  {m.art === "material_leer" && <ErledigtKnopf id={m.id} />}
                 </div>
                 <div>{m.art === "mangel" ? m.text : m.artikel?.name}</div>
+                {m.art === "mangel" && (
+                  <MangelStatus id={m.id} status={m.status} notiz={m.notiz_buero} />
+                )}
                 {m.einsatz_foto.length > 0 && (
                   <div className="flex flex-wrap gap-2">
                     {m.einsatz_foto.map((f) =>

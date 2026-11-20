@@ -15,6 +15,7 @@ import {
   positionPruefen,
   positionUebernommen,
 } from "@/lib/aktionen/rueckmeldungen";
+import { bestaetigungJetztSenden } from "@/lib/aktionen/nachweise";
 import { positionPruefenSchema } from "@/lib/schemas/rueckmeldung";
 
 function melde(e: AktionErgebnis<unknown>) {
@@ -100,6 +101,20 @@ export function ErledigtKnopf({ id }: { id: string }) {
       onClick={() => starte(async () => melde(await meldungErledigt(id)))}
     >
       Erledigt
+    </Button>
+  );
+}
+
+export function BestaetigungKnopf({ id }: { id: string }) {
+  const [laeuft, starte] = useTransition();
+  return (
+    <Button
+      size="sm"
+      variant="outline"
+      disabled={laeuft}
+      onClick={() => starte(async () => melde(await bestaetigungJetztSenden(id)))}
+    >
+      Jetzt senden
     </Button>
   );
 }

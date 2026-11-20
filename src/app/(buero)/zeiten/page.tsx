@@ -11,14 +11,9 @@ import {
   plusTage,
   wochenbeginn,
 } from "@/domain/datum";
+import { ZEITHINWEIS_TEXT } from "@/domain/arbeitszeitliste";
 import { zuDauer } from "@/domain/planung";
-import {
-  type Buchung,
-  type Zeithinweis,
-  tagBerlin,
-  uhrzeitBerlin,
-  werteTagAus,
-} from "@/domain/zeiterfassung";
+import { type Buchung, tagBerlin, uhrzeitBerlin, werteTagAus } from "@/domain/zeiterfassung";
 import { bueroKontext } from "@/lib/auth";
 import { buchungsartText } from "@/lib/schemas/rueckmeldung";
 import { mitgliedName } from "@/lib/touren";
@@ -28,14 +23,6 @@ import { BuchungAendern, Nachtragen } from "./zeit-teile";
 export const metadata: Metadata = { title: "Zeiten" };
 
 const ISO = /^\d{4}-\d{2}-\d{2}$/;
-const HINWEIS: Record<Zeithinweis, string> = {
-  checkout_fehlt: "Check-out fehlt",
-  checkin_fehlt: "Check-in fehlt",
-  pause_offen: "Pause nicht beendet",
-  pause_ende_ohne_beginn: "Pausenende ohne Beginn",
-  pause_zu_kurz: "Pause zu kurz (§ 4 ArbZG)",
-  ueber_10_stunden: "über 10 Stunden (§ 3 ArbZG)",
-};
 
 export default async function ZeitenSeite({
   searchParams,
@@ -101,6 +88,11 @@ export default async function ZeitenSeite({
       <Seitenkopf
         titel="Zeiten"
         beschreibung="Arbeitszeiten aus Check-in/-out und Pausen. Korrekturen nur mit Grund, alles wird protokolliert."
+        aktionen={
+          <Button size="sm" nativeButton={false} render={<Link href="/zeiten/monat" />}>
+            Arbeitszeitliste (Monat)
+          </Button>
+        }
       />
       <div className="flex flex-wrap items-center gap-2">
         <Button
@@ -166,7 +158,7 @@ export default async function ZeitenSeite({
                         "p-2 text-right tabular-nums",
                         w.hinweise.length > 0 && "text-amber-700 dark:text-amber-400",
                       )}
-                      title={w.hinweise.map((h) => HINWEIS[h]).join(", ")}
+                      title={w.hinweise.map((h) => ZEITHINWEIS_TEXT[h]).join(", ")}
                     >
                       {w.arbeitMinuten ? zuDauer(w.arbeitMinuten) : ""}
                       {w.hinweise.length > 0 && " ⚠"}
@@ -214,7 +206,7 @@ export default async function ZeitenSeite({
                   <span className="font-medium">Arbeit {zuDauer(w.arbeitMinuten)}</span>
                   {w.hinweise.map((h) => (
                     <Badge key={h} variant="destructive">
-                      {HINWEIS[h]}
+                      {ZEITHINWEIS_TEXT[h]}
                     </Badge>
                   ))}
                 </div>

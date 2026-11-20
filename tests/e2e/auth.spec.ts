@@ -36,6 +36,9 @@ for (const pfad of [
   "/planung/fahrzeuge",
   "/rueckmeldungen",
   "/zeiten",
+  "/zeiten/monat",
+  "/nachweise",
+  "/einstellungen/nachweise",
   "/app",
 ]) {
   test(`${pfad} ist geschützt`, async ({ page }) => {
@@ -43,3 +46,17 @@ for (const pfad of [
     await expect(page).toHaveURL(/\/login/);
   });
 }
+
+test("Nachweis-Job ohne Cron-Geheimnis wird abgewiesen", async ({ request }) => {
+  const r = await request.get("/api/jobs/nachweise");
+  expect(r.status()).toBe(401);
+});
+
+test("App-Meldung nach dem Auschecken braucht eine Anmeldung", async ({ request }) => {
+  const r = await request.post("/api/app/abgeschlossen", {
+    data: { einsatzIds: ["5f1c2f8e-7a0b-4c55-9b1e-2d3c4b5a6f70"] },
+    maxRedirects: 0,
+  });
+  expect(r.status()).not.toBe(202);
+  expect(r.status()).toBeGreaterThanOrEqual(300);
+});

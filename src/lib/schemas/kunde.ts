@@ -8,6 +8,12 @@ export const KUNDENTYPEN = [
   { wert: "oeffentlich", text: "Öffentlicher Auftraggeber" },
 ] as const;
 
+export const NACHWEISVERSAND = [
+  { wert: "einsatz", text: "nach jedem Einsatz" },
+  { wert: "monat", text: "einmal im Monat" },
+  { wert: "keiner", text: "nicht automatisch" },
+] as const;
+
 export const kundentypText = (t: string) => KUNDENTYPEN.find((k) => k.wert === t)?.text ?? t;
 
 export const kundeSchema = z
@@ -32,6 +38,8 @@ export const kundeSchema = z
       .nullable(),
     ust_id: optText(20),
     zahlungsziel_tage: ganzzahl(0, 365),
+    nachweis_versand: z.enum(["einsatz", "monat", "keiner"]),
+    nachweis_email: optEmail,
     notiz: optText(2000),
     aktiv: z.boolean(),
   })

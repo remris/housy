@@ -10,7 +10,7 @@ import {
 } from "@/components/formular/formular";
 import { Button } from "@/components/ui/button";
 import { kundeSpeichern } from "@/lib/aktionen/kunden";
-import { KUNDENTYPEN, kundeSchema } from "@/lib/schemas/kunde";
+import { KUNDENTYPEN, NACHWEISVERSAND, kundeSchema } from "@/lib/schemas/kunde";
 import type { z } from "zod";
 
 export type KundeWerte = z.input<typeof kundeSchema>;
@@ -28,6 +28,8 @@ export const LEERER_KUNDE: KundeWerte = {
   leitweg_id: "",
   ust_id: "",
   zahlungsziel_tage: 14,
+  nachweis_versand: "einsatz",
+  nachweis_email: "",
   notiz: "",
   aktiv: true,
 };
@@ -76,6 +78,21 @@ export function KundeFormular({ id, werte }: { id: string | null; werte: KundeWe
           name="leitweg_id"
           label="Leitweg-ID"
           hinweis={typ === "oeffentlich" ? "Pflicht für XRechnung" : "nur öffentliche Auftraggeber"}
+        />
+      </div>
+      <div className="grid gap-4 sm:grid-cols-3">
+        <AuswahlFeld
+          form={form}
+          name="nachweis_versand"
+          label="Leistungsnachweis per E-Mail"
+          optionen={NACHWEISVERSAND}
+        />
+        <TextFeld
+          form={form}
+          name="nachweis_email"
+          label="E-Mail für Nachweise"
+          type="email"
+          hinweis="falls abweichend, z. B. Objektbetreuung"
         />
       </div>
       <TextbereichFeld form={form} name="notiz" label="Notiz" rows={3} />

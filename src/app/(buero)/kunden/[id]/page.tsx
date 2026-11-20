@@ -57,6 +57,8 @@ export default async function KundeSeite({ params }: { params: Promise<{ id: str
           leitweg_id: kd.leitweg_id ?? "",
           ust_id: kd.ust_id ?? "",
           zahlungsziel_tage: kd.zahlungsziel_tage,
+          nachweis_versand: kd.nachweis_versand,
+          nachweis_email: kd.nachweis_email ?? "",
           notiz: kd.notiz ?? "",
           aktiv: kd.aktiv,
         }}
