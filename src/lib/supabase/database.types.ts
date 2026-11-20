@@ -4,6 +4,75 @@ export type Json = string | number | boolean | null | { [key: string]: Json | un
 export type Database = {
   public: {
     Tables: {
+      abrechnung: {
+        Row: {
+          id: string;
+          betrieb_id: string;
+          rechnung_id: string;
+          einsatz_id: string | null;
+          einsatz_position_id: string | null;
+          version_id: string | null;
+          monat: string | null;
+          aktiv: boolean;
+        };
+        Insert: {
+          id?: string;
+          betrieb_id: string;
+          rechnung_id: string;
+          einsatz_id?: string | null;
+          einsatz_position_id?: string | null;
+          version_id?: string | null;
+          monat?: string | null;
+          aktiv?: boolean;
+        };
+        Update: {
+          id?: string;
+          betrieb_id?: string;
+          rechnung_id?: string;
+          einsatz_id?: string | null;
+          einsatz_position_id?: string | null;
+          version_id?: string | null;
+          monat?: string | null;
+          aktiv?: boolean;
+        };
+        Relationships: [
+            {
+              foreignKeyName: "abrechnung_betrieb_id_fkey";
+              columns: ["betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "betrieb";
+              referencedColumns: ["id"];
+            },
+            {
+              foreignKeyName: "abrechnung_einsatz_id_betrieb_id_fkey";
+              columns: ["einsatz_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "einsatz";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+            {
+              foreignKeyName: "abrechnung_einsatz_position_id_fkey";
+              columns: ["einsatz_position_id"];
+              isOneToOne: false;
+              referencedRelation: "einsatz_position";
+              referencedColumns: ["id"];
+            },
+            {
+              foreignKeyName: "abrechnung_rechnung_id_betrieb_id_fkey";
+              columns: ["rechnung_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "rechnung";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+            {
+              foreignKeyName: "abrechnung_version_id_betrieb_id_fkey";
+              columns: ["version_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "vertragsversion";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+          ];
+      };
       abwesenheit: {
         Row: {
           id: string;
@@ -419,6 +488,12 @@ export type Database = {
           tour_start: string;
           nachweis_kopie: boolean;
           nachweis_fotos: boolean;
+          rechnung_praefix: string;
+          rechnung_kontakt: string | null;
+          rechnung_fusstext: string | null;
+          datev_beraternummer: number | null;
+          datev_mandantennummer: number | null;
+          kontenrahmen: string;
         };
         Insert: {
           id?: string;
@@ -451,6 +526,12 @@ export type Database = {
           tour_start?: string;
           nachweis_kopie?: boolean;
           nachweis_fotos?: boolean;
+          rechnung_praefix?: string;
+          rechnung_kontakt?: string | null;
+          rechnung_fusstext?: string | null;
+          datev_beraternummer?: number | null;
+          datev_mandantennummer?: number | null;
+          kontenrahmen?: string;
         };
         Update: {
           id?: string;
@@ -483,6 +564,12 @@ export type Database = {
           tour_start?: string;
           nachweis_kopie?: boolean;
           nachweis_fotos?: boolean;
+          rechnung_praefix?: string;
+          rechnung_kontakt?: string | null;
+          rechnung_fusstext?: string | null;
+          datev_beraternummer?: number | null;
+          datev_mandantennummer?: number | null;
+          kontenrahmen?: string;
         };
         Relationships: [];
       };
@@ -1076,6 +1163,7 @@ export type Database = {
           aktualisiert_am: string;
           nachweis_versand: Database["public"]["Enums"]["nachweisversand"];
           nachweis_email: string | null;
+          erechnung: string;
         };
         Insert: {
           id?: string;
@@ -1100,6 +1188,7 @@ export type Database = {
           aktualisiert_am?: string;
           nachweis_versand?: Database["public"]["Enums"]["nachweisversand"];
           nachweis_email?: string | null;
+          erechnung?: string;
         };
         Update: {
           id?: string;
@@ -1124,6 +1213,7 @@ export type Database = {
           aktualisiert_am?: string;
           nachweis_versand?: Database["public"]["Enums"]["nachweisversand"];
           nachweis_email?: string | null;
+          erechnung?: string;
         };
         Relationships: [
             {
@@ -1757,6 +1847,232 @@ export type Database = {
               columns: ["vorlage_id", "betrieb_id"];
               isOneToOne: false;
               referencedRelation: "auftragsvorlage";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+          ];
+      };
+      rechnung: {
+        Row: {
+          id: string;
+          betrieb_id: string;
+          kunde_id: string;
+          objekt_id: string | null;
+          art: string;
+          storno_von_id: string | null;
+          status: Database["public"]["Enums"]["rechnungsstatus"];
+          monat: string | null;
+          nummer: string | null;
+          laufnummer: number | null;
+          rechnungsdatum: string | null;
+          faellig_am: string | null;
+          leistung_von: string;
+          leistung_bis: string;
+          zahlungsziel_tage: number;
+          kleinunternehmer: boolean;
+          netto_cent: number;
+          ust_cent: number;
+          brutto_cent: number;
+          daten: Json | null;
+          hinweise: string[];
+          lauf_hinweise: string[];
+          pdf_pfad: string | null;
+          xml_pfad: string | null;
+          festgeschrieben_am: string | null;
+          gesendet_am: string | null;
+          gesendet_an: string[];
+          bezahlt_am: string | null;
+          datev_exportiert_am: string | null;
+          storno_grund: string | null;
+          erstellt_von: string | null;
+          erstellt_am: string;
+          aktualisiert_am: string;
+        };
+        Insert: {
+          id?: string;
+          betrieb_id: string;
+          kunde_id: string;
+          objekt_id?: string | null;
+          art?: string;
+          storno_von_id?: string | null;
+          status?: Database["public"]["Enums"]["rechnungsstatus"];
+          monat?: string | null;
+          nummer?: string | null;
+          laufnummer?: number | null;
+          rechnungsdatum?: string | null;
+          faellig_am?: string | null;
+          leistung_von: string;
+          leistung_bis: string;
+          zahlungsziel_tage?: number;
+          kleinunternehmer?: boolean;
+          netto_cent?: number;
+          ust_cent?: number;
+          brutto_cent?: number;
+          daten?: Json | null;
+          hinweise?: string[];
+          lauf_hinweise?: string[];
+          pdf_pfad?: string | null;
+          xml_pfad?: string | null;
+          festgeschrieben_am?: string | null;
+          gesendet_am?: string | null;
+          gesendet_an?: string[];
+          bezahlt_am?: string | null;
+          datev_exportiert_am?: string | null;
+          storno_grund?: string | null;
+          erstellt_von?: string | null;
+          erstellt_am?: string;
+          aktualisiert_am?: string;
+        };
+        Update: {
+          id?: string;
+          betrieb_id?: string;
+          kunde_id?: string;
+          objekt_id?: string | null;
+          art?: string;
+          storno_von_id?: string | null;
+          status?: Database["public"]["Enums"]["rechnungsstatus"];
+          monat?: string | null;
+          nummer?: string | null;
+          laufnummer?: number | null;
+          rechnungsdatum?: string | null;
+          faellig_am?: string | null;
+          leistung_von?: string;
+          leistung_bis?: string;
+          zahlungsziel_tage?: number;
+          kleinunternehmer?: boolean;
+          netto_cent?: number;
+          ust_cent?: number;
+          brutto_cent?: number;
+          daten?: Json | null;
+          hinweise?: string[];
+          lauf_hinweise?: string[];
+          pdf_pfad?: string | null;
+          xml_pfad?: string | null;
+          festgeschrieben_am?: string | null;
+          gesendet_am?: string | null;
+          gesendet_an?: string[];
+          bezahlt_am?: string | null;
+          datev_exportiert_am?: string | null;
+          storno_grund?: string | null;
+          erstellt_von?: string | null;
+          erstellt_am?: string;
+          aktualisiert_am?: string;
+        };
+        Relationships: [
+            {
+              foreignKeyName: "rechnung_betrieb_id_fkey";
+              columns: ["betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "betrieb";
+              referencedColumns: ["id"];
+            },
+            {
+              foreignKeyName: "rechnung_kunde_id_betrieb_id_fkey";
+              columns: ["kunde_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "kunde";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+            {
+              foreignKeyName: "rechnung_objekt_id_betrieb_id_fkey";
+              columns: ["objekt_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "objekt";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+            {
+              foreignKeyName: "rechnung_storno_von_id_betrieb_id_fkey";
+              columns: ["storno_von_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "rechnung";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+          ];
+      };
+      rechnungsposition: {
+        Row: {
+          id: string;
+          betrieb_id: string;
+          rechnung_id: string;
+          pos: number;
+          bezeichnung: string;
+          beschreibung: string | null;
+          menge: number;
+          einheit: string;
+          einzelpreis_cent: number;
+          netto_cent: number;
+          ust_satz: number;
+          von: string | null;
+          bis: string | null;
+          quelle: string;
+          vertrag_id: string | null;
+          version_id: string | null;
+          einsatz_position_id: string | null;
+        };
+        Insert: {
+          id?: string;
+          betrieb_id: string;
+          rechnung_id: string;
+          pos: number;
+          bezeichnung: string;
+          beschreibung?: string | null;
+          menge: number;
+          einheit: string;
+          einzelpreis_cent: number;
+          netto_cent: number;
+          ust_satz: number;
+          von?: string | null;
+          bis?: string | null;
+          quelle?: string;
+          vertrag_id?: string | null;
+          version_id?: string | null;
+          einsatz_position_id?: string | null;
+        };
+        Update: {
+          id?: string;
+          betrieb_id?: string;
+          rechnung_id?: string;
+          pos?: number;
+          bezeichnung?: string;
+          beschreibung?: string | null;
+          menge?: number;
+          einheit?: string;
+          einzelpreis_cent?: number;
+          netto_cent?: number;
+          ust_satz?: number;
+          von?: string | null;
+          bis?: string | null;
+          quelle?: string;
+          vertrag_id?: string | null;
+          version_id?: string | null;
+          einsatz_position_id?: string | null;
+        };
+        Relationships: [
+            {
+              foreignKeyName: "rechnungsposition_betrieb_id_fkey";
+              columns: ["betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "betrieb";
+              referencedColumns: ["id"];
+            },
+            {
+              foreignKeyName: "rechnungsposition_rechnung_id_betrieb_id_fkey";
+              columns: ["rechnung_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "rechnung";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+            {
+              foreignKeyName: "rechnungsposition_version_id_betrieb_id_fkey";
+              columns: ["version_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "vertragsversion";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+            {
+              foreignKeyName: "rechnungsposition_vertrag_id_betrieb_id_fkey";
+              columns: ["vertrag_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "vertrag";
               referencedColumns: ["id", "betrieb_id"];
             },
           ];
@@ -2709,6 +3025,23 @@ export type Database = {
           };
           Returns: Json;
         };
+      rechnung_festschreiben:
+        | {
+          Args: {
+            p_id: string;
+            p_datum: string;
+            p_daten: Json;
+          };
+          Returns: string;
+        };
+      rechnung_stornieren:
+        | {
+          Args: {
+            p_id: string;
+            p_grund: string;
+          };
+          Returns: string;
+        };
       sieht_einsatz:
         | {
           Args: {
@@ -2807,6 +3140,7 @@ export type Database = {
       nachweisversand: "einsatz" | "monat" | "keiner";
       positionsstatus: "vorgeschlagen" | "bestaetigt" | "abgelehnt";
       preiseinheit: "pauschal" | "stunde" | "m2" | "fenster" | "stueck" | "einsatz";
+      rechnungsstatus: "entwurf" | "offen" | "bezahlt" | "storniert";
       rolle: "inhaber" | "disponent" | "mitarbeiter";
       vertragsstatus: "entwurf" | "aktiv" | "gekuendigt" | "beendet";
       zeitbuchungsart: "checkin" | "checkout" | "pause_beginn" | "pause_ende";
