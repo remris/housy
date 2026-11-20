@@ -18,6 +18,6 @@ describe("Übersetzungen", () => {
   it("setzt Werte ein und fällt auf Deutsch zurück", () => {
     expect(uebersetzer("tr")("hallo", { name: "Ayşe" })).toBe("Merhaba Ayşe");
     expect(uebersetzer("ar")("heute")).toBe("Heute");
-    expect(uebersetzer(null)("wartend", { n: 3 })).toBe("3 Änderungen warten");
+    expect(uebersetzer(null)("wartend", { n: 3 })).toBe("Noch zu übertragen: 3");
   });
 });

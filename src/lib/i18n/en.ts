@@ -8,7 +8,7 @@ export const en: Woerterbuch = {
   sprache: "Language",
   offline: "Offline – changes are saved",
   synchron: "Everything sent",
-  wartend: "{n} changes waiting",
+  wartend: "Waiting to send: {n}",
   synchronisieren: "Send now",
   stand: "As of {zeit}",
   nichtUebertragen: "Not sent: {fehler}",

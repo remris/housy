@@ -8,7 +8,7 @@ export const ro: Woerterbuch = {
   sprache: "Limba",
   offline: "Offline – modificările sunt salvate",
   synchron: "Totul a fost trimis",
-  wartend: "{n} modificări în așteptare",
+  wartend: "De trimis: {n}",
   synchronisieren: "Trimite acum",
   stand: "Actualizat {zeit}",
   nichtUebertragen: "Netrimis: {fehler}",

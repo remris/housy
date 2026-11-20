@@ -8,7 +8,7 @@ export const tr: Woerterbuch = {
   sprache: "Dil",
   offline: "Çevrimdışı – değişiklikler kaydediliyor",
   synchron: "Her şey gönderildi",
-  wartend: "{n} değişiklik bekliyor",
+  wartend: "Gönderilmeyi bekleyen: {n}",
   synchronisieren: "Şimdi gönder",
   stand: "Durum {zeit}",
   nichtUebertragen: "Gönderilemedi: {fehler}",

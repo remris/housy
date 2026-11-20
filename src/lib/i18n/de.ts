@@ -8,7 +8,7 @@ export const de = {
   // Verbindung
   offline: "Offline – Änderungen werden gespeichert",
   synchron: "Alles übertragen",
-  wartend: "{n} Änderungen warten",
+  wartend: "Noch zu übertragen: {n}",
   synchronisieren: "Jetzt übertragen",
   stand: "Stand {zeit}",
   nichtUebertragen: "Nicht übertragen: {fehler}",

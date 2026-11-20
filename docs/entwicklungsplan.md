@@ -126,12 +126,12 @@ Fertig, wenn: eine Woche für 3 Mitarbeiter ohne Konflikte geplant ist und die T
 
 ### M6 Mitarbeiter-App (PWA)
 
-- [ ] Installierbar, Login, Sprache je Mitarbeiter (Start: Deutsch, Englisch, Türkisch, Polnisch, Rumänisch; weitere über Übersetzungsdateien)
-- [ ] Tagesansicht in Tourreihenfolge mit Karte, Zeitfenster, Zugang, Packliste, „Navigation starten“
-- [ ] Einsatz: QR-Check-in/-out, Checkliste, Fotos, Mängel, „Material leer“, Notizen, Stammdaten-Korrekturen
-- [ ] Vor-Ort-Änderung: Leistung aus Preisliste, „nur heute“ oder „dauerhaft“, Unterschrift oder Bestätigungs-Mail
-- [ ] Offline: Tagesdaten lokal (Dexie), Aktionen in Warteschlange, Sync bei Netz, Konfliktregel „letzte Änderung gewinnt“ je Feld
-- [ ] Zeiterfassung aus Check-in/-out, Pausen, Korrektur nur durch das Büro mit Protokoll
+- [x] Installierbar, Login, Sprache je Mitarbeiter (Start: Deutsch, Englisch, Türkisch, Polnisch, Rumänisch; weitere über Übersetzungsdateien)
+- [x] Tagesansicht in Tourreihenfolge mit Karte, Zeitfenster, Zugang, Packliste, „Navigation starten“
+- [x] Einsatz: QR-Check-in/-out, Checkliste, Fotos, Mängel, „Material leer“, Notizen, Stammdaten-Korrekturen
+- [ ] Vor-Ort-Änderung: Leistung aus Preisliste, „nur heute“ oder „dauerhaft“, Unterschrift oder Bestätigungs-Mail — **teilweise:** Preisliste, freie Positionen (Büro prüft), nur heute/dauerhaft und Unterschrift fertig; Bestätigungs-Mail folgt mit dem Mail-Versand (M7), „dauerhaft“ trägt das Büro bisher selbst als neue Vertragsversion ein (Liste unter Rückmeldungen)
+- [x] Offline: Tagesdaten lokal (Dexie), Aktionen in Warteschlange, Sync bei Netz, Konfliktregel „letzte Änderung gewinnt“ je Feld
+- [x] Zeiterfassung aus Check-in/-out, Pausen, Korrektur nur durch das Büro mit Protokoll
 
 Fertig, wenn: ein ganzer Tag im Flugmodus abgearbeitet und danach korrekt synchronisiert wird.
 

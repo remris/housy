@@ -110,3 +110,23 @@ Alle nennenswerten Änderungen je Meilenstein. Format angelehnt an „Keep a Cha
 ### Hinweise
 
 - Neue Variablen: `MAPBOX_TOKEN` (Server), `NEXT_PUBLIC_MAPBOX_TOKEN` (Kartenbilder, in Mapbox auf die Domain beschränken), optional `MAPBOX_GEOCODING_PERMANENT`
+
+## [M6] Mitarbeiter-App (PWA) – 2026-11-20
+
+### Hinzugefügt
+
+- Entscheidungen: App-Sprachen Deutsch, Englisch, Türkisch, Polnisch, Rumänisch; freie Positionen nur als Vorschlag ohne Preis, das Büro prüft
+- Migration `mitarbeiter_app`: `zeitbuchung` (Check-in/-out, Pausen) mit `zeitbuchung_protokoll`, `einsatz_aufgabe` (Checkliste), `einsatz_meldung` (Mangel, Material leer), `einsatz_foto` (+ privater Bucket `einsatzfotos`), `einsatz_position` (Vor-Ort-Leistungen), `stammdaten_verlauf`; Notiz am Einsatz
+- App-Funktionen `app_*` (Zuweisung geprüft, idempotent über die Geräte-ID, „letzte Änderung gewinnt“ für Checkliste und Notiz); Büro-Funktionen `zeitbuchung_korrigieren/_stornieren/_nachtragen` nur mit Grund und Protokoll
+- Fachlogik `src/domain/zeiterfassung.ts` (Arbeitszeit, Pausen nach § 4 ArbZG, über 10 Stunden, offene Buchungen) und `src/domain/app.ts` (Tagesdaten, Offline-Aktionen, Packliste, QR-Prüfung, Navigation)
+- PWA: Manifest, Icons (`scripts/icons.mjs`), Service Worker (App-Seite und statische Dateien offline), Installationshinweis inkl. iPhone
+- Offline: Tagesdaten und Warteschlange in IndexedDB (Dexie), Fotos als Blob bis zum Hochladen, Abgleich in Reihenfolge mit wachsender Wartezeit, endgültige Fehler sichtbar und verwerfbar
+- App-Oberfläche: Heute/Morgen in Tourreihenfolge, Arbeitszeit mit Pause, Karte, Packliste, „Navigation starten“ (Google Maps oder Apple Karten), QR-Check-in (Kamera) oder ohne QR, Checkliste mit Pflichtfoto, Fotos, Mängel mit Foto, Material leer, Notiz, Leistung aus Preisliste oder frei mit Unterschrift bzw. mündlich, Stammdaten-Korrektur (Zugang, Fensteranzahl), Auschecken mit Hinweis auf offene Punkte, Sprachwahl
+- Übersetzungen `src/lib/i18n` (de, en, tr, pl, ro) mit Test auf Vollständigkeit und Platzhalter; Schrift mit `latin-ext`
+- Büro: „Rückmeldungen“ (freie Leistungen bepreisen oder ablehnen, dauerhafte Leistungen in den Vertrag übernehmen, Mängel/Material mit Fotos erledigen, Stammdaten-Verlauf), „Zeiten“ (Wochenübersicht, Tagesdetail, Korrigieren/Stornieren/Nachtragen mit Grund, Protokoll), QR-Code je Objekt zum Drucken, Link `/qr/<kennung>` öffnet die App
+- Tests: Zeiterfassung, Offline-Aktionen, Warteschlange (mit fake-indexeddb), Übersetzungen, DB-Tests und pgTAP `006_mitarbeiter_app`, E2E für Manifest/Service Worker/geschützte Seiten
+
+### Offen
+
+- Bestätigungs-Mail an den Kunden bei mündlich vereinbarter Leistung (kommt mit dem Mail-Versand in M7)
+- „Dauerhaft“ vereinbarte Leistungen legt das Büro selbst als neue Vertragsversion an (Liste unter Rückmeldungen)

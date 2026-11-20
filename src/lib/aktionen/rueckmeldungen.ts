@@ -88,7 +88,6 @@ export async function meldungErledigt(id: string): Promise<AktionErgebnis> {
   return { ok: true, meldung: "Erledigt." };
 }
 
-
 // ---------------------------------------------------------------------------
 // Zeiten (nur Büro, immer mit Grund; Protokoll entsteht in der Datenbank)
 // ---------------------------------------------------------------------------
