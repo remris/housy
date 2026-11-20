@@ -126,7 +126,7 @@ Fertig, wenn: eine Woche für 3 Mitarbeiter ohne Konflikte geplant ist und die T
 
 ### M6 Mitarbeiter-App (PWA)
 
-- [ ] Installierbar, Login, Sprache je Mitarbeiter (Start: Deutsch, Englisch; weitere über Übersetzungsdateien)
+- [ ] Installierbar, Login, Sprache je Mitarbeiter (Start: Deutsch, Englisch, Türkisch, Polnisch, Rumänisch; weitere über Übersetzungsdateien)
 - [ ] Tagesansicht in Tourreihenfolge mit Karte, Zeitfenster, Zugang, Packliste, „Navigation starten“
 - [ ] Einsatz: QR-Check-in/-out, Checkliste, Fotos, Mängel, „Material leer“, Notizen, Stammdaten-Korrekturen
 - [ ] Vor-Ort-Änderung: Leistung aus Preisliste, „nur heute“ oder „dauerhaft“, Unterschrift oder Bestätigungs-Mail
@@ -222,6 +222,6 @@ Diese Punkte brauche ich von dir, spätestens zum genannten Meilenstein.
 - [ ] Produktname und Domain (vor M11)
 - [x] Google Maps oder Mapbox (vor M5) → **Mapbox** (ADR 0002)
 - [x] Neues Repo oder Teile aus Rently Yours übernehmen (vor M0) → **neues Repo** (ADR 0001)
-- [ ] Welche Sprachen die Mitarbeiter-App zum Start braucht (vor M6)
-- [ ] Sollen Mitarbeiter auch freie Positionen anlegen dürfen oder nur aus der Preisliste (vor M6)
+- [x] Welche Sprachen die Mitarbeiter-App zum Start braucht (vor M6) → **Deutsch, Englisch, Türkisch, Polnisch, Rumänisch**; Arabisch nach dem Pilot
+- [x] Sollen Mitarbeiter auch freie Positionen anlegen dürfen oder nur aus der Preisliste (vor M6) → **ja, als Vorschlag ohne Preis**, das Büro ordnet zu oder lehnt ab; erst dann abrechenbar
 - [ ] Pilotbetriebe: wer, ab wann (vor M12)
