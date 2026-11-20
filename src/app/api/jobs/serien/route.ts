@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { heuteIso } from "@/domain/datum";
+import { inventarLauf } from "@/lib/inventar";
 import { planeEinsaetze } from "@/lib/serienplanung";
 import { createAdminClient } from "@/lib/supabase/admin";
 
@@ -7,8 +8,9 @@ export const dynamic = "force-dynamic";
 export const maxDuration = 300;
 
 /**
- * Täglicher Job (Vercel Cron, siehe vercel.json): beendet abgelaufene Verträge und
- * rollt den Planungshorizont aller aktiven Verträge um einen Tag weiter.
+ * Täglicher Job (Vercel Cron, siehe vercel.json): beendet abgelaufene Verträge,
+ * rollt den Planungshorizont aller aktiven Verträge um einen Tag weiter und holt im Inventar
+ * verpasste Abbuchungen nach (Auto-Wechsel für Kleinteile).
  * Geschützt über CRON_SECRET (Vercel sendet "Authorization: Bearer <CRON_SECRET>").
  */
 export async function GET(request: NextRequest) {
@@ -45,5 +47,7 @@ export async function GET(request: NextRequest) {
       summe.fehler.push(`${v.id}: ${(e as Error).message}`);
     }
   }
-  return NextResponse.json({ ...summe, beendet: beendet?.length ?? 0 });
+  // Inventar: verpasste Abbuchungen nachholen, Auto-Wechsel für Kleinteile
+  const inventar = await inventarLauf(admin, heute).catch((e: Error) => ({ fehler: e.message }));
+  return NextResponse.json({ ...summe, beendet: beendet?.length ?? 0, inventar });
 }

@@ -7,6 +7,7 @@ import {
   faelligerMonat,
   monatsZeitraum,
 } from "@/domain/nachweis";
+import { materialAbbuchen } from "@/lib/inventar";
 import type { Database } from "@/lib/supabase/database.types";
 import { bestaetigungenSenden } from "./bestaetigung";
 import { nachweisErstellen } from "./erstellen";
@@ -21,7 +22,12 @@ const NACHLAUF_TAGE = 14;
  * Versand je Einsatz und Bestätigungen für mündlich vereinbarte Leistungen.
  */
 export async function nachEinsaetzen(admin: Admin, einsatzIds: string[]) {
-  if (einsatzIds.length === 0) return { nachweise: 0, bestaetigungen: 0 };
+  if (einsatzIds.length === 0) return { nachweise: 0, bestaetigungen: 0, abbuchungen: 0 };
+  // Material zuerst abbuchen (unabhängig vom Nachweis-Versand)
+  const abbuchungen = await materialAbbuchen(admin, einsatzIds).catch((e: Error) => {
+    console.error("Abbuchung fehlgeschlagen", e);
+    return 0;
+  });
   const { data } = await admin
     .from("einsatz")
     .select("id, betrieb_id, status, objekt(kunde(nachweis_versand))")
@@ -39,7 +45,7 @@ export async function nachEinsaetzen(admin: Admin, einsatzIds: string[]) {
     if (!r.uebersprungen) nachweise++;
   }
   const b = await bestaetigungenSenden(admin, { einsatzIds });
-  return { nachweise, bestaetigungen: b.gesendet };
+  return { nachweise, bestaetigungen: b.gesendet, abbuchungen };
 }
 
 export type LaufErgebnis = {

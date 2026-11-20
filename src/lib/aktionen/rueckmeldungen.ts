@@ -5,6 +5,7 @@ import type { z } from "zod";
 import { berlinZuIso } from "@/domain/zeiterfassung";
 import { type AktionErgebnis, dbFehler, fehler, pruefe } from "@/lib/aktion";
 import { bueroKontext } from "@/lib/auth";
+import { materialAbbuchen } from "@/lib/inventar";
 import { bestaetigungenSenden } from "@/lib/nachweise/bestaetigung";
 import type { TablesUpdate } from "@/lib/supabase/database.types";
 import {
@@ -162,6 +163,10 @@ export async function zeitNachtragen(
           ? ["zugewiesen", "begonnen", "unterwegs"]
           : ["geplant", "zugewiesen", "unterwegs"],
       );
+  }
+  if (d.einsatz_id && d.art === "checkout") {
+    const admin = createAdminClient();
+    if (admin) await materialAbbuchen(admin, [d.einsatz_id]).catch(() => 0);
   }
   neuLadenZeiten();
   return { ok: true, meldung: "Buchung nachgetragen." };
