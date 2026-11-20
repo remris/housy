@@ -121,6 +121,345 @@ export type Database = {
             },
           ];
       };
+      anfrage: {
+        Row: {
+          id: string;
+          betrieb_id: string;
+          quelle: string;
+          status: Database["public"]["Enums"]["anfragestatus"];
+          kundentyp: Database["public"]["Enums"]["kundentyp"];
+          name: string;
+          firma: string | null;
+          email: string | null;
+          telefon: string | null;
+          strasse: string | null;
+          plz: string | null;
+          ort: string | null;
+          leistung: string | null;
+          nachricht: string | null;
+          wunschtermin: string | null;
+          datenschutz_am: string | null;
+          kunde_id: string | null;
+          objekt_id: string | null;
+          notiz_buero: string | null;
+          erstellt_am: string;
+          aktualisiert_am: string;
+        };
+        Insert: {
+          id?: string;
+          betrieb_id: string;
+          quelle?: string;
+          status?: Database["public"]["Enums"]["anfragestatus"];
+          kundentyp?: Database["public"]["Enums"]["kundentyp"];
+          name: string;
+          firma?: string | null;
+          email?: string | null;
+          telefon?: string | null;
+          strasse?: string | null;
+          plz?: string | null;
+          ort?: string | null;
+          leistung?: string | null;
+          nachricht?: string | null;
+          wunschtermin?: string | null;
+          datenschutz_am?: string | null;
+          kunde_id?: string | null;
+          objekt_id?: string | null;
+          notiz_buero?: string | null;
+          erstellt_am?: string;
+          aktualisiert_am?: string;
+        };
+        Update: {
+          id?: string;
+          betrieb_id?: string;
+          quelle?: string;
+          status?: Database["public"]["Enums"]["anfragestatus"];
+          kundentyp?: Database["public"]["Enums"]["kundentyp"];
+          name?: string;
+          firma?: string | null;
+          email?: string | null;
+          telefon?: string | null;
+          strasse?: string | null;
+          plz?: string | null;
+          ort?: string | null;
+          leistung?: string | null;
+          nachricht?: string | null;
+          wunschtermin?: string | null;
+          datenschutz_am?: string | null;
+          kunde_id?: string | null;
+          objekt_id?: string | null;
+          notiz_buero?: string | null;
+          erstellt_am?: string;
+          aktualisiert_am?: string;
+        };
+        Relationships: [
+            {
+              foreignKeyName: "anfrage_betrieb_id_fkey";
+              columns: ["betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "betrieb";
+              referencedColumns: ["id"];
+            },
+            {
+              foreignKeyName: "anfrage_kunde_id_betrieb_id_fkey";
+              columns: ["kunde_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "kunde";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+            {
+              foreignKeyName: "anfrage_objekt_id_betrieb_id_fkey";
+              columns: ["objekt_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "objekt";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+          ];
+      };
+      angebot: {
+        Row: {
+          id: string;
+          betrieb_id: string;
+          nummer: number;
+          anfrage_id: string | null;
+          kunde_id: string | null;
+          objekt_id: string | null;
+          kundentyp: Database["public"]["Enums"]["kundentyp"];
+          empfaenger_name: string;
+          empfaenger_firma: string | null;
+          empfaenger_email: string | null;
+          empfaenger_telefon: string | null;
+          strasse: string | null;
+          plz: string | null;
+          ort: string | null;
+          objekt_name: string | null;
+          objekt_strasse: string | null;
+          objekt_plz: string | null;
+          objekt_ort: string | null;
+          titel: string;
+          einleitung: string | null;
+          beginn: string;
+          gueltig_bis: string | null;
+          abrechnungsart: Database["public"]["Enums"]["abrechnungsart"];
+          pauschale_cent: number | null;
+          laufzeit_monate: number;
+          kuendigungsfrist_monate: number;
+          status: Database["public"]["Enums"]["angebotsstatus"];
+          freigabe_token: string;
+          versendet_am: string | null;
+          angenommen_am: string | null;
+          angenommen_name: string | null;
+          unterschrift_bild: string | null;
+          abgelehnt_am: string | null;
+          ablehngrund: string | null;
+          vertrag_id: string | null;
+          erstellt_am: string;
+          aktualisiert_am: string;
+        };
+        Insert: {
+          id?: string;
+          betrieb_id: string;
+          nummer?: number;
+          anfrage_id?: string | null;
+          kunde_id?: string | null;
+          objekt_id?: string | null;
+          kundentyp?: Database["public"]["Enums"]["kundentyp"];
+          empfaenger_name: string;
+          empfaenger_firma?: string | null;
+          empfaenger_email?: string | null;
+          empfaenger_telefon?: string | null;
+          strasse?: string | null;
+          plz?: string | null;
+          ort?: string | null;
+          objekt_name?: string | null;
+          objekt_strasse?: string | null;
+          objekt_plz?: string | null;
+          objekt_ort?: string | null;
+          titel: string;
+          einleitung?: string | null;
+          beginn: string;
+          gueltig_bis?: string | null;
+          abrechnungsart?: Database["public"]["Enums"]["abrechnungsart"];
+          pauschale_cent?: number | null;
+          laufzeit_monate?: number;
+          kuendigungsfrist_monate?: number;
+          status?: Database["public"]["Enums"]["angebotsstatus"];
+          freigabe_token?: string;
+          versendet_am?: string | null;
+          angenommen_am?: string | null;
+          angenommen_name?: string | null;
+          unterschrift_bild?: string | null;
+          abgelehnt_am?: string | null;
+          ablehngrund?: string | null;
+          vertrag_id?: string | null;
+          erstellt_am?: string;
+          aktualisiert_am?: string;
+        };
+        Update: {
+          id?: string;
+          betrieb_id?: string;
+          nummer?: number;
+          anfrage_id?: string | null;
+          kunde_id?: string | null;
+          objekt_id?: string | null;
+          kundentyp?: Database["public"]["Enums"]["kundentyp"];
+          empfaenger_name?: string;
+          empfaenger_firma?: string | null;
+          empfaenger_email?: string | null;
+          empfaenger_telefon?: string | null;
+          strasse?: string | null;
+          plz?: string | null;
+          ort?: string | null;
+          objekt_name?: string | null;
+          objekt_strasse?: string | null;
+          objekt_plz?: string | null;
+          objekt_ort?: string | null;
+          titel?: string;
+          einleitung?: string | null;
+          beginn?: string;
+          gueltig_bis?: string | null;
+          abrechnungsart?: Database["public"]["Enums"]["abrechnungsart"];
+          pauschale_cent?: number | null;
+          laufzeit_monate?: number;
+          kuendigungsfrist_monate?: number;
+          status?: Database["public"]["Enums"]["angebotsstatus"];
+          freigabe_token?: string;
+          versendet_am?: string | null;
+          angenommen_am?: string | null;
+          angenommen_name?: string | null;
+          unterschrift_bild?: string | null;
+          abgelehnt_am?: string | null;
+          ablehngrund?: string | null;
+          vertrag_id?: string | null;
+          erstellt_am?: string;
+          aktualisiert_am?: string;
+        };
+        Relationships: [
+            {
+              foreignKeyName: "angebot_anfrage_id_betrieb_id_fkey";
+              columns: ["anfrage_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "anfrage";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+            {
+              foreignKeyName: "angebot_betrieb_id_fkey";
+              columns: ["betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "betrieb";
+              referencedColumns: ["id"];
+            },
+            {
+              foreignKeyName: "angebot_kunde_id_betrieb_id_fkey";
+              columns: ["kunde_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "kunde";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+            {
+              foreignKeyName: "angebot_objekt_id_betrieb_id_fkey";
+              columns: ["objekt_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "objekt";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+            {
+              foreignKeyName: "angebot_vertrag_id_betrieb_id_fkey";
+              columns: ["vertrag_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "vertrag";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+          ];
+      };
+      angebotsleistung: {
+        Row: {
+          id: string;
+          betrieb_id: string;
+          angebot_id: string;
+          pos: number;
+          vorlage_id: string;
+          preis_id: string | null;
+          bezeichnung: string;
+          beschreibung: string | null;
+          frequenz: Database["public"]["Enums"]["frequenz"];
+          intervall: number;
+          wochentage: number[];
+          monatstag: number | null;
+          menge_je_einsatz: number;
+          einheit: Database["public"]["Enums"]["preiseinheit"];
+          preis_cent: number | null;
+          menge_m2: number | null;
+          menge_fenster: number | null;
+        };
+        Insert: {
+          id?: string;
+          betrieb_id: string;
+          angebot_id: string;
+          pos?: number;
+          vorlage_id: string;
+          preis_id?: string | null;
+          bezeichnung: string;
+          beschreibung?: string | null;
+          frequenz?: Database["public"]["Enums"]["frequenz"];
+          intervall?: number;
+          wochentage?: number[];
+          monatstag?: number | null;
+          menge_je_einsatz?: number;
+          einheit?: Database["public"]["Enums"]["preiseinheit"];
+          preis_cent?: number | null;
+          menge_m2?: number | null;
+          menge_fenster?: number | null;
+        };
+        Update: {
+          id?: string;
+          betrieb_id?: string;
+          angebot_id?: string;
+          pos?: number;
+          vorlage_id?: string;
+          preis_id?: string | null;
+          bezeichnung?: string;
+          beschreibung?: string | null;
+          frequenz?: Database["public"]["Enums"]["frequenz"];
+          intervall?: number;
+          wochentage?: number[];
+          monatstag?: number | null;
+          menge_je_einsatz?: number;
+          einheit?: Database["public"]["Enums"]["preiseinheit"];
+          preis_cent?: number | null;
+          menge_m2?: number | null;
+          menge_fenster?: number | null;
+        };
+        Relationships: [
+            {
+              foreignKeyName: "angebotsleistung_angebot_id_betrieb_id_fkey";
+              columns: ["angebot_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "angebot";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+            {
+              foreignKeyName: "angebotsleistung_betrieb_id_fkey";
+              columns: ["betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "betrieb";
+              referencedColumns: ["id"];
+            },
+            {
+              foreignKeyName: "angebotsleistung_preis_id_betrieb_id_fkey";
+              columns: ["preis_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "preisliste";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+            {
+              foreignKeyName: "angebotsleistung_vorlage_id_betrieb_id_fkey";
+              columns: ["vorlage_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "auftragsvorlage";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+          ];
+      };
       ansprechpartner: {
         Row: {
           id: string;
@@ -494,6 +833,11 @@ export type Database = {
           datev_beraternummer: number | null;
           datev_mandantennummer: number | null;
           kontenrahmen: string;
+          oeffentlich_kennung: string;
+          anfrage_aktiv: boolean;
+          buchung: Json;
+          datenschutz_url: string | null;
+          impressum_url: string | null;
         };
         Insert: {
           id?: string;
@@ -532,6 +876,11 @@ export type Database = {
           datev_beraternummer?: number | null;
           datev_mandantennummer?: number | null;
           kontenrahmen?: string;
+          oeffentlich_kennung?: string;
+          anfrage_aktiv?: boolean;
+          buchung?: Json;
+          datenschutz_url?: string | null;
+          impressum_url?: string | null;
         };
         Update: {
           id?: string;
@@ -570,6 +919,11 @@ export type Database = {
           datev_beraternummer?: number | null;
           datev_mandantennummer?: number | null;
           kontenrahmen?: string;
+          oeffentlich_kennung?: string;
+          anfrage_aktiv?: boolean;
+          buchung?: Json;
+          datenschutz_url?: string | null;
+          impressum_url?: string | null;
         };
         Relationships: [];
       };
@@ -2820,6 +3174,38 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      anfrage_stellen:
+        | {
+          Args: {
+            p_kennung: string;
+            p_daten: Json;
+          };
+          Returns: string;
+        };
+      angebot_ablehnen:
+        | {
+          Args: {
+            p_token: string;
+            p_grund: string;
+          };
+          Returns: undefined;
+        };
+      angebot_annehmen:
+        | {
+          Args: {
+            p_token: string;
+            p_name: string;
+            p_bild: string;
+          };
+          Returns: Json;
+        };
+      angebot_info:
+        | {
+          Args: {
+            p_token: string;
+          };
+          Returns: Json;
+        };
       app_abnahme:
         | {
           Args: {
@@ -2952,6 +3338,40 @@ export type Database = {
             p_anzeigename?: string;
           };
           Returns: string;
+        };
+      betrieb_oeffentlich:
+        | {
+          Args: {
+            p_kennung: string;
+          };
+          Returns: Json;
+        };
+      buchung_anlegen:
+        | {
+          Args: {
+            p_kennung: string;
+            p_daten: Json;
+          };
+          Returns: Json;
+        };
+      buchung_kalender:
+        | {
+          Args: {
+            p_kennung: string;
+            p_von: string;
+            p_bis: string;
+          };
+          Returns: Json;
+        };
+      buchung_preis:
+        | {
+          Args: {
+            p_einstellungen: Json;
+            p_anzahl: Json;
+            p_rahmen: boolean;
+            p_kleinunternehmer: boolean;
+          };
+          Returns: Json;
         };
       darf_einsatzfoto:
         | {
@@ -3126,6 +3546,8 @@ export type Database = {
     Enums: {
       abrechnungsart: "pauschale" | "aufwand" | "einzelauftrag";
       abwesenheitsart: "urlaub" | "krank" | "sonstiges";
+      anfragestatus: "neu" | "in_bearbeitung" | "angebot" | "gewonnen" | "verloren";
+      angebotsstatus: "entwurf" | "versendet" | "angenommen" | "abgelehnt";
       artikelart: "verbrauch" | "verschleiss" | "geraet";
       bedarfsbezug: "einsatz" | "m2" | "fenster" | "stunde";
       bewegungsart: "zugang" | "abgang_einsatz" | "umbuchung" | "korrektur" | "wechsel";
