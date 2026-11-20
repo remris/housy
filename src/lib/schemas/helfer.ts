@@ -55,11 +55,15 @@ export const ganzzahl = (min: number, max: number) =>
 
 export const uuid = z.string().uuid();
 
-/** Euro-Eingabe ("12,50" / "1.234,5 €") → Cent; leer → null. */
+/**
+ * Euro-Eingabe ("12,50" / "1.234,5 €") → Cent; leer → null.
+ * Eine Zahl ist schon ein Cent-Betrag: Das Formular schickt die geprüften Werte an die Server
+ * Action, die dasselbe Schema noch einmal anwendet.
+ */
 export const optEuro = z
   .union([z.string(), z.number()])
   .transform((v, ctx) => {
-    if (typeof v === "number") return Math.round(v * 100);
+    if (typeof v === "number") return Math.round(v);
     const t = v.trim();
     if (t === "") return null;
     const cent = parseEuro(t);
