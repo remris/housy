@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [tsconfigPaths(), react()],
   test: {
     environment: "node",
-    include: ["src/**/*.test.{ts,tsx}", "tests/db/**/*.test.ts"],
+    include: ["src/**/*.test.{ts,tsx}", "tests/db/**/*.test.ts", "tests/erechnung/**/*.test.ts"],
     setupFiles: ["./vitest.setup.ts"],
     testTimeout: 30_000,
     hookTimeout: 60_000,

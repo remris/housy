@@ -18,7 +18,8 @@
     "db:reset": "supabase db reset",
     "db:test": "supabase test db",
     "db:types": "supabase gen types typescript --local > src/lib/supabase/database.types.ts",
-    "db:types:pglite": "node scripts/db-types-pglite.mjs"
+    "db:types:pglite": "node scripts/db-types-pglite.mjs",
+    "erechnung:pruefen": "bash scripts/kosit.sh"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",
@@ -32,6 +33,7 @@
     "lucide-react": "^1.77.0",
     "next": "15.5.29",
     "next-themes": "^0.4.6",
+    "pdf-lib": "^1.17.1",
     "qrcode": "^1.5.4",
     "react": "19.1.0",
     "react-dom": "19.1.0",
@@ -49,6 +51,7 @@
     "@tailwindcss/postcss": "^4",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.3",
+    "@types/jsdom": "^21.1.7",
     "@types/node": "^20",
     "@types/qrcode": "^1.5.6",
     "@types/react": "^19",

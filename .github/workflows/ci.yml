@@ -42,3 +42,18 @@ jobs:
           version: latest
       - run: supabase db start
       - run: supabase test db
+
+  erechnung:
+    name: E-Rechnung (KoSIT-Validator, XRechnung)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - uses: actions/cache@v4
+        with:
+          path: .cache/kosit
+          key: kosit-${{ hashFiles('scripts/kosit.sh') }}
+      - run: bash scripts/kosit.sh
