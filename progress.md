@@ -1,6 +1,6 @@
 # Housy – Fortschritt
 
-Stand: 2026-11-20 · aktueller Branch: `m8-inventar`
+Stand: 2026-11-20 · aktueller Branch: `m9-rechnung`
 
 ## Wo wir stehen
 
@@ -15,16 +15,17 @@ Stand: 2026-11-20 · aktueller Branch: `m8-inventar`
 | M6 Mitarbeiter-App (PWA)         | `m6-mitarbeiter-app`   | fertig (Abnahme auf echtem Handy steht noch aus)            |
 | M7 Leistungsnachweis und Zeiten  | `m7-leistungsnachweis` | fertig (echter Mail-Versand ungetestet, Resend-Konto fehlt) |
 | M8 Inventar und Prognose         | `m8-inventar`          | fertig (Szenarien grün; echte Daten ungetestet)             |
-| M9 Rechnung und E-Rechnung       | –                      | als Nächstes                                                |
+| M9 Rechnung und E-Rechnung       | `m9-rechnung`          | fertig bis auf KoSIT-Lauf (Validator noch nicht gestartet)  |
+| M10 Anfrage, Angebot, Buchung    | –                      | als Nächstes                                                |
 
 Die Branches bauen aufeinander auf (m1 von m0, m2 von m1 …). Es reicht, den neuesten Branch nach
 `main` zu mergen (enthält alles), oder der Reihe nach.
 
 ## Nächster Schritt
 
-M9: Rechnungen mit fortlaufenden Nummernkreisen und Storno, Monatslauf aus Vertragsversionen (anteilig
-bei Wechsel im Monat), erledigten Einsätzen nach Aufwand und Nachträgen, Prüfansicht und Versand,
-E-Rechnung (XRechnung/ZUGFeRD). Keine offene Entscheidung.
+Erst die E-Rechnungs-Fixtures mit dem KoSIT-Validator prüfen (`npm run erechnung:pruefen`, lädt
+Validator und XRechnung-Konfiguration von GitHub; in der CI automatisch). Danach M10: Anfrage,
+Angebot, Online-Buchung. Keine offene Entscheidung.
 
 ## Was du tun musst
 
@@ -66,7 +67,12 @@ E-Rechnung (XRechnung/ZUGFeRD). Keine offene Entscheidung.
     eintragen (sonst wird vom Zentrallager abgebucht), unter Inventar → Buchen die Anfangsbestände als
     Zugang bzw. Inventur erfassen und je Abzieher, Mopp oder Leiter ein Werkzeug mit aktuellem
     Zählerstand bzw. Prüftermin anlegen.
-12. **Übersetzungen gegenlesen lassen** (Türkisch, Polnisch, Rumänisch in `src/lib/i18n/`), am
+12. **Rechnungen einrichten** (neu in M9): Firmendaten vollständig (Adresse, Telefon, E-Mail,
+    Steuernummer oder USt-IdNr., IBAN), unter Einstellungen → Rechnungen Präfix, Ansprechpartner und
+    DATEV-Berater-/Mandantennummer; bei Kunden die Rechnungs-E-Mail (Pflicht in der XRechnung) und bei
+    Behörden die Leitweg-ID. **Vor dem Echtbetrieb vom Steuerberater prüfen lassen**: Rechnungsbild,
+    Erlöskonten im DATEV-Export (Testimport), Kleinunternehmer-Hinweis.
+13. **Übersetzungen gegenlesen lassen** (Türkisch, Polnisch, Rumänisch in `src/lib/i18n/`), am
     besten von Mitarbeitern im Pilot. Die Texte sind von Claude übersetzt.
 
 ## Wie getestet wird
@@ -80,16 +86,18 @@ E-Rechnung (XRechnung/ZUGFeRD). Keine offene Entscheidung.
   Validierung, Manifest/Service Worker).
 - CI (`.github/workflows/ci.yml`): Lint, Format, Typecheck, Unit/DB, Build, E2E + DB-Job mit Supabase CLI.
 
-Letzter lokaler Lauf (M8): Lint, Format, Typecheck grün · 244 Unit-/DB-Tests grün (darunter die beiden
-Konzept-Szenarien Inventar) · Build grün · 70 E2E grün · App-Packliste mit Ladevorschlag, „Einladen“,
-Werkzeugzähler mit „Gewechselt“ und Prüfwarnung mit Beispieldaten in Handy-Breite geprüft.
+Letzter lokaler Lauf (M9): Lint, Format, Typecheck grün · 277 Unit-/DB-Tests grün (darunter der
+Monatslauf für drei Testkunden) · Build grün · 74 E2E grün · Rechnungs-PDFs (Pauschale anteilig, Behörde,
+Kleinunternehmer, Storno) erzeugt und angesehen, ZUGFeRD-XML eingebettet.
 
 **Nicht geprüft:**
 
 - Abläufe mit echter Supabase (Registrierung, Login, Speichern, Uploads, Vertrag aktivieren →
   Einsätze, Wochenplan/Tour mit echten Daten, App gegen echte Daten, Büro-Seiten „Rückmeldungen“,
   „Zeiten“, „Arbeitszeitliste“, „Nachweise“, Mängel auf der Objekt-Seite, alle Inventar-Seiten,
-  Abbuchung nach dem Auschecken). Dafür fehlen Docker bzw. die
+  Abbuchung nach dem Auschecken, Rechnungen: Monatslauf, Festschreiben, Ablage, Versand, DATEV).
+- E-Rechnungen mit dem KoSIT-Validator (Fixtures liegen in `tests/erechnung/fixtures`), PDF/A-3 mit
+  veraPDF, DATEV-Testimport beim Steuerberater. Dafür fehlen Docker bzw. die
   Migrationen im gehosteten Projekt. Diese Seiten sind nur über Typecheck, Build und Tests der
   Bausteine abgesichert, nicht im Browser mit Daten angesehen.
 - Nachweis-Erzeugung end-to-end (Laden aus der DB, Ablage im Bucket, Versand). Getestet sind PDF,
@@ -116,7 +124,7 @@ Werkzeugzähler mit „Gewechselt“ und Prüfwarnung mit Beispieldaten in Handy
 - Migrationen (alle noch nicht im gehosteten Projekt):
   `20261120100000_mandanten`, `…100100_storage_logos`, `…110000_kunden_objekte`,
   `…120000_vorlagen_artikel_preise`, `…130000_vertraege_einsaetze`, `…140000_planung`,
-  `…150000_mitarbeiter_app`, `…160000_nachweise`, `…170000_inventar`.
+  `…150000_mitarbeiter_app`, `…160000_nachweise`, `…170000_inventar`, `…180000_rechnungen`.
 - Typen: `npm run db:types` (mit Docker, maßgeblich) oder `npm run db:types:pglite` (ohne Docker).
 - Muster: jede Fachtabelle `betrieb_id` + RLS über `ist_mitglied()`/`ist_buero()`/`ist_inhaber()`;
   Kind-Tabellen mit zusammengesetztem FK `(parent_id, betrieb_id)`.
@@ -143,5 +151,11 @@ Werkzeugzähler mit „Gewechselt“ und Prüfwarnung mit Beispieldaten in Handy
   (ohne Geheimnisse, auch im Browser genutzt). Bestand nie direkt schreiben, nur über `lagerbewegung`
   (Trigger). Verschleiß zählt über Werkzeuge, nicht über Abbuchungen; nur Verbrauchsmaterial wird je
   Einsatz abgebucht. Werkzeuge eines Fahrzeugs zählen die Einsätze seines Standardfahrers.
+- Rechnungen: Fachlogik `src/domain/rechnung.ts`, E-Rechnung `erechnung.ts`, DATEV `datev.ts`;
+  Server in `src/lib/rechnung/` (Lauf, Dokument/Festschreiben/Ablage, Versand). Festgeschriebenes nie
+  ändern – Storno. Ändert sich das XML, Fixtures mit `FIXTURES_AKTUALISIEREN=1 npm test` neu schreiben
+  und mit `npm run erechnung:pruefen` prüfen. Siehe ADR 0003.
+- Formular-Schemas laufen zweimal (Browser, dann Server Action): Transformationen müssen ihr eigenes
+  Ergebnis wieder akzeptieren (Test `src/lib/schemas/helfer.test.ts`).
 - Mail nur über `src/lib/mail/resend.ts` (ohne Key kein Versand), Texte in `src/lib/mail/texte.ts`.
 - Vorschau im Browser: `.claude/launch.json` startet `npm run start` auf Port 3100 (vorher `npm run build`).

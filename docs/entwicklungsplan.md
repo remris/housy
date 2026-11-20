@@ -163,12 +163,12 @@ Diese Meilensteine machen aus dem Werkzeug ein Produkt, das man verkaufen kann.
 
 ### M9 Rechnung und E-Rechnung
 
-- [ ] `rechnung`, `rechnungsposition`, fortlaufende Nummernkreise je Betrieb, Storno statt Löschen
-- [ ] Fachlogik `domain/rechnung`: Monatslauf aus Vertragsversionen (anteilig bei Wechsel im Monat), erledigten Einsätzen nach Aufwand und Nachträgen
-- [ ] Prüfansicht „Rechnungen für November“, Versand mit einem Klick, Zahlungsstatus manuell
-- [ ] `domain/erechnung`: XRechnung (UBL) und ZUGFeRD (PDF/A-3 mit eingebettetem XML) nach EN 16931; Leitweg-ID für öffentliche Auftraggeber; Kleinunternehmer-Hinweis
-- [ ] Validierung mit dem KoSIT-Validator in der CI (Docker), Testrechnungen als Fixtures
-- [ ] DATEV-Export (CSV) für den Steuerberater
+- [x] `rechnung`, `rechnungsposition`, fortlaufende Nummernkreise je Betrieb, Storno statt Löschen (ADR 0003)
+- [x] Fachlogik `domain/rechnung`: Monatslauf aus Vertragsversionen (anteilig bei Wechsel im Monat), erledigten Einsätzen nach Aufwand und Nachträgen
+- [x] Prüfansicht „Rechnungen für November“, Versand mit einem Klick, Zahlungsstatus manuell
+- [x] `domain/erechnung`: XRechnung (UBL) und ZUGFeRD (PDF/A-3 mit eingebettetem XML) nach EN 16931; Leitweg-ID für öffentliche Auftraggeber; Kleinunternehmer-Hinweis
+- [ ] Validierung mit dem KoSIT-Validator in der CI (Docker), Testrechnungen als Fixtures — **teilweise:** Fixtures, Prüfskript (`npm run erechnung:pruefen`) und CI-Job (Java statt Docker) angelegt, Validator noch nie gelaufen
+- [x] DATEV-Export (CSV) für den Steuerberater
 
 Fertig, wenn: der Monatslauf für drei Testkunden korrekte Rechnungen erzeugt und alle E-Rechnungen den Validator bestehen.
 

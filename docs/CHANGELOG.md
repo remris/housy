@@ -165,3 +165,25 @@ Alle nennenswerten Änderungen je Meilenstein. Format angelehnt an „Keep a Cha
 - Mitarbeiter-App: Packliste mit Fahrzeugbestand und Ladevorschlag in ganzen Gebinden („1 × Kanister einladen“ bucht vom Zentrallager ins Fahrzeug), Werkzeuge mit Zähler und „Gewechselt“, „Ersatz mitnehmen“ wenn der Wechsel heute fällig wird, Warnung bei überfälliger Geräteprüfung am Einsatz (alle 5 Sprachen)
 - Büro „Inventar“: Bestände je Lagerort mit Bedarf pro Woche und Reichweite, Einkaufsliste mit „Bestellt“, offene Bestellungen mit Wareneingang, „Mehr verbraucht als geplant“ aus Leer-Meldungen mit Übernahme für die Objekte, Buchen (Zugang, Umbuchung, Inventur); Werkzeuge mit Zähler, Stufen, Fälligkeit, Wechsel (auch nachträglich datiert), Prüfungen und „Lebensdauer lernt mit“; Lagerorte und Buchungsjournal; Verbrauch je Objekt auf der Objekt-Seite; Dashboard mit knappen Reichweiten und fälligen Werkzeugen/Prüfungen
 - Tests: Szenarien, Lager-, App- und Schema-Tests, DB-Tests und pgTAP `008_inventar`, E2E für die neuen geschützten Seiten
+
+## [M9] Rechnung und E-Rechnung – 2026-11-20
+
+### Hinzugefügt
+
+- Migration `rechnungen`: `rechnung` (Entwurf → festgeschrieben → bezahlt/storniert, eingefrorene Daten, Ablagepfade), `rechnungsposition`, `abrechnung` (gegen Doppelabrechnung von Einsätzen, Nachträgen und Pauschalen), Funktionen `rechnung_festschreiben` (lückenlose Nummer je Jahr über den Nummernkreis) und `rechnung_stornieren` (Gutschrift mit eigener Nummer), Schutz-Trigger (GoBD), privater Bucket `rechnungen` (nur anlegen); Einstellungen Präfix, Ansprechpartner, Fußtext, DATEV-Nummern, Kontenrahmen; E-Rechnungsformat je Kunde
+- Fachlogik `src/domain/rechnung.ts` (Monatslauf je Vertrag: Pauschale taggenau anteilig bei Versionswechsel und Vertragsbeginn/-ende, Aufwand nach Stunden/Fenstern/m²/Einsätzen, Einzelauftrag, Nachträge, Summen je Steuersatz, Pflichthinweise § 19 und § 14b UStG), `src/domain/erechnung.ts` (XRechnung 3.0 als UBL Invoice/CreditNote, CII für ZUGFeRD, Vorprüfung der Pflichtangaben), `src/domain/datev.ts` (Buchungsstapel EXTF 700, Windows-1252)
+- Rechnungs-PDF mit Fußzeile (Bank, Steuernummer), Entwurfs-Wasserzeichen, Stornorechnung; ZUGFeRD durch Einbetten des XML mit pdf-lib (PDF/A-3b-Metadaten, sRGB-OutputIntent)
+- Büro „Rechnungen“: Prüfansicht je Monat mit Monatslauf, Positionen, Hinweisen des Laufs und fehlenden Pflichtangaben, Vorschau-PDF, Position ergänzen/entfernen, „festschreiben und senden“ mit einem Klick, Liste mit PDF, XRechnung, Senden, Bezahlt, Storno; offene Posten; DATEV-Export; Dashboard-Kachel offene Rechnungen; Einstellungen → Rechnungen
+- Versand per Resend: ZUGFeRD-PDF, bei Behörden bzw. Kundeneinstellung zusätzlich XRechnung-XML
+- Testkunden (Hausverwaltung mit Versionswechsel und Nachtrag, Behörde mit Leitweg-ID nach Aufwand, Privatkunde beim Kleinunternehmer) plus Storno als Fixtures in `tests/erechnung/fixtures`; Prüfskript `npm run erechnung:pruefen` (KoSIT-Validator mit XRechnung-Konfiguration) und CI-Job
+- Tests: Monatslauf-Szenarien, E-Rechnung (Struktur, Summen, Kleinunternehmer, Storno, Fixtures aktuell), PDF/ZUGFeRD, DATEV, DB-Tests und pgTAP `009_rechnungen`
+- ADR 0003 Rechnung und E-Rechnung
+
+### Behoben
+
+- Euro-Eingaben in Formularen wurden seit M3 mit 100 multipliziert gespeichert (Formular und Server Action prüfen nacheinander dasselbe Schema; `optEuro` wandelte eine Zahl erneut um). Betroffen waren Preisliste, Vertragspreise, Pauschalen und die Preisprüfung freier Leistungen. Es gab noch keine echten Daten.
+
+### Offen
+
+- KoSIT-Validator noch nicht gelaufen (lokal braucht er einen Download von GitHub, in der CI läuft er beim ersten Push)
+- PDF/A-3-Konformität nicht mit veraPDF geprüft; § 13b UStG, Skonto, Mahnwesen, Abschlagsrechnungen nicht umgesetzt
