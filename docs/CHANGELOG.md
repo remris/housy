@@ -21,6 +21,7 @@ Alle nennenswerten Änderungen je Meilenstein. Format angelehnt an „Keep a Cha
 ## [M1] Betriebe, Benutzer, Rollen – 2026-11-20
 
 ### Hinzugefügt
+
 - Migration `mandanten`: Tabellen `betrieb`, `mitglied` (Rolle Inhaber/Disponent/Mitarbeiter, Sprache), `einladung`
 - RLS-Grundmuster mit `ist_mitglied()`, `hat_rolle()`, `ist_buero()`, `ist_inhaber()` (SECURITY DEFINER)
 - Registrierung per Trigger auf `auth.users`: legt Betrieb + Inhaber an oder nimmt eine Einladung an
@@ -32,3 +33,17 @@ Alle nennenswerten Änderungen je Meilenstein. Format angelehnt an „Keep a Cha
 - Formular-Baukasten (react-hook-form + Zod, gleiche Prüfung in der Server Action), IBAN-Prüfung in `src/domain/iban.ts`
 - Tests: pgTAP `001_mandanten`, lokale DB-Tests mit PGlite (`tests/db`), E2E für Login-Umleitung und Validierung
 - `scripts/db-types-pglite.mjs`: erzeugt `database.types.ts` ohne Docker
+
+## [M2] Kunden und Objekte – 2026-11-20
+
+### Hinzugefügt
+- Migration `kunden_objekte`: `kunde` (Typ Firma/Verwaltung/Privat/Öffentlich, Leitweg-ID mit Formatprüfung),
+  `ansprechpartner`, `objekt` (Adresse, Koordinaten, Zugang, Schlüssel, QR-Kennung), `bereich` (Raumbuch),
+  `fensteraufmass` (Typ, Anzahl, Etage, Rahmen, Hilfsmittel), `objekt_foto` + privater Bucket `objektfotos`
+- Nummernkreise je Betrieb (`naechste_nummer`), fortlaufende Kundennummern; importierte Nummern bleiben erhalten
+- Zusammengesetzte Fremdschlüssel `(parent_id, betrieb_id)`: Kind-Datensätze können nicht an fremden Betrieben hängen
+- RLS: alle Mitglieder lesen, Büro schreibt; Fotos dürfen auch Mitarbeiter hochladen
+- Oberfläche: Kunden- und Objektlisten mit Suche, Detailseiten, Ansprechpartner, Raumbuch, Fensteraufmaß, Fotos
+- CSV-Import (Excel) für Kunden und Objekte: Trennzeichen-/Encoding-Erkennung (UTF-8/Windows-1252),
+  Spalten-Synonyme, Vorschau mit Fehlern je Zeile, Vorlage zum Herunterladen (`src/domain/csv.ts`, `src/domain/import.ts`)
+- Tests: pgTAP `002_kunden_objekte`, PGlite-DB-Tests, pgTAP-Dateien laufen zusätzlich lokal über einen pgTAP-Nachbau

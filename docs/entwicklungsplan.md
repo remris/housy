@@ -84,10 +84,10 @@ Fertig, wenn: zwei Betriebe getrennt arbeiten und die RLS-Tests grün sind.
 
 ### M2 Kunden und Objekte
 
-- [ ] `kunde` (Firma, Verwaltung, Privat; Leitweg-ID optional für XRechnung), `ansprechpartner`
-- [ ] `objekt` mit Adresse, Geokoordinaten, Zugangshinweisen, Fotos
-- [ ] `bereich` (Raumbuch: Name, Fläche m², Bodenart) und `fensteraufmass` (Typ, Anzahl, Etage, Hilfsmittel)
-- [ ] Listen mit Suche, Detailseiten, CSV-Import für Kunden und Objekte
+- [x] `kunde` (Firma, Verwaltung, Privat; Leitweg-ID optional für XRechnung), `ansprechpartner`
+- [x] `objekt` mit Adresse, Geokoordinaten, Zugangshinweisen, Fotos *(Koordinaten vorerst manuell; Geocoding mit der Karten-Entscheidung vor M5)*
+- [x] `bereich` (Raumbuch: Name, Fläche m², Bodenart) und `fensteraufmass` (Typ, Anzahl, Etage, Hilfsmittel)
+- [x] Listen mit Suche, Detailseiten, CSV-Import für Kunden und Objekte
 
 Fertig, wenn: ein Betrieb seine Kundenliste aus Excel importieren kann.
 
