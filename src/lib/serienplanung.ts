@@ -129,16 +129,17 @@ export async function planeEinsaetze(
   const { data: vorhandene, error } = await supabase
     .from("einsatz")
     .select(
-      "id, datum, vorlage_id, vertragsleistung_id, status, zeitfenster_von, zeitfenster_bis, sollzeit_minuten",
+      "id, datum, serien_datum, vorlage_id, vertragsleistung_id, status, zeitfenster_von, zeitfenster_bis, sollzeit_minuten",
     )
     .eq("vertrag_id", vertragId)
     .eq("quelle", "serie")
-    .gte("datum", stichtag);
+    .gte("serien_datum", stichtag);
   if (error) throw new Error(error.message);
 
   const ist: IstEinsatz[] = (vorhandene ?? []).map((e) => ({
     id: e.id,
     datum: e.datum,
+    serienDatum: e.serien_datum,
     vorlageId: e.vorlage_id,
     leistungId: e.vertragsleistung_id,
     status: e.status,
@@ -174,6 +175,7 @@ export async function planeEinsaetze(
         vertrag_id: vertrag.id,
         vertragsleistung_id: s.leistungId,
         datum: s.datum,
+        serien_datum: s.datum,
         zeitfenster_von: s.zeitfensterVon,
         zeitfenster_bis: s.zeitfensterBis,
         sollzeit_minuten: s.sollzeitMinuten,

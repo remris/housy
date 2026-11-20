@@ -4,6 +4,54 @@ export type Json = string | number | boolean | null | { [key: string]: Json | un
 export type Database = {
   public: {
     Tables: {
+      abwesenheit: {
+        Row: {
+          id: string;
+          betrieb_id: string;
+          mitglied_id: string;
+          art: Database["public"]["Enums"]["abwesenheitsart"];
+          von: string;
+          bis: string;
+          notiz: string | null;
+          erstellt_am: string;
+        };
+        Insert: {
+          id?: string;
+          betrieb_id: string;
+          mitglied_id: string;
+          art?: Database["public"]["Enums"]["abwesenheitsart"];
+          von: string;
+          bis: string;
+          notiz?: string | null;
+          erstellt_am?: string;
+        };
+        Update: {
+          id?: string;
+          betrieb_id?: string;
+          mitglied_id?: string;
+          art?: Database["public"]["Enums"]["abwesenheitsart"];
+          von?: string;
+          bis?: string;
+          notiz?: string | null;
+          erstellt_am?: string;
+        };
+        Relationships: [
+            {
+              foreignKeyName: "abwesenheit_betrieb_id_fkey";
+              columns: ["betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "betrieb";
+              referencedColumns: ["id"];
+            },
+            {
+              foreignKeyName: "abwesenheit_mitglied_id_betrieb_id_fkey";
+              columns: ["mitglied_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "mitglied";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+          ];
+      };
       ansprechpartner: {
         Row: {
           id: string;
@@ -263,6 +311,9 @@ export type Database = {
           aktualisiert_am: string;
           bundesland: string;
           vertragsbedingungen: string | null;
+          breitengrad: number | null;
+          laengengrad: number | null;
+          tour_start: string;
         };
         Insert: {
           id?: string;
@@ -290,6 +341,9 @@ export type Database = {
           aktualisiert_am?: string;
           bundesland?: string;
           vertragsbedingungen?: string | null;
+          breitengrad?: number | null;
+          laengengrad?: number | null;
+          tour_start?: string;
         };
         Update: {
           id?: string;
@@ -317,6 +371,9 @@ export type Database = {
           aktualisiert_am?: string;
           bundesland?: string;
           vertragsbedingungen?: string | null;
+          breitengrad?: number | null;
+          laengengrad?: number | null;
+          tour_start?: string;
         };
         Relationships: [];
       };
@@ -386,6 +443,10 @@ export type Database = {
           notiz: string | null;
           erstellt_am: string;
           aktualisiert_am: string;
+          serien_datum: string | null;
+          reihenfolge: number | null;
+          fahrzeit_minuten: number | null;
+          geplanter_beginn: string | null;
         };
         Insert: {
           id?: string;
@@ -405,6 +466,10 @@ export type Database = {
           notiz?: string | null;
           erstellt_am?: string;
           aktualisiert_am?: string;
+          serien_datum?: string | null;
+          reihenfolge?: number | null;
+          fahrzeit_minuten?: number | null;
+          geplanter_beginn?: string | null;
         };
         Update: {
           id?: string;
@@ -424,6 +489,10 @@ export type Database = {
           notiz?: string | null;
           erstellt_am?: string;
           aktualisiert_am?: string;
+          serien_datum?: string | null;
+          reihenfolge?: number | null;
+          fahrzeit_minuten?: number | null;
+          geplanter_beginn?: string | null;
         };
         Relationships: [
             {
@@ -467,6 +536,47 @@ export type Database = {
               isOneToOne: false;
               referencedRelation: "auftragsvorlage";
               referencedColumns: ["id", "betrieb_id"];
+            },
+          ];
+      };
+      fahrzeug: {
+        Row: {
+          id: string;
+          betrieb_id: string;
+          name: string;
+          kennzeichen: string | null;
+          aktiv: boolean;
+          notiz: string | null;
+          erstellt_am: string;
+          aktualisiert_am: string;
+        };
+        Insert: {
+          id?: string;
+          betrieb_id: string;
+          name: string;
+          kennzeichen?: string | null;
+          aktiv?: boolean;
+          notiz?: string | null;
+          erstellt_am?: string;
+          aktualisiert_am?: string;
+        };
+        Update: {
+          id?: string;
+          betrieb_id?: string;
+          name?: string;
+          kennzeichen?: string | null;
+          aktiv?: boolean;
+          notiz?: string | null;
+          erstellt_am?: string;
+          aktualisiert_am?: string;
+        };
+        Relationships: [
+            {
+              foreignKeyName: "fahrzeug_betrieb_id_fkey";
+              columns: ["betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "betrieb";
+              referencedColumns: ["id"];
             },
           ];
       };
@@ -601,6 +711,48 @@ export type Database = {
               isOneToOne: false;
               referencedRelation: "betrieb";
               referencedColumns: ["id"];
+            },
+          ];
+      };
+      mitarbeiter_verfuegbarkeit: {
+        Row: {
+          id: string;
+          betrieb_id: string;
+          mitglied_id: string;
+          wochentag: number;
+          von: string;
+          bis: string;
+        };
+        Insert: {
+          id?: string;
+          betrieb_id: string;
+          mitglied_id: string;
+          wochentag: number;
+          von: string;
+          bis: string;
+        };
+        Update: {
+          id?: string;
+          betrieb_id?: string;
+          mitglied_id?: string;
+          wochentag?: number;
+          von?: string;
+          bis?: string;
+        };
+        Relationships: [
+            {
+              foreignKeyName: "mitarbeiter_verfuegbarkeit_betrieb_id_fkey";
+              columns: ["betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "betrieb";
+              referencedColumns: ["id"];
+            },
+            {
+              foreignKeyName: "mitarbeiter_verfuegbarkeit_mitglied_id_betrieb_id_fkey";
+              columns: ["mitglied_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "mitglied";
+              referencedColumns: ["id", "betrieb_id"];
             },
           ];
       };
@@ -850,6 +1002,73 @@ export type Database = {
               columns: ["vorlage_id", "betrieb_id"];
               isOneToOne: false;
               referencedRelation: "auftragsvorlage";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+          ];
+      };
+      tour: {
+        Row: {
+          id: string;
+          betrieb_id: string;
+          mitarbeiter_id: string;
+          datum: string;
+          fahrzeug_id: string | null;
+          startzeit: string;
+          rueckfahrt_minuten: number | null;
+          rueckkehr: string | null;
+          fahrzeit_quelle: string | null;
+          berechnet_am: string | null;
+          erstellt_am: string;
+          aktualisiert_am: string;
+        };
+        Insert: {
+          id?: string;
+          betrieb_id: string;
+          mitarbeiter_id: string;
+          datum: string;
+          fahrzeug_id?: string | null;
+          startzeit?: string;
+          rueckfahrt_minuten?: number | null;
+          rueckkehr?: string | null;
+          fahrzeit_quelle?: string | null;
+          berechnet_am?: string | null;
+          erstellt_am?: string;
+          aktualisiert_am?: string;
+        };
+        Update: {
+          id?: string;
+          betrieb_id?: string;
+          mitarbeiter_id?: string;
+          datum?: string;
+          fahrzeug_id?: string | null;
+          startzeit?: string;
+          rueckfahrt_minuten?: number | null;
+          rueckkehr?: string | null;
+          fahrzeit_quelle?: string | null;
+          berechnet_am?: string | null;
+          erstellt_am?: string;
+          aktualisiert_am?: string;
+        };
+        Relationships: [
+            {
+              foreignKeyName: "tour_betrieb_id_fkey";
+              columns: ["betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "betrieb";
+              referencedColumns: ["id"];
+            },
+            {
+              foreignKeyName: "tour_fahrzeug_id_betrieb_id_fkey";
+              columns: ["fahrzeug_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "fahrzeug";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+            {
+              foreignKeyName: "tour_mitarbeiter_id_betrieb_id_fkey";
+              columns: ["mitarbeiter_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "mitglied";
               referencedColumns: ["id", "betrieb_id"];
             },
           ];
@@ -1316,6 +1535,7 @@ export type Database = {
     };
     Enums: {
       abrechnungsart: "pauschale" | "aufwand" | "einzelauftrag";
+      abwesenheitsart: "urlaub" | "krank" | "sonstiges";
       artikelart: "verbrauch" | "verschleiss" | "geraet";
       bedarfsbezug: "einsatz" | "m2" | "fenster" | "stunde";
       einsatzstatus: "geplant" | "zugewiesen" | "unterwegs" | "begonnen" | "erledigt" | "abgesagt";
