@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Seitenkopf } from "@/components/seitenkopf";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatDatum, heuteIso } from "@/domain/datum";
+import { formatEuro } from "@/domain/geld";
 import { bueroKontext } from "@/lib/auth";
 import { type Inventar, ladeInventar } from "@/lib/inventar";
 
@@ -45,6 +46,16 @@ export default async function DashboardSeite() {
       (w.verschleiss &&
         (w.verschleiss.stufe === "faellig" || w.verschleiss.stufe === "ueberfaellig")),
   );
+
+  const { data: offeneRechnungen } = await k.supabase
+    .from("rechnung")
+    .select("brutto_cent, faellig_am")
+    .eq("betrieb_id", k.betriebId)
+    .eq("status", "offen")
+    .eq("art", "rechnung");
+  const heute = heuteIso();
+  const offenSumme = (offeneRechnungen ?? []).reduce((x, r) => x + Number(r.brutto_cent), 0);
+  const ueberfaellig = (offeneRechnungen ?? []).filter((r) => r.faellig_am && r.faellig_am < heute);
 
   const offeneEinrichtung = [
     !betrieb?.steuernummer && "Steuernummer hinterlegen",
@@ -89,6 +100,25 @@ export default async function DashboardSeite() {
               </ul>
               <Link href="/einstellungen" className="mt-3 inline-block text-sm underline">
                 Zu den Einstellungen
+              </Link>
+            </CardContent>
+          </Card>
+        )}
+        {(offeneRechnungen?.length ?? 0) > 0 && (
+          <Card data-offene-rechnungen>
+            <CardHeader>
+              <CardDescription>Offene Rechnungen</CardDescription>
+              <CardTitle className="text-3xl">{formatEuro(offenSumme)}</CardTitle>
+            </CardHeader>
+            <CardContent className="text-sm">
+              {offeneRechnungen!.length} offen
+              {ueberfaellig.length > 0 && (
+                <span className="text-red-700 dark:text-red-300">
+                  , {ueberfaellig.length} überfällig
+                </span>
+              )}
+              <Link href="/rechnungen" className="mt-3 block underline">
+                Zu den Rechnungen
               </Link>
             </CardContent>
           </Card>

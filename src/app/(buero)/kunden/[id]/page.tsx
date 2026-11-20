@@ -59,6 +59,7 @@ export default async function KundeSeite({ params }: { params: Promise<{ id: str
           zahlungsziel_tage: kd.zahlungsziel_tage,
           nachweis_versand: kd.nachweis_versand,
           nachweis_email: kd.nachweis_email ?? "",
+          erechnung: kd.erechnung as "zugferd" | "xrechnung",
           notiz: kd.notiz ?? "",
           aktiv: kd.aktiv,
         }}

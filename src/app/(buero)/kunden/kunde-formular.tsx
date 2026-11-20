@@ -10,7 +10,7 @@ import {
 } from "@/components/formular/formular";
 import { Button } from "@/components/ui/button";
 import { kundeSpeichern } from "@/lib/aktionen/kunden";
-import { KUNDENTYPEN, NACHWEISVERSAND, kundeSchema } from "@/lib/schemas/kunde";
+import { ERECHNUNG, KUNDENTYPEN, NACHWEISVERSAND, kundeSchema } from "@/lib/schemas/kunde";
 import type { z } from "zod";
 
 export type KundeWerte = z.input<typeof kundeSchema>;
@@ -30,6 +30,7 @@ export const LEERER_KUNDE: KundeWerte = {
   zahlungsziel_tage: 14,
   nachweis_versand: "einsatz",
   nachweis_email: "",
+  erechnung: "zugferd",
   notiz: "",
   aktiv: true,
 };
@@ -93,6 +94,13 @@ export function KundeFormular({ id, werte }: { id: string | null; werte: KundeWe
           label="E-Mail für Nachweise"
           type="email"
           hinweis="falls abweichend, z. B. Objektbetreuung"
+        />
+        <AuswahlFeld
+          form={form}
+          name="erechnung"
+          label="E-Rechnung"
+          optionen={ERECHNUNG}
+          hinweis={typ === "oeffentlich" ? "Behörden bekommen immer XRechnung" : undefined}
         />
       </div>
       <TextbereichFeld form={form} name="notiz" label="Notiz" rows={3} />

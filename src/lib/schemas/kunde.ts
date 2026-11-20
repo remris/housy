@@ -14,6 +14,11 @@ export const NACHWEISVERSAND = [
   { wert: "keiner", text: "nicht automatisch" },
 ] as const;
 
+export const ERECHNUNG = [
+  { wert: "zugferd", text: "ZUGFeRD (PDF mit XML)" },
+  { wert: "xrechnung", text: "zusätzlich XRechnung (XML)" },
+] as const;
+
 export const kundentypText = (t: string) => KUNDENTYPEN.find((k) => k.wert === t)?.text ?? t;
 
 export const kundeSchema = z
@@ -40,6 +45,7 @@ export const kundeSchema = z
     zahlungsziel_tage: ganzzahl(0, 365),
     nachweis_versand: z.enum(["einsatz", "monat", "keiner"]),
     nachweis_email: optEmail,
+    erechnung: z.enum(["zugferd", "xrechnung"]),
     notiz: optText(2000),
     aktiv: z.boolean(),
   })
