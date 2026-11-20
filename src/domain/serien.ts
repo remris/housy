@@ -221,7 +221,14 @@ export type IstEinsatz = {
   zeitfensterVon: string | null;
   zeitfensterBis: string | null;
   sollzeitMinuten: number;
+  /**
+   * Termin, unter dem die Serie den Einsatz führt. Weicht vom `datum` ab, wenn die Disposition
+   * ihn von Hand auf einen anderen Tag gelegt hat; der Abgleich ordnet ihn trotzdem richtig zu.
+   */
+  serienDatum?: Iso | null;
 };
+
+const serienTermin = (e: IstEinsatz): Iso => e.serienDatum ?? e.datum;
 
 /** Status, bei denen ein Serien-Einsatz noch automatisch geändert oder gelöscht werden darf. */
 export const AENDERBAR = new Set(["geplant", "zugewiesen"]);
@@ -242,8 +249,8 @@ export function gleicheAb(soll: SollEinsatz[], ist: IstEinsatz[], stichtag: Iso)
   const istNachSchluessel = new Map<string, IstEinsatz>();
   const ergebnis: Abgleich = { anlegen: [], aktualisieren: [], loeschen: [] };
   for (const e of ist) {
-    if (e.datum < stichtag) continue;
-    const k = schluessel(e);
+    if (serienTermin(e) < stichtag) continue;
+    const k = schluessel({ vorlageId: e.vorlageId, datum: serienTermin(e) });
     if (istNachSchluessel.has(k) && AENDERBAR.has(e.status)) {
       ergebnis.loeschen.push(e.id); // Dublette
       continue;

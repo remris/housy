@@ -76,3 +76,11 @@ export function formatDatum(iso: Iso | null | undefined): string {
 }
 
 export const WOCHENTAGE_KURZ = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"] as const;
+
+/** ISO-Kalenderwoche (KW beginnt montags, KW 1 enthält den 4. Januar). */
+export function kalenderwoche(iso: Iso): { jahr: number; woche: number } {
+  const donnerstag = plusTage(iso, 4 - wochentag(iso));
+  const jahr = zuDatum(donnerstag).getUTCFullYear();
+  const woche = Math.floor(tageZwischen(`${jahr}-01-01`, donnerstag) / 7) + 1;
+  return { jahr, woche };
+}
