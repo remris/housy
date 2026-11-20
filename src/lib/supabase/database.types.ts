@@ -314,6 +314,8 @@ export type Database = {
           breitengrad: number | null;
           laengengrad: number | null;
           tour_start: string;
+          nachweis_kopie: boolean;
+          nachweis_fotos: boolean;
         };
         Insert: {
           id?: string;
@@ -344,6 +346,8 @@ export type Database = {
           breitengrad?: number | null;
           laengengrad?: number | null;
           tour_start?: string;
+          nachweis_kopie?: boolean;
+          nachweis_fotos?: boolean;
         };
         Update: {
           id?: string;
@@ -374,6 +378,8 @@ export type Database = {
           breitengrad?: number | null;
           laengengrad?: number | null;
           tour_start?: string;
+          nachweis_kopie?: boolean;
+          nachweis_fotos?: boolean;
         };
         Relationships: [];
       };
@@ -449,6 +455,9 @@ export type Database = {
           geplanter_beginn: string | null;
           notiz_mitarbeiter: string | null;
           notiz_mitarbeiter_am: string | null;
+          abnahme_name: string | null;
+          abnahme_bild: string | null;
+          abnahme_am: string | null;
         };
         Insert: {
           id?: string;
@@ -474,6 +483,9 @@ export type Database = {
           geplanter_beginn?: string | null;
           notiz_mitarbeiter?: string | null;
           notiz_mitarbeiter_am?: string | null;
+          abnahme_name?: string | null;
+          abnahme_bild?: string | null;
+          abnahme_am?: string | null;
         };
         Update: {
           id?: string;
@@ -499,6 +511,9 @@ export type Database = {
           geplanter_beginn?: string | null;
           notiz_mitarbeiter?: string | null;
           notiz_mitarbeiter_am?: string | null;
+          abnahme_name?: string | null;
+          abnahme_bild?: string | null;
+          abnahme_am?: string | null;
         };
         Relationships: [
             {
@@ -662,6 +677,9 @@ export type Database = {
           erstellt_am: string;
           erledigt_am: string | null;
           erledigt_von: string | null;
+          status: Database["public"]["Enums"]["mangelstatus"];
+          notiz_buero: string | null;
+          status_geaendert_am: string | null;
         };
         Insert: {
           id?: string;
@@ -675,6 +693,9 @@ export type Database = {
           erstellt_am?: string;
           erledigt_am?: string | null;
           erledigt_von?: string | null;
+          status?: Database["public"]["Enums"]["mangelstatus"];
+          notiz_buero?: string | null;
+          status_geaendert_am?: string | null;
         };
         Update: {
           id?: string;
@@ -688,6 +709,9 @@ export type Database = {
           erstellt_am?: string;
           erledigt_am?: string | null;
           erledigt_von?: string | null;
+          status?: Database["public"]["Enums"]["mangelstatus"];
+          notiz_buero?: string | null;
+          status_geaendert_am?: string | null;
         };
         Relationships: [
             {
@@ -934,6 +958,8 @@ export type Database = {
           aktiv: boolean;
           erstellt_am: string;
           aktualisiert_am: string;
+          nachweis_versand: Database["public"]["Enums"]["nachweisversand"];
+          nachweis_email: string | null;
         };
         Insert: {
           id?: string;
@@ -956,6 +982,8 @@ export type Database = {
           aktiv?: boolean;
           erstellt_am?: string;
           aktualisiert_am?: string;
+          nachweis_versand?: Database["public"]["Enums"]["nachweisversand"];
+          nachweis_email?: string | null;
         };
         Update: {
           id?: string;
@@ -978,10 +1006,56 @@ export type Database = {
           aktiv?: boolean;
           erstellt_am?: string;
           aktualisiert_am?: string;
+          nachweis_versand?: Database["public"]["Enums"]["nachweisversand"];
+          nachweis_email?: string | null;
         };
         Relationships: [
             {
               foreignKeyName: "kunde_betrieb_id_fkey";
+              columns: ["betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "betrieb";
+              referencedColumns: ["id"];
+            },
+          ];
+      };
+      mail_protokoll: {
+        Row: {
+          id: string;
+          betrieb_id: string;
+          art: string;
+          bezug_id: string;
+          empfaenger: string[];
+          betreff: string;
+          anbieter_id: string | null;
+          fehler: string | null;
+          gesendet_am: string;
+        };
+        Insert: {
+          id?: string;
+          betrieb_id: string;
+          art: string;
+          bezug_id: string;
+          empfaenger: string[];
+          betreff: string;
+          anbieter_id?: string | null;
+          fehler?: string | null;
+          gesendet_am?: string;
+        };
+        Update: {
+          id?: string;
+          betrieb_id?: string;
+          art?: string;
+          bezug_id?: string;
+          empfaenger?: string[];
+          betreff?: string;
+          anbieter_id?: string | null;
+          fehler?: string | null;
+          gesendet_am?: string;
+        };
+        Relationships: [
+            {
+              foreignKeyName: "mail_protokoll_betrieb_id_fkey";
               columns: ["betrieb_id"];
               isOneToOne: false;
               referencedRelation: "betrieb";
@@ -1072,6 +1146,95 @@ export type Database = {
               isOneToOne: false;
               referencedRelation: "betrieb";
               referencedColumns: ["id"];
+            },
+          ];
+      };
+      nachweis: {
+        Row: {
+          id: string;
+          betrieb_id: string;
+          art: string;
+          kunde_id: string;
+          objekt_id: string;
+          einsatz_id: string | null;
+          von: string;
+          bis: string;
+          pdf_pfad: string | null;
+          status: Database["public"]["Enums"]["nachweisstatus"];
+          empfaenger: string[];
+          versuche: number;
+          bearbeitet_am: string | null;
+          fehler: string | null;
+          erzeugt_am: string | null;
+          gesendet_am: string | null;
+          erstellt_am: string;
+        };
+        Insert: {
+          id?: string;
+          betrieb_id: string;
+          art: string;
+          kunde_id: string;
+          objekt_id: string;
+          einsatz_id?: string | null;
+          von: string;
+          bis: string;
+          pdf_pfad?: string | null;
+          status?: Database["public"]["Enums"]["nachweisstatus"];
+          empfaenger?: string[];
+          versuche?: number;
+          bearbeitet_am?: string | null;
+          fehler?: string | null;
+          erzeugt_am?: string | null;
+          gesendet_am?: string | null;
+          erstellt_am?: string;
+        };
+        Update: {
+          id?: string;
+          betrieb_id?: string;
+          art?: string;
+          kunde_id?: string;
+          objekt_id?: string;
+          einsatz_id?: string | null;
+          von?: string;
+          bis?: string;
+          pdf_pfad?: string | null;
+          status?: Database["public"]["Enums"]["nachweisstatus"];
+          empfaenger?: string[];
+          versuche?: number;
+          bearbeitet_am?: string | null;
+          fehler?: string | null;
+          erzeugt_am?: string | null;
+          gesendet_am?: string | null;
+          erstellt_am?: string;
+        };
+        Relationships: [
+            {
+              foreignKeyName: "nachweis_betrieb_id_fkey";
+              columns: ["betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "betrieb";
+              referencedColumns: ["id"];
+            },
+            {
+              foreignKeyName: "nachweis_einsatz_id_betrieb_id_fkey";
+              columns: ["einsatz_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "einsatz";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+            {
+              foreignKeyName: "nachweis_kunde_id_betrieb_id_fkey";
+              columns: ["kunde_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "kunde";
+              referencedColumns: ["id", "betrieb_id"];
+            },
+            {
+              foreignKeyName: "nachweis_objekt_id_betrieb_id_fkey";
+              columns: ["objekt_id", "betrieb_id"];
+              isOneToOne: false;
+              referencedRelation: "objekt";
+              referencedColumns: ["id", "betrieb_id"];
             },
           ];
       };
@@ -1857,6 +2020,16 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      app_abnahme:
+        | {
+          Args: {
+            p_einsatz_id: string;
+            p_name: string;
+            p_bild: string;
+            p_zeit: string;
+          };
+          Returns: undefined;
+        };
       app_aufgabe_setzen:
         | {
           Args: {
@@ -2113,7 +2286,10 @@ export type Database = {
       feiertagregel: "auslassen" | "naechster_werktag" | "ignorieren";
       frequenz: "taeglich" | "woechentlich" | "monatlich" | "einmalig";
       kundentyp: "firma" | "verwaltung" | "privat" | "oeffentlich";
+      mangelstatus: "offen" | "in_bearbeitung" | "erledigt";
       meldungsart: "mangel" | "material_leer";
+      nachweisstatus: "in_arbeit" | "gesendet" | "ohne_versand" | "fehler";
+      nachweisversand: "einsatz" | "monat" | "keiner";
       positionsstatus: "vorgeschlagen" | "bestaetigt" | "abgelehnt";
       preiseinheit: "pauschal" | "stunde" | "m2" | "fenster" | "stueck" | "einsatz";
       rolle: "inhaber" | "disponent" | "mitarbeiter";
