@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import type { z } from "zod";
 import { type AktionErgebnis, dbFehler, fehler, pruefe } from "@/lib/aktion";
 import { bueroKontext } from "@/lib/auth";
+import { koordinatenErgaenzen } from "@/lib/karten/koordinaten";
 import {
   ansprechpartnerSchema,
   bereichSchema,
@@ -98,23 +99,66 @@ export async function objektSpeichern(
   if (!p.ok) return p.ergebnis;
   const k = await bueroKontext();
   if (id) {
+    const { data: alt } = await k.supabase
+      .from("objekt")
+      .select("strasse, plz, ort, land, breitengrad, laengengrad")
+      .eq("id", id)
+      .single();
+    const { daten, hinweis } = await koordinatenErgaenzen(p.daten, alt);
     const { error } = await k.supabase
       .from("objekt")
-      .update(p.daten)
+      .update(daten)
       .eq("id", id)
       .eq("betrieb_id", k.betriebId);
     if (error) return fehler(dbFehler(error));
     revalidatePath(`/objekte/${id}`);
-    return { ok: true, meldung: "Objekt gespeichert." };
+    return { ok: true, meldung: hinweis ?? "Objekt gespeichert." };
   }
+  const { daten } = await koordinatenErgaenzen(p.daten);
   const { data, error } = await k.supabase
     .from("objekt")
-    .insert({ ...p.daten, betrieb_id: k.betriebId })
+    .insert({ ...daten, betrieb_id: k.betriebId })
     .select("id")
     .single();
   if (error) return fehler(dbFehler(error));
   revalidatePath("/objekte");
   redirect(`/objekte/${data.id}`);
+}
+
+/** Ergänzt fehlende Koordinaten (z. B. nach CSV-Import), höchstens 50 Objekte je Aufruf. */
+export async function fehlendeKoordinatenErgaenzen(): Promise<AktionErgebnis> {
+  const k = await bueroKontext();
+  if (!process.env.MAPBOX_TOKEN)
+    return fehler("Kartendienst ist nicht eingerichtet (MAPBOX_TOKEN).");
+  const { data: objekte, error } = await k.supabase
+    .from("objekt")
+    .select("id, strasse, plz, ort, land, breitengrad, laengengrad")
+    .eq("betrieb_id", k.betriebId)
+    .or("breitengrad.is.null,laengengrad.is.null")
+    .not("ort", "is", null)
+    .limit(50);
+  if (error) return fehler(dbFehler(error));
+  let gefunden = 0;
+  for (const o of objekte ?? []) {
+    const { daten } = await koordinatenErgaenzen({
+      ...o,
+      breitengrad: null,
+      laengengrad: null,
+    });
+    if (daten.breitengrad === null) continue;
+    const { error: e } = await k.supabase
+      .from("objekt")
+      .update({ breitengrad: daten.breitengrad, laengengrad: daten.laengengrad })
+      .eq("id", o.id);
+    if (!e) gefunden++;
+  }
+  revalidatePath("/objekte");
+  revalidatePath("/planung", "layout");
+  const rest = (objekte?.length ?? 0) - gefunden;
+  return {
+    ok: true,
+    meldung: `${gefunden} Objekte verortet${rest ? `, ${rest} Adressen nicht gefunden` : ""}.`,
+  };
 }
 
 export async function objektLoeschen(id: string): Promise<AktionErgebnis | void> {

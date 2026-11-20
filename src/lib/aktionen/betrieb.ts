@@ -5,6 +5,7 @@ import type { z } from "zod";
 import { type AktionErgebnis, dbFehler, fehler, pruefe } from "@/lib/aktion";
 import { ROLLEN_TEXT, type Rolle, betriebKontext, inhaberKontext } from "@/lib/auth";
 import { siteUrl } from "@/lib/env";
+import { koordinatenErgaenzen } from "@/lib/karten/koordinaten";
 import { firmendatenSchema } from "@/lib/schemas/betrieb";
 import { einladungSchema } from "@/lib/schemas/konto";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -15,7 +16,26 @@ export async function firmendatenSpeichern(
   const p = pruefe(firmendatenSchema, eingabe);
   if (!p.ok) return p.ergebnis;
   const k = await inhaberKontext();
-  const { error } = await k.supabase.from("betrieb").update(p.daten).eq("id", k.betriebId);
+  const { data: alt } = await k.supabase
+    .from("betrieb")
+    .select("strasse, plz, ort, breitengrad, laengengrad")
+    .eq("id", k.betriebId)
+    .single();
+  // Firmensitz ist Start und Ziel der Touren
+  const { daten } = await koordinatenErgaenzen(
+    {
+      strasse: p.daten.strasse,
+      plz: p.daten.plz,
+      ort: p.daten.ort,
+      breitengrad: alt?.breitengrad ?? null,
+      laengengrad: alt?.laengengrad ?? null,
+    },
+    alt,
+  );
+  const { error } = await k.supabase
+    .from("betrieb")
+    .update({ ...p.daten, breitengrad: daten.breitengrad, laengengrad: daten.laengengrad })
+    .eq("id", k.betriebId);
   if (error) return fehler(dbFehler(error));
   revalidatePath("/", "layout");
   return { ok: true, meldung: "Firmendaten gespeichert." };

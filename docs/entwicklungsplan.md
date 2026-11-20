@@ -220,7 +220,7 @@ Geld, Zeiten und Mandantentrennung werden am strengsten getestet, weil Fehler do
 Diese Punkte brauche ich von dir, spätestens zum genannten Meilenstein.
 
 - [ ] Produktname und Domain (vor M11)
-- [ ] Google Maps oder Mapbox (vor M5)
+- [x] Google Maps oder Mapbox (vor M5) → **Mapbox** (ADR 0002)
 - [x] Neues Repo oder Teile aus Rently Yours übernehmen (vor M0) → **neues Repo** (ADR 0001)
 - [ ] Welche Sprachen die Mitarbeiter-App zum Start braucht (vor M6)
 - [ ] Sollen Mitarbeiter auch freie Positionen anlegen dürfen oder nur aus der Preisliste (vor M6)
