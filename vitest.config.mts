@@ -6,8 +6,9 @@ export default defineConfig({
   plugins: [tsconfigPaths(), react()],
   test: {
     environment: "node",
-    include: ["src/**/*.test.{ts,tsx}"],
-    environmentMatchGlobs: [["src/**/*.test.tsx", "jsdom"]],
+    include: ["src/**/*.test.{ts,tsx}", "tests/db/**/*.test.ts"],
     setupFiles: ["./vitest.setup.ts"],
+    testTimeout: 30_000,
+    hookTimeout: 60_000,
   },
 });
