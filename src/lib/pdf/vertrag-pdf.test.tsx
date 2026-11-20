@@ -72,7 +72,7 @@ describe("Vertrags-PDF", () => {
     const pdf = await vertragPdfErzeugen(beispiel, null);
     expect(Buffer.from(pdf).subarray(0, 5).toString()).toBe("%PDF-");
     expect(pdf.length).toBeGreaterThan(2000);
-    // Zum Ansehen: PDF_AUSGABE=pfad/datei.pdf npx vitest run src/lib/pdf
-    if (process.env.PDF_AUSGABE) writeFileSync(process.env.PDF_AUSGABE, pdf);
+    // Zum Ansehen: PDF_AUSGABE=ordner npx vitest run src/lib/pdf
+    if (process.env.PDF_AUSGABE) writeFileSync(`${process.env.PDF_AUSGABE}/vertrag.pdf`, pdf);
   }, 30_000);
 });

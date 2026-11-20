@@ -4,6 +4,7 @@ import { formatEuro } from "@/domain/geld";
 import { beschreibeWiederholung } from "@/domain/serien";
 import { abrechnungsartText } from "@/lib/schemas/vertrag";
 import { preiseinheitText } from "@/lib/schemas/vorlage";
+import { SCHRIFT, schriftRegistrieren } from "./schrift";
 
 export type VertragDokument = {
   vertrag: {
@@ -67,19 +68,19 @@ export type VertragDokument = {
 };
 
 const s = StyleSheet.create({
-  seite: { padding: 48, fontSize: 10, fontFamily: "Helvetica", lineHeight: 1.4, color: "#1a1a1a" },
+  seite: { padding: 48, fontSize: 10, fontFamily: SCHRIFT, lineHeight: 1.4, color: "#1a1a1a" },
   kopf: { flexDirection: "row", justifyContent: "space-between", marginBottom: 24 },
   logo: { maxWidth: 140, maxHeight: 50, objectFit: "contain" },
   absender: { fontSize: 8, color: "#555", textAlign: "right" },
-  titel: { fontSize: 16, fontFamily: "Helvetica-Bold", marginBottom: 4 },
+  titel: { fontSize: 16, fontWeight: "bold", lineHeight: 1.25, marginBottom: 4 },
   untertitel: { color: "#555", marginBottom: 16 },
   parteien: { flexDirection: "row", gap: 24, marginBottom: 16 },
   partei: { flex: 1 },
   label: { fontSize: 8, color: "#666", textTransform: "uppercase", marginBottom: 2 },
-  h2: { fontSize: 11, fontFamily: "Helvetica-Bold", marginTop: 14, marginBottom: 6 },
+  h2: { fontSize: 11, fontWeight: "bold", marginTop: 14, marginBottom: 6 },
   leistung: { borderBottom: "0.5pt solid #ccc", paddingVertical: 6 },
   zeile: { flexDirection: "row", justifyContent: "space-between" },
-  fett: { fontFamily: "Helvetica-Bold" },
+  fett: { fontWeight: "bold" },
   klein: { fontSize: 8, color: "#555" },
   unterschriften: { flexDirection: "row", gap: 32, marginTop: 36 },
   unterschriftFeld: {
@@ -263,5 +264,6 @@ export function VertragPdf({ d, logoUrl }: { d: VertragDokument; logoUrl: string
 }
 
 export async function vertragPdfErzeugen(d: VertragDokument, logoUrl: string | null) {
+  schriftRegistrieren();
   return renderToBuffer(<VertragPdf d={d} logoUrl={logoUrl} />);
 }
