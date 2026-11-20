@@ -80,4 +80,7 @@ export const en: Woerterbuch = {
   installieren: "Install app",
   installierenIos: "To install: tap Share, then “Add to Home Screen”.",
   bueroAnsicht: "Go to office view",
+  abnahme: "Customer sign-off",
+  abnahmeStarten: "Let the customer sign (optional)",
+  abnahmeErfolgt: "Signed by {name} at {zeit}",
 };

@@ -80,4 +80,7 @@ export const ro: Woerterbuch = {
   installieren: "Instalează aplicația",
   installierenIos: "Pentru instalare: Partajare, apoi „Adaugă pe ecranul principal”.",
   bueroAnsicht: "Mergi la vizualizarea biroului",
+  abnahme: "Recepție de către client",
+  abnahmeStarten: "Cereți semnătura clientului (opțional)",
+  abnahmeErfolgt: "Semnat de {name} la {zeit}",
 };

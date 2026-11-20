@@ -33,7 +33,7 @@ describe("Warteschlange", () => {
     await einreihen(notiz("a"));
     await einreihen(notiz("b"));
     const r = await synchronisiere(s as never, "betrieb");
-    expect(r).toEqual({ uebertragen: 2, fehlgeschlagen: 0, offen: 0 });
+    expect(r).toEqual({ uebertragen: 2, fehlgeschlagen: 0, offen: 0, abgeschlossen: [] });
     expect(s.rpc.mock.calls.map((c) => c[1].p_text)).toEqual(["a", "b"]);
   });
 
@@ -46,7 +46,7 @@ describe("Warteschlange", () => {
     await einreihen(notiz("a"));
     await einreihen(notiz("b"));
     const r1 = await synchronisiere(s as never, "betrieb");
-    expect(r1).toEqual({ uebertragen: 0, fehlgeschlagen: 0, offen: 2 });
+    expect(r1).toEqual({ uebertragen: 0, fehlgeschlagen: 0, offen: 2, abgeschlossen: [] });
     const erster = await appSpeicher().warteschlange.orderBy("nr").first();
     expect(erster?.versuche).toBe(1);
     expect(erster!.naechsterVersuch).toBeGreaterThan(Date.now());
@@ -58,6 +58,7 @@ describe("Warteschlange", () => {
       uebertragen: 2,
       fehlgeschlagen: 0,
       offen: 0,
+      abgeschlossen: [],
     });
   });
 
@@ -70,7 +71,7 @@ describe("Warteschlange", () => {
     await einreihen(notiz("kaputt"));
     await einreihen(notiz("gut"));
     const r = await synchronisiere(s as never, "betrieb");
-    expect(r).toEqual({ uebertragen: 1, fehlgeschlagen: 1, offen: 0 });
+    expect(r).toEqual({ uebertragen: 1, fehlgeschlagen: 1, offen: 0, abgeschlossen: [] });
     const fehler = await appSpeicher().fehler.toArray();
     expect(fehler.map((f) => f.fehler)).toEqual(["Einsatz nicht zugewiesen"]);
   });
@@ -103,5 +104,37 @@ describe("Warteschlange", () => {
       p_betrieb_id: "betrieb-1",
       p_art: "pause_beginn",
     });
+  });
+
+  it("meldet ausgecheckte Einsätze und Abnahmen für den Nachweis-Versand", async () => {
+    const s = attrappe(async () => ({ error: null }));
+    await einreihen({
+      typ: "abnahme",
+      id: "a1",
+      einsatzId: "e1",
+      name: "Frau Kunde",
+      bild: "data:image/png;base64,AA==",
+      zeit: "2026-11-23T09:59:00Z",
+    });
+    await einreihen({
+      typ: "zeit",
+      id: "z1",
+      art: "checkout",
+      zeitpunkt: "2026-11-23T10:00:00Z",
+      einsatzId: "e1",
+      quelle: "app",
+    });
+    await einreihen(notiz("n"));
+    const r = await synchronisiere(s as never, "betrieb");
+    expect(r.abgeschlossen).toEqual(["e1"]);
+    expect(s.rpc.mock.calls[0]).toEqual([
+      "app_abnahme",
+      {
+        p_einsatz_id: "e1",
+        p_name: "Frau Kunde",
+        p_bild: "data:image/png;base64,AA==",
+        p_zeit: "2026-11-23T09:59:00Z",
+      },
+    ]);
   });
 });

@@ -93,6 +93,15 @@ export function MitarbeiterApp({ start }: { start: AppStart }) {
   const sync = useCallback(async () => {
     if (!navigator.onLine) return;
     const r = await synchronisiere(supabase, ctx.betriebId);
+    if (r.abgeschlossen.length > 0) {
+      // Nachweis und Bestätigungen verschickt der Server; Fehler holt der tägliche Lauf nach
+      void fetch("/api/app/abgeschlossen", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ einsatzIds: r.abgeschlossen }),
+        keepalive: true,
+      }).catch(() => {});
+    }
     await ausDb();
     if (r.uebertragen > 0 && r.offen === 0) await neuLaden(datumRef.current);
   }, [supabase, ctx.betriebId, ausDb, neuLaden]);

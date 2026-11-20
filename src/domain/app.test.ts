@@ -151,6 +151,7 @@ const einsatz = (p: Partial<AppEinsatz> = {}): AppEinsatz => ({
   positionen: [],
   meldungen: [],
   fotos: 0,
+  abnahme: null,
   ...p,
 });
 
@@ -208,6 +209,19 @@ describe("Offline-Aktionen", () => {
     expect(mitAusstehenden(alt, [lokal]).einsaetze[0]!.notiz).toBe("Klingel defekt");
     const neu = tag(einsatz({ notiz: "Büro: Tür offen", notizAm: t("09:00") }));
     expect(mitAusstehenden(neu, [lokal]).einsaetze[0]!.notiz).toBe("Büro: Tür offen");
+  });
+
+  it("Abnahme: neuere Unterschrift gewinnt", () => {
+    const abnahme = (name: string, uhr: string): AppAktion => ({
+      typ: "abnahme",
+      id: name,
+      einsatzId: "e1",
+      name,
+      bild: "data:image/png;base64,AA==",
+      zeit: t(uhr),
+    });
+    const d = [abnahme("Frau Neu", "09:00"), abnahme("Herr Alt", "08:00")].reduce(wendeAn, tag());
+    expect(d.einsaetze[0]!.abnahme).toEqual({ name: "Frau Neu", am: t("09:00") });
   });
 
   it("Position aus Preisliste ist bestätigt, freie Position nur Vorschlag", () => {

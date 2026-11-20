@@ -97,6 +97,15 @@ export async function uebertrage(supabase: Client, betriebId: string, a: AppAkti
           p_unterschrift_bild: a.unterschriftBild ?? undefined,
         }),
       );
+    case "abnahme":
+      return pruefe(
+        await supabase.rpc("app_abnahme", {
+          p_einsatz_id: a.einsatzId,
+          p_name: a.name,
+          p_bild: a.bild,
+          p_zeit: a.zeit,
+        }),
+      );
     case "korrektur":
       return pruefe(
         await supabase.rpc("app_objekt_korrigieren", {
@@ -110,7 +119,18 @@ export async function uebertrage(supabase: Client, betriebId: string, a: AppAkti
   }
 }
 
-export type SyncErgebnis = { uebertragen: number; fehlgeschlagen: number; offen: number };
+export type SyncErgebnis = {
+  uebertragen: number;
+  fehlgeschlagen: number;
+  offen: number;
+  /** Einsätze mit übertragenem Check-out, Abnahme oder Leistung (Nachweis/Bestätigung anstoßen) */
+  abgeschlossen: string[];
+};
+
+const stoesstVersandAn = (a: AppAktion): string | null =>
+  (a.typ === "zeit" && a.art === "checkout") || a.typ === "position" || a.typ === "abnahme"
+    ? a.einsatzId
+    : null;
 
 let laeuft: Promise<SyncErgebnis> | null = null;
 
@@ -121,7 +141,12 @@ let laeuft: Promise<SyncErgebnis> | null = null;
 export function synchronisiere(supabase: Client, betriebId: string): Promise<SyncErgebnis> {
   laeuft ??= (async () => {
     const db = appSpeicher();
-    const ergebnis = { uebertragen: 0, fehlgeschlagen: 0, offen: 0 };
+    const ergebnis: SyncErgebnis = {
+      uebertragen: 0,
+      fehlgeschlagen: 0,
+      offen: 0,
+      abgeschlossen: [],
+    };
     try {
       for (;;) {
         const eintrag = await db.warteschlange.orderBy("nr").first();
@@ -131,6 +156,8 @@ export function synchronisiere(supabase: Client, betriebId: string): Promise<Syn
           await uebertrage(supabase, betriebId, eintrag.aktion);
           await db.warteschlange.delete(eintrag.nr!);
           ergebnis.uebertragen++;
+          const id = stoesstVersandAn(eintrag.aktion);
+          if (id && !ergebnis.abgeschlossen.includes(id)) ergebnis.abgeschlossen.push(id);
         } catch (e) {
           const code = e instanceof SyncFehler ? e.code : undefined;
           if (istEndgueltig(code)) {

@@ -64,6 +64,8 @@ export type AppEinsatz = {
   positionen: AppPosition[];
   meldungen: AppMeldung[];
   fotos: number;
+  /** Abnahme-Unterschrift des Kunden (optional) */
+  abnahme: { name: string; am: string } | null;
 };
 
 export type AppPreis = { id: string; name: string; einheit: string; preisCent: number };
@@ -125,6 +127,7 @@ export type AppAktion =
       unterschriftName: string | null;
       unterschriftBild: string | null;
     }
+  | { typ: "abnahme"; id: string; einsatzId: string; name: string; bild: string; zeit: string }
   | {
       typ: "korrektur";
       id: string;
@@ -211,6 +214,12 @@ export function wendeAn(d: Tagesdaten, a: AppAktion): Tagesdaten {
             },
       );
     }
+    case "abnahme":
+      return aendereEinsatz(d, a.einsatzId, (e) =>
+        neuer(e.abnahme?.am ?? null, a.zeit)
+          ? { ...e, abnahme: { name: a.name.trim(), am: a.zeit } }
+          : e,
+      );
     case "korrektur":
       return aendereEinsatz(d, a.einsatzId, (e) => ({
         ...e,

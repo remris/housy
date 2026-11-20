@@ -86,6 +86,9 @@ export const de = {
   installieren: "App installieren",
   installierenIos: "Zum Installieren: Teilen-Symbol, dann „Zum Home-Bildschirm“.",
   bueroAnsicht: "Zur Büro-Ansicht",
+  abnahme: "Abnahme durch den Kunden",
+  abnahmeStarten: "Kunde unterschreiben lassen (freiwillig)",
+  abnahmeErfolgt: "Unterschrieben von {name} um {zeit}",
 } as const;
 
 export type Schluessel = keyof typeof de;

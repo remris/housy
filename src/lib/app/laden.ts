@@ -29,7 +29,7 @@ export async function ladeTagesdaten(
       .from("einsatz")
       .select(
         `id, datum, status, reihenfolge, geplanter_beginn, zeitfenster_von, zeitfenster_bis,
-         sollzeit_minuten, notiz_mitarbeiter, notiz_mitarbeiter_am,
+         sollzeit_minuten, notiz_mitarbeiter, notiz_mitarbeiter_am, abnahme_name, abnahme_am,
          objekt(id, name, strasse, plz, ort, breitengrad, laengengrad, zugangshinweise, qr_kennung,
            fensteraufmass(id, bezeichnung, anzahl), bereich(flaeche_m2)),
          auftragsvorlage(name, sollzeit_minuten, minuten_pro_100m2, minuten_pro_fenster,
@@ -149,6 +149,7 @@ export async function ladeTagesdaten(
         artikelId: m.artikel_id,
       })),
       fotos: e.einsatz_foto.length,
+      abnahme: e.abnahme_name && e.abnahme_am ? { name: e.abnahme_name, am: e.abnahme_am } : null,
     };
   });
 

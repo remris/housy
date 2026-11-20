@@ -80,4 +80,7 @@ export const tr: Woerterbuch = {
   installieren: "Uygulamayı yükle",
   installierenIos: "Yüklemek için: Paylaş simgesi, ardından „Ana Ekrana Ekle“.",
   bueroAnsicht: "Ofis görünümüne git",
+  abnahme: "Müşteri onayı",
+  abnahmeStarten: "Müşteriye imzalat (isteğe bağlı)",
+  abnahmeErfolgt: "{name} tarafından {zeit} saatinde imzalandı",
 };

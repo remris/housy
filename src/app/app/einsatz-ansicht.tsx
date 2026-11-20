@@ -9,6 +9,7 @@ import {
   PackageXIcon,
   PencilIcon,
   PlusIcon,
+  SignatureIcon,
 } from "lucide-react";
 import { type ReactNode, useCallback, useEffect, useState } from "react";
 import { UnterschriftFeld } from "@/components/unterschrift-feld";
@@ -90,6 +91,7 @@ export function EinsatzAnsicht({ einsatz: e }: { einsatz: AppEinsatz }) {
           <Meldungen e={e} />
           <Leistungen e={e} />
           <Korrektur e={e} />
+          {(p === "laeuft" || e.abnahme) && <Abnahme e={e} laeuft={p === "laeuft"} />}
           {p === "laeuft" && <Auschecken e={e} />}
         </>
       )}
@@ -590,6 +592,61 @@ function Korrektur({ e }: { e: AppEinsatz }) {
         </Button>
         <Button onClick={speichern}>{t("speichern")}</Button>
       </div>
+    </Abschnitt>
+  );
+}
+
+function Abnahme({ e, laeuft }: { e: AppEinsatz; laeuft: boolean }) {
+  const { t, ausfuehren } = useAppKontext();
+  const [offen, setOffen] = useState(false);
+  const [name, setName] = useState("");
+  const [bild, setBild] = useState<string | null>(null);
+
+  const speichern = () => {
+    if (!bild) return;
+    ausfuehren({
+      typ: "abnahme",
+      id: neueId(),
+      einsatzId: e.id,
+      name: name.trim(),
+      bild,
+      zeit: jetztIso(),
+    });
+    setOffen(false);
+    setName("");
+    setBild(null);
+  };
+
+  return (
+    <Abschnitt titel={t("abnahme")} icon={<SignatureIcon className="size-4" />}>
+      {e.abnahme && (
+        <p className="text-sm">
+          {t("abnahmeErfolgt", { name: e.abnahme.name, zeit: uhrzeitBerlin(e.abnahme.am) })}
+        </p>
+      )}
+      {laeuft && !offen && (
+        <Button variant="outline" onClick={() => setOffen(true)}>
+          {e.abnahme ? t("unterschriftLoeschen") : t("abnahmeStarten")}
+        </Button>
+      )}
+      {laeuft && offen && (
+        <div className="flex flex-col gap-2">
+          <UnterschriftFeld onChange={setBild} />
+          <Input
+            placeholder={t("nameKunde")}
+            value={name}
+            onChange={(ev) => setName(ev.target.value)}
+          />
+          <div className="grid grid-cols-2 gap-2">
+            <Button variant="outline" onClick={() => setOffen(false)}>
+              {t("abbrechen")}
+            </Button>
+            <Button onClick={speichern} disabled={!bild || name.trim().length === 0}>
+              {t("speichern")}
+            </Button>
+          </div>
+        </div>
+      )}
     </Abschnitt>
   );
 }

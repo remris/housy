@@ -80,4 +80,7 @@ export const pl: Woerterbuch = {
   installieren: "Zainstaluj aplikację",
   installierenIos: "Aby zainstalować: Udostępnij, potem „Do ekranu początkowego”.",
   bueroAnsicht: "Przejdź do widoku biura",
+  abnahme: "Odbiór przez klienta",
+  abnahmeStarten: "Poproś klienta o podpis (opcjonalnie)",
+  abnahmeErfolgt: "Podpisano przez {name} o {zeit}",
 };
