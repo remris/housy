@@ -74,11 +74,11 @@ Fertig, wenn: `npm run dev` startet, CI ist grün, die Startseite ist online.
 
 ### M1 Betriebe, Benutzer, Rollen
 
-- [ ] Tabellen `betrieb`, `mitglied` (Rolle, Sprache), Einladung per E-Mail
-- [ ] Registrierung legt Betrieb + Inhaber an, Login, Passwort vergessen
-- [ ] RLS-Grundmuster: jede Fachtabelle hat `betrieb_id`, Zugriff nur für Mitglieder
-- [ ] pgTAP-Tests: Betrieb A sieht keine Daten von Betrieb B
-- [ ] Grundlayout Büro mit Navigation, Einstellungen (Firmendaten, Logo, Steuernummer, Bankverbindung für Rechnungen)
+- [x] Tabellen `betrieb`, `mitglied` (Rolle, Sprache), Einladung per E-Mail
+- [x] Registrierung legt Betrieb + Inhaber an, Login, Passwort vergessen
+- [x] RLS-Grundmuster: jede Fachtabelle hat `betrieb_id`, Zugriff nur für Mitglieder
+- [x] pgTAP-Tests: Betrieb A sieht keine Daten von Betrieb B
+- [x] Grundlayout Büro mit Navigation, Einstellungen (Firmendaten, Logo, Steuernummer, Bankverbindung für Rechnungen)
 
 Fertig, wenn: zwei Betriebe getrennt arbeiten und die RLS-Tests grün sind.
 
