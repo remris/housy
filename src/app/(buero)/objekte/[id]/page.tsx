@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { LoeschenKnopf } from "@/components/aktion-knoepfe";
 import { Seitenkopf } from "@/components/seitenkopf";
+import { Button } from "@/components/ui/button";
 import { objektLoeschen } from "@/lib/aktionen/kunden";
 import { bueroKontext } from "@/lib/auth";
 import { ObjektFormular } from "../objekt-formular";
@@ -72,12 +73,21 @@ export default async function ObjektSeite({ params }: { params: Promise<{ id: st
           </>
         }
         aktionen={
-          <LoeschenKnopf
-            aktion={objektLoeschen.bind(null, o.id)}
-            frage={`Objekt „${o.name}“ mit Raumbuch, Fensteraufmaß und Fotos löschen?`}
-            text="Objekt löschen"
-            variante="outline"
-          />
+          <>
+            <Button
+              variant="outline"
+              nativeButton={false}
+              render={<Link href={`/objekte/${o.id}/qr`} />}
+            >
+              QR-Code für Check-in
+            </Button>
+            <LoeschenKnopf
+              aktion={objektLoeschen.bind(null, o.id)}
+              frage={`Objekt „${o.name}“ mit Raumbuch, Fensteraufmaß und Fotos löschen?`}
+              text="Objekt löschen"
+              variante="outline"
+            />
+          </>
         }
       />
 

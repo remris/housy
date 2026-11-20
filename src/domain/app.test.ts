@@ -320,3 +320,13 @@ describe("Vor Ort", () => {
     ]);
   });
 });
+
+describe("Ortszeit", () => {
+  it("Berlin Winter- und Sommerzeit", async () => {
+    const { berlinZuIso, uhrzeitBerlin, tagBerlin } = await import("./zeiterfassung");
+    expect(berlinZuIso("2026-11-23", "07:30")).toBe("2026-11-23T06:30:00.000Z");
+    expect(berlinZuIso("2026-07-01", "07:30")).toBe("2026-07-01T05:30:00.000Z");
+    expect(uhrzeitBerlin("2026-11-23T06:30:00.000Z")).toBe("07:30");
+    expect(tagBerlin("2026-11-23T23:30:00.000Z")).toBe("2026-11-24");
+  });
+});

@@ -1,6 +1,8 @@
 import {
   BuildingIcon,
   ClipboardListIcon,
+  ClockIcon,
+  InboxIcon,
   EuroIcon,
   FileSignatureIcon,
   CalendarRangeIcon,
@@ -19,6 +21,8 @@ export const NAVIGATION: NavEintrag[] = [
   { href: "/kunden", text: "Kunden", icon: UsersIcon },
   { href: "/objekte", text: "Objekte", icon: BuildingIcon },
   { href: "/planung", text: "Planung", icon: CalendarRangeIcon },
+  { href: "/rueckmeldungen", text: "Rückmeldungen", icon: InboxIcon },
+  { href: "/zeiten", text: "Zeiten", icon: ClockIcon },
   { href: "/vertraege", text: "Verträge", icon: FileSignatureIcon },
   { href: "/vorlagen", text: "Vorlagen", icon: ClipboardListIcon },
   { href: "/artikel", text: "Artikel", icon: PackageIcon },

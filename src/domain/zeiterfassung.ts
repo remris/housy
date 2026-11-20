@@ -158,3 +158,27 @@ export function uhrzeitBerlin(iso: string): string {
 export function tagBerlin(iso: string): string {
   return new Intl.DateTimeFormat("sv-SE", { timeZone: "Europe/Berlin" }).format(new Date(iso));
 }
+
+/** Ortszeit Europe/Berlin ("2026-11-23", "07:30") → ISO-Zeitpunkt in UTC. */
+export function berlinZuIso(datum: string, uhrzeit: string): string {
+  const [j, m, t] = datum.split("-").map(Number);
+  const [h, min] = uhrzeit.split(":").map(Number);
+  const alsUtc = Date.UTC(j!, m! - 1, t!, h!, min!);
+  const versatz = (ms: number) => {
+    const teile = new Intl.DateTimeFormat("en-US", {
+      timeZone: "Europe/Berlin",
+      hourCycle: "h23",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+    }).formatToParts(new Date(ms));
+    const w = (typ: string) => Number(teile.find((p) => p.type === typ)?.value);
+    return Date.UTC(w("year"), w("month") - 1, w("day"), w("hour"), w("minute")) - ms;
+  };
+  // zweimal, damit Tage mit Zeitumstellung stimmen
+  let ms = alsUtc - versatz(alsUtc);
+  ms = alsUtc - versatz(ms);
+  return new Date(ms).toISOString();
+}

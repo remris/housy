@@ -34,6 +34,9 @@ for (const pfad of [
   "/planung/offen",
   "/planung/mitarbeiter",
   "/planung/fahrzeuge",
+  "/rueckmeldungen",
+  "/zeiten",
+  "/app",
 ]) {
   test(`${pfad} ist geschützt`, async ({ page }) => {
     await page.goto(pfad);
