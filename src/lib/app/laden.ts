@@ -8,7 +8,9 @@ import {
 } from "@/domain/app";
 import { plusTage } from "@/domain/datum";
 import type { Bedarfsbezug } from "@/domain/vorlagen";
+import { bedarfFuerObjekt } from "@/domain/prognose";
 import { tagBerlin } from "@/domain/zeiterfassung";
+import { ladeAppInventar } from "@/lib/inventar";
 import type { Database } from "@/lib/supabase/database.types";
 
 type Client = SupabaseClient<Database>;
@@ -31,7 +33,8 @@ export async function ladeTagesdaten(
         `id, datum, status, reihenfolge, geplanter_beginn, zeitfenster_von, zeitfenster_bis,
          sollzeit_minuten, notiz_mitarbeiter, notiz_mitarbeiter_am, abnahme_name, abnahme_am,
          objekt(id, name, strasse, plz, ort, breitengrad, laengengrad, zugangshinweise, qr_kennung,
-           fensteraufmass(id, bezeichnung, anzahl), bereich(flaeche_m2)),
+           fensteraufmass(id, bezeichnung, anzahl), bereich(flaeche_m2),
+           objekt_bedarf(artikel_id, menge, bezug)),
          auftragsvorlage(name, sollzeit_minuten, minuten_pro_100m2, minuten_pro_fenster,
            vorlage_taetigkeit(id, text, foto_pflicht, reihenfolge),
            vorlage_bedarf(artikel_id, menge, bezug)),
@@ -61,7 +64,7 @@ export async function ladeTagesdaten(
       .order("name"),
     supabase
       .from("artikel")
-      .select("id, name, einheit")
+      .select("id, name, einheit, art, gebinde_name, gebinde_menge")
       .eq("betrieb_id", ctx.betriebId)
       .eq("aktiv", true)
       .order("name"),
@@ -70,7 +73,15 @@ export async function ladeTagesdaten(
     if (r.error) throw new Error(r.error.message);
   }
 
-  const artikelListe: AppArtikel[] = artikel.data ?? [];
+  const artikelListe: AppArtikel[] = (artikel.data ?? []).map((a) => ({
+    id: a.id,
+    name: a.name,
+    einheit: a.einheit,
+    art: a.art,
+    gebindeName: a.gebinde_name,
+    gebindeMenge: Number(a.gebinde_menge),
+  }));
+  const inventar = await ladeAppInventar(supabase, ctx, datum).catch(() => null);
   const fuerPackliste: PacklistenEinsatz[] = [];
 
   const liste: AppEinsatz[] = (einsaetze.data ?? []).map((e) => {
@@ -89,11 +100,18 @@ export async function ladeTagesdaten(
           minutenProFenster: v.minuten_pro_fenster === null ? null : Number(v.minuten_pro_fenster),
         },
         umfang,
-        bedarfe: v.vorlage_bedarf.map((b) => ({
-          artikelId: b.artikel_id,
-          menge: Number(b.menge),
-          bezug: b.bezug as Bedarfsbezug,
-        })),
+        bedarfe: bedarfFuerObjekt(
+          v.vorlage_bedarf.map((b) => ({
+            artikelId: b.artikel_id,
+            menge: Number(b.menge),
+            bezug: b.bezug as Bedarfsbezug,
+          })),
+          (o?.objekt_bedarf ?? []).map((b) => ({
+            artikelId: b.artikel_id,
+            menge: Number(b.menge),
+            bezug: b.bezug as Bedarfsbezug,
+          })),
+        ),
       });
     }
     const haken = new Map(e.einsatz_aufgabe.map((a) => [a.taetigkeit_id, a]));
@@ -150,6 +168,13 @@ export async function ladeTagesdaten(
       })),
       fotos: e.einsatz_foto.length,
       abnahme: e.abnahme_name && e.abnahme_am ? { name: e.abnahme_name, am: e.abnahme_am } : null,
+      warnungen: [
+        ...new Set(
+          (v?.vorlage_bedarf ?? []).flatMap(
+            (b) => inventar?.pruefungUeberfaellig.get(b.artikel_id) ?? [],
+          ),
+        ),
+      ],
     };
   });
 
@@ -175,6 +200,8 @@ export async function ladeTagesdaten(
       preisCent: p.preis_cent,
     })),
     artikel: artikelListe,
-    packliste: packliste(fuerPackliste, artikelListe),
+    packliste: packliste(fuerPackliste, artikelListe, inventar?.fahrzeugBestand),
+    fahrzeug: inventar?.fahrzeug ?? null,
+    werkzeuge: inventar?.werkzeuge ?? [],
   };
 }

@@ -5,6 +5,7 @@
  * je Feld um (Checkliste, Notiz) und ignoriert Wiederholungen (IDs vom Gerät).
  * Nach dem Neuladen vom Server werden noch ausstehende Aktionen erneut lokal angewendet.
  */
+import { type Verschleissstufe, ladeliste } from "./prognose";
 import { type Bedarf, type Einsatzumfang, type Vorlagenzeit, bedarfJeEinsatz } from "./vorlagen";
 import type { Buchung, Buchungsart } from "./zeiterfassung";
 
@@ -66,11 +67,48 @@ export type AppEinsatz = {
   fotos: number;
   /** Abnahme-Unterschrift des Kunden (optional) */
   abnahme: { name: string; am: string } | null;
+  /** Geräte dieses Einsatzes mit überfälliger Prüfung (z. B. Leiter) */
+  warnungen: string[];
 };
 
 export type AppPreis = { id: string; name: string; einheit: string; preisCent: number };
-export type AppArtikel = { id: string; name: string; einheit: string };
-export type Packposten = { artikelId: string; name: string; einheit: string; menge: number };
+export type AppArtikel = {
+  id: string;
+  name: string;
+  einheit: string;
+  art?: "verbrauch" | "verschleiss" | "geraet";
+  gebindeName?: string | null;
+  gebindeMenge?: number;
+};
+export type Packposten = {
+  artikelId: string;
+  name: string;
+  einheit: string;
+  /** Bedarf des Tages; bei Werkzeugen und Geräten 1 („mitnehmen“) */
+  menge: number;
+  art?: "verbrauch" | "verschleiss" | "geraet";
+  /** Bestand im eigenen Fahrzeug (null: kein Fahrzeug zugeordnet) */
+  fahrzeugBestand?: number | null;
+  gebindeName?: string | null;
+  gebindeMenge?: number;
+  /** ganze Gebinde, die aus dem Zentrallager eingeladen werden sollten */
+  einladenGebinde?: number;
+  einladenMenge?: number;
+};
+
+export type AppWerkzeug = {
+  id: string;
+  name: string;
+  artikelId: string;
+  einheit: string | null;
+  stand: number | null;
+  lebensdauer: number | null;
+  stufe: Verschleissstufe | null;
+  /** Lebensdauer wird mit den heutigen Einsätzen erreicht → Ersatz mitnehmen */
+  faelligHeute: boolean;
+  pruefung: "ok" | "bald" | "ueberfaellig";
+  pruefungAm: string | null;
+};
 
 export type Tagesdaten = {
   geladenAm: string;
@@ -82,6 +120,9 @@ export type Tagesdaten = {
   preisliste: AppPreis[];
   artikel: AppArtikel[];
   packliste: Packposten[];
+  /** Fahrzeug des Tages (Tour oder Standard) als Lagerort */
+  fahrzeug?: { lagerortId: string; name: string } | null;
+  werkzeuge?: AppWerkzeug[];
 };
 
 // ---------------------------------------------------------------------------
@@ -128,6 +169,16 @@ export type AppAktion =
       unterschriftBild: string | null;
     }
   | { typ: "abnahme"; id: string; einsatzId: string; name: string; bild: string; zeit: string }
+  | { typ: "geladen"; id: string; artikelId: string; menge: number; lagerortId: string }
+  | {
+      typ: "gewechselt";
+      id: string;
+      werkzeugId: string;
+      am: string;
+      stand: number;
+      grund: "verschleiss" | "defekt";
+      lagerortId: string | null;
+    }
   | {
       typ: "korrektur";
       id: string;
@@ -220,6 +271,27 @@ export function wendeAn(d: Tagesdaten, a: AppAktion): Tagesdaten {
           ? { ...e, abnahme: { name: a.name.trim(), am: a.zeit } }
           : e,
       );
+    case "geladen":
+      return {
+        ...d,
+        packliste: d.packliste.map((p) =>
+          p.artikelId === a.artikelId
+            ? {
+                ...p,
+                fahrzeugBestand: Math.round(((p.fahrzeugBestand ?? 0) + a.menge) * 10_000) / 10_000,
+                einladenGebinde: 0,
+                einladenMenge: 0,
+              }
+            : p,
+        ),
+      };
+    case "gewechselt":
+      return {
+        ...d,
+        werkzeuge: (d.werkzeuge ?? []).map((w) =>
+          w.id === a.werkzeugId ? { ...w, stand: 0, stufe: "ok", faelligHeute: false } : w,
+        ),
+      };
     case "korrektur":
       return aendereEinsatz(d, a.einsatzId, (e) => ({
         ...e,
@@ -308,8 +380,17 @@ export type PacklistenEinsatz = {
   umfang: Einsatzumfang;
 };
 
-/** Material für alle Einsätze des Tages, je Artikel summiert und aufgerundet auf 0,1. */
-export function packliste(einsaetze: PacklistenEinsatz[], artikel: AppArtikel[]): Packposten[] {
+/**
+ * Packliste des Tages: Verbrauchsmaterial je Artikel summiert (aufgerundet auf 0,1) mit Vorschlag,
+ * was aus dem Zentrallager ins Fahrzeug muss (Bedarf + Puffer − Fahrzeugbestand, ganze Gebinde).
+ * Werkzeuge und Geräte erscheinen einmal als „mitnehmen“.
+ * Ohne `fahrzeugBestand` (kein Fahrzeug) gibt es keinen Ladevorschlag.
+ */
+export function packliste(
+  einsaetze: PacklistenEinsatz[],
+  artikel: AppArtikel[],
+  fahrzeugBestand?: ReadonlyMap<string, number>,
+): Packposten[] {
   const summe = new Map<string, number>();
   for (const e of einsaetze) {
     for (const [id, menge] of bedarfJeEinsatz(e.bedarfe, e.umfang, e.vorlage)) {
@@ -318,11 +399,32 @@ export function packliste(einsaetze: PacklistenEinsatz[], artikel: AppArtikel[])
   }
   const nachId = new Map(artikel.map((a) => [a.id, a]));
   return [...summe]
-    .map(([artikelId, menge]) => ({
-      artikelId,
-      name: nachId.get(artikelId)?.name ?? "Artikel",
-      einheit: nachId.get(artikelId)?.einheit ?? "",
-      menge: Math.ceil(menge * 10 - 1e-9) / 10,
-    }))
-    .sort((a, b) => a.name.localeCompare(b.name, "de"));
+    .map(([artikelId, roh]): Packposten => {
+      const a = nachId.get(artikelId);
+      const art = a?.art ?? "verbrauch";
+      const basis = { artikelId, name: a?.name ?? "Artikel", einheit: a?.einheit ?? "" };
+      if (art !== "verbrauch") return { ...basis, art, menge: 1 };
+      const menge = Math.ceil(roh * 10 - 1e-9) / 10;
+      if (!fahrzeugBestand) return { ...basis, menge };
+      const gebindeMenge = a?.gebindeMenge ?? 1;
+      const [l] = ladeliste([
+        {
+          artikelId,
+          bedarf: menge,
+          fahrzeugBestand: fahrzeugBestand.get(artikelId) ?? 0,
+          gebindeMenge,
+        },
+      ]);
+      return {
+        ...basis,
+        menge,
+        art,
+        fahrzeugBestand: fahrzeugBestand.get(artikelId) ?? 0,
+        gebindeName: a?.gebindeName ?? null,
+        gebindeMenge,
+        einladenGebinde: l?.einladenGebinde ?? 0,
+        einladenMenge: l?.einladenMenge ?? 0,
+      };
+    })
+    .sort((x, y) => x.name.localeCompare(y.name, "de"));
 }

@@ -89,6 +89,17 @@ export const de = {
   abnahme: "Abnahme durch den Kunden",
   abnahmeStarten: "Kunde unterschreiben lassen (freiwillig)",
   abnahmeErfolgt: "Unterschrieben von {name} um {zeit}",
+  mitnehmen: "mitnehmen",
+  imFahrzeug: "im Fahrzeug: {menge}",
+  einladen: "{n} × {gebinde} einladen",
+  reicht: "reicht",
+  werkzeuge: "Werkzeuge und Geräte",
+  zaehler: "{stand} von {lebensdauer}",
+  gewechselt: "Gewechselt",
+  ersatzMitnehmen: "Wechsel heute fällig – Ersatz mitnehmen",
+  baldWechseln: "bald wechseln",
+  pruefungBis: "Prüfung fällig bis {datum}",
+  pruefungUeberfaellig: "Prüfung überfällig: {name}",
 } as const;
 
 export type Schluessel = keyof typeof de;

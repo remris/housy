@@ -106,6 +106,26 @@ export async function uebertrage(supabase: Client, betriebId: string, a: AppAkti
           p_zeit: a.zeit,
         }),
       );
+    case "geladen":
+      return pruefe(
+        await supabase.rpc("app_geladen", {
+          p_id: a.id,
+          p_artikel_id: a.artikelId,
+          p_menge: a.menge,
+          p_nach_lagerort_id: a.lagerortId,
+        }),
+      );
+    case "gewechselt":
+      return pruefe(
+        await supabase.rpc("app_werkzeug_gewechselt", {
+          p_id: a.id,
+          p_werkzeug_id: a.werkzeugId,
+          p_am: a.am,
+          p_stand: a.stand,
+          p_grund: a.grund,
+          p_lagerort_id: a.lagerortId ?? undefined,
+        }),
+      );
     case "korrektur":
       return pruefe(
         await supabase.rpc("app_objekt_korrigieren", {

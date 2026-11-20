@@ -152,6 +152,7 @@ const einsatz = (p: Partial<AppEinsatz> = {}): AppEinsatz => ({
   meldungen: [],
   fotos: 0,
   abnahme: null,
+  warnungen: [],
   ...p,
 });
 
@@ -332,6 +333,90 @@ describe("Vor Ort", () => {
       { artikelId: "r", name: "Allzweckreiniger", einheit: "l", menge: 0.5 },
       { artikelId: "m", name: "Müllbeutel", einheit: "Stk", menge: 3 },
     ]);
+  });
+
+  it("mit Fahrzeug: Ladevorschlag in ganzen Gebinden, Werkzeuge nur „mitnehmen“, „geladen“ bucht um", () => {
+    const umfang = { flaecheM2: 0, fenster: 0 };
+    const vorlage = { sollzeitMinuten: 60 };
+    const p = packliste(
+      [
+        {
+          vorlage,
+          umfang,
+          bedarfe: [
+            { artikelId: "r", menge: 4.5, bezug: "einsatz" },
+            { artikelId: "besen", menge: 1, bezug: "einsatz" },
+          ],
+        },
+      ],
+      [
+        {
+          id: "r",
+          name: "Allzweckreiniger",
+          einheit: "l",
+          art: "verbrauch",
+          gebindeName: "Kanister",
+          gebindeMenge: 10,
+        },
+        { id: "besen", name: "Besen", einheit: "Stk", art: "verschleiss" },
+      ],
+      new Map([["r", 0]]),
+    );
+    expect(p).toEqual([
+      {
+        artikelId: "r",
+        name: "Allzweckreiniger",
+        einheit: "l",
+        art: "verbrauch",
+        menge: 4.5,
+        fahrzeugBestand: 0,
+        gebindeName: "Kanister",
+        gebindeMenge: 10,
+        einladenGebinde: 1,
+        einladenMenge: 10,
+      },
+      { artikelId: "besen", name: "Besen", einheit: "Stk", art: "verschleiss", menge: 1 },
+    ]);
+    const d = wendeAn(
+      { ...tag(), packliste: p },
+      { typ: "geladen", id: "g1", artikelId: "r", menge: 10, lagerortId: "auto" },
+    );
+    expect(d.packliste.find((x) => x.artikelId === "r")).toMatchObject({
+      fahrzeugBestand: 10,
+      einladenGebinde: 0,
+    });
+  });
+
+  it("gewechselt setzt den Zähler des Werkzeugs auf 0", () => {
+    const d = wendeAn(
+      {
+        ...tag(),
+        werkzeuge: [
+          {
+            id: "w1",
+            name: "Abzieher",
+            artikelId: "g",
+            einheit: "fenster",
+            stand: 520,
+            lebensdauer: 500,
+            stufe: "faellig",
+            faelligHeute: true,
+            pruefung: "ok",
+            pruefungAm: null,
+          },
+        ],
+      },
+      {
+        typ: "gewechselt",
+        id: "x",
+        werkzeugId: "w1",
+        am: t("09:00"),
+        stand: 520,
+        grund: "verschleiss",
+        lagerortId: null,
+      },
+    );
+    expect(d.werkzeuge?.[0]).toMatchObject({ stand: 0, stufe: "ok", faelligHeute: false });
   });
 });
 

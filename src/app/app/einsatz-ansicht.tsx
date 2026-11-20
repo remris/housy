@@ -66,6 +66,12 @@ export function EinsatzAnsicht({ einsatz: e }: { einsatz: AppEinsatz }) {
             </span>
           </p>
         )}
+        {e.warnungen.length > 0 && (
+          <p className="mt-1 flex gap-2 rounded-md bg-red-50 p-2 text-sm text-red-900 dark:bg-red-950/40 dark:text-red-100">
+            <AlertTriangleIcon className="mt-0.5 size-4 shrink-0" />
+            {t("pruefungUeberfaellig", { name: e.warnungen.join(", ") })}
+          </p>
+        )}
         <a
           href={navigationsLink(e.objekt, apple)}
           target="_blank"

@@ -30,6 +30,8 @@ export type AppStart = {
 /** Gehört eine ausstehende Aktion zu diesem Tag? (Pausen hängen am Zeitpunkt) */
 function gehoertZuTag(a: AppAktion, d: Tagesdaten): boolean {
   if (a.typ === "zeit") return tagBerlin(a.zeitpunkt) === d.datum;
+  // Fahrzeugbestand und Werkzeuge gelten für jeden Tag
+  if (a.typ === "geladen" || a.typ === "gewechselt") return true;
   return d.einsaetze.some((e) => e.id === a.einsatzId);
 }
 
